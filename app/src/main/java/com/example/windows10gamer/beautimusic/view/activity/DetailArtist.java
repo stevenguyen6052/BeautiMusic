@@ -24,18 +24,16 @@ import java.util.List;
  */
 
 public class DetailArtist extends AppCompatActivity {
-    private RecyclerView mRecycleView;
-    private List<Song> mSongList;
-    private SongDatabase mSongDatabase;
-    private SongAdapter1 mSongAdapter1;
-    private String nameArtist;
-    private View mLayout;
-    private static SlidingUpPanelLayout slidingUpPanelLayout;
-
     private static final String TAG = "TAG";
     private static final String TAG_ARTIST = "ARTIST";
     private static final String POSITION = "POSITION";
     private static final String NAME_ARTIST = "Name Artist";
+
+    private List<Song> mSongList;
+    private SongDatabase mSongDatabase;
+    private String nameArtist;
+    private View mLayout;
+    private static SlidingUpPanelLayout slidingUpPanelLayout;
 
     private ListView mListView;
     private SongAdapter mSongAdapter;

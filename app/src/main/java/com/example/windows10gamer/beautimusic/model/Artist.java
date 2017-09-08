@@ -1,8 +1,5 @@
 package com.example.windows10gamer.beautimusic.model;
 
-/**
- * Created by Windows 10 Gamer on 30/08/2017.
- */
 
 public class Artist {
     private String nameArtist;

@@ -26,18 +26,18 @@ public class DetailAlbum extends AppCompatActivity {
     private static final String POSITION = "POSITION";
     private static final String NAME_ALBUM = "Name Album";
     private static final String NAME_ARTIST = "Name Artist";
+    private static final String TAG = "TAG";
+    private static final String TAG_ALBUM = "ALBUM";
+
     private SongAdapter mSongAdapter;
     private ListView mListView;
+    private View mLayout;
     private TextView mTvNameArtist;
+
     private List<Song> mSongList;
     private String nameAlbum, nameArtist;
     private SongDatabase mSongDatabase;
     private static SlidingUpPanelLayout slidingUpPanelLayout;
-    private View mLayout;
-    private int mPosition;
-    private static final String TAG = "TAG";
-    private static final String TAG_ALBUM = "ALBUM";
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
