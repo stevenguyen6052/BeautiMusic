@@ -30,7 +30,11 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private static final String POSITION = "POSITION";
     private static final String NAME_ALBUM = "Name Album";
     private static final String NAME_ARTIST = "Name Artist";
-    SendDataPosition mSendDataPosition;
+    private final static String TAG = "TAG";
+    private final static String TAG_SONG = "SONG";
+    private final static String TAG_ARTIST = "ARTIST";
+    private final static String TAG_ALBUM = "ALBUM";
+
     private TextView mTvNameSong, mTvNameSinger, mTvTime;
     private ListView mListView;
     private ImageView mImgNext, mImgPrevious, mImgPlayPause, mShffle, mReppeat, mControlPlayPause;
@@ -41,17 +45,13 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private MediaPlayer mMediaPlayer;
     private SongDatabase mSongDatabase;
     private int mPosition;
-    private final static String TAG = "TAG";
-    private final static String TAG_SONG = "SONG";
-    private final static String TAG_ARTIST = "ARTIST";
-    private final static String TAG_ALBUM = "ALBUM";
 
     private View mRootView1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        String tag, nameAlbum, nameArtist;
         mRootView1 = inflater.inflate(R.layout.music_play_frag2, container, false);
+        String tag, nameAlbum, nameArtist;
         initView();
         Bundle bundle = getArguments();
         if (bundle != null) {

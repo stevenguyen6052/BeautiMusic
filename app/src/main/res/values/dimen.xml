@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="paddingtop_left">8dp</dimen>
+    <dimen name="paddingtop_left">16dp</dimen>
     <dimen name="tvtime_size">26sp</dimen>
+    <dimen name="width_height_image_item">150dp</dimen>
+    <dimen name="size_icon_music">50dp</dimen>
+
+
 </resources>

@@ -46,7 +46,6 @@ public class SongFragment extends android.support.v4.app.Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mRootView.clearFocus();
     }
 
     @Override
@@ -66,11 +65,6 @@ public class SongFragment extends android.support.v4.app.Fragment {
         onItemClick();
 
         return mRootView;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void initView() {
