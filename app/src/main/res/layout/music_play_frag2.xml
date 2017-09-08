@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_weight="0.24"
+        android:background="@color/colorAccent"
+        android:orientation="horizontal">
+
+        <ImageView
+
+            android:id="@+id/itmImgView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/itmImgButton"
+            android:layout_gravity="center"
+            android:background="@drawable/notnhacchange"
+            android:paddingTop="5dp" />
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:paddingLeft="10dp"-->
+        <!--android:paddingTop="5dp"-->
+        <!--android:weightSum="10">-->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="9"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/itmNameSong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/itmImgView"
+                android:maxLines="1"
+                android:paddingRight="5dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:text="Tên bài hát"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/itmNameSingle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/itmNameSong"
+                android:layout_toRightOf="@+id/itmImgView"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:text="Tên ca sĩ"
+                android:textColor="@color/colorWhite"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="0.14">-->
+
+        <ImageView
+            android:id="@+id/itmControlPlayPause"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="12dp"
+            android:layout_marginRight="12dp"
+             />
+
+        <!--</LinearLayout>-->
+
+        <!--</LinearLayout>-->
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5.39"
+        android:background="@color/colorPink"
+        android:padding="5dp">
+
+        <me.tankery.lib.circularseekbar.CircularSeekBar
+            android:id="@+id/pItmSeekbar"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:backgroundTintMode="screen" />
+
+        <TextView
+            android:id="@+id/pTvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="82dp"
+            android:text="00:00"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/tvtime_size" />
+
+        <ImageView
+            android:id="@+id/pShuffle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+
+
+            android:layout_alignEnd="@+id/pImgPlayPause"
+            android:layout_alignRight="@+id/pImgPlayPause"
+            android:layout_below="@+id/pTvTime"
+            android:layout_marginEnd="34dp"
+            android:layout_marginRight="34dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/ic_shuffle_white_48dp" />
+
+        <ImageView
+            android:id="@+id/pRepeat"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+
+            android:layout_alignEnd="@+id/pImgNext"
+            android:layout_alignRight="@+id/pImgNext"
+            android:layout_alignTop="@+id/pShuffle"
+            android:layout_marginEnd="36dp"
+            android:layout_marginRight="36dp"
+            android:background="@drawable/ic_repeat_white_48dp" />
+        <!--android:layout_toEndOf="@+id/pTvTime"-->
+        <!--android:layout_toRightOf="@+id/pTvTime"-->
+
+        <ImageView
+            android:id="@+id/pImgNext"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="right|center_vertical"
+            android:layout_toEndOf="@+id/pTvTime"
+            android:layout_toRightOf="@+id/pTvTime"
+            android:background="@drawable/ic_skip_next_white_48dp" />
+
+        <ImageView
+            android:id="@+id/pImgPlayPause"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+
+            />
+
+        <ImageButton
+            android:id="@+id/pImgPrevious"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_vertical"
+            android:layout_toLeftOf="@+id/pShuffle"
+            android:layout_toStartOf="@+id/pShuffle"
+            android:background="@drawable/ic_skip_previous_white_48dp" />
+        <!--android:layout_toLeftOf="@+id/pShuffle"-->
+        <!--android:layout_toStartOf="@+id/pShuffle"-->
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:background="@color/colorWhite">
+
+        <ListView
+            android:id="@+id/plistView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+        </ListView>
+    </LinearLayout>
+</LinearLayout>
+

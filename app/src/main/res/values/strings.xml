@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">BeautiMusic</string>
+    <string name="name_album">Name Album</string>
+    <string name="name_artist">Name Artist</string>
+    <string name="name_song">Name Artist</string>
+    <string name="sum_album">Sum Album</string>
+    <string name="sum_song">Sum Song</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
