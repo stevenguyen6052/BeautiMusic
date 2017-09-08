@@ -203,7 +203,6 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         mImgPlayPause.setOnClickListener(this);
         mShffle.setOnClickListener(this);
         mReppeat.setOnClickListener(this);
-
     }
 
     @Override
@@ -276,13 +275,16 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     }
 
     private void processMediaPlayerPause() {
+
         mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse(mListSong.get(mPosition).getmFileSong()));
         mMediaPlayer.pause();
         mTvNameSong.setText(mListSong.get(mPosition).getmNameSong());
         mTvNameSinger.setText(mListSong.get(mPosition).getmNameArtist());
+
     }
 
     private void processPreviousSong() {
+
         mPosition = mPosition - 1;
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
