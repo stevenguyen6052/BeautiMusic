@@ -244,7 +244,6 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                     mImgPlayPause.setImageResource(R.drawable.playing);
                     mControlPlayPause.setImageResource(R.drawable.playing);
                 }
-
                 break;
         }
     }

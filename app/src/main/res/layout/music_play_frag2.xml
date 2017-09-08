@@ -149,7 +149,7 @@
             android:layout_gravity="right|center_vertical"
             android:layout_toEndOf="@+id/pTvTime"
             android:layout_toRightOf="@+id/pTvTime"
-            android:background="@drawable/ic_skip_next_white_48dp" />
+            android:background="@drawable/custom_next" />
 
         <ImageView
             android:id="@+id/pImgPlayPause"
@@ -160,17 +160,15 @@
 
             />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/pImgPrevious"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_alignParentBottom="true"
             android:layout_gravity="center_vertical"
-            android:layout_toLeftOf="@+id/pShuffle"
-            android:layout_toStartOf="@+id/pShuffle"
-            android:background="@drawable/ic_skip_previous_white_48dp" />
-        <!--android:layout_toLeftOf="@+id/pShuffle"-->
-        <!--android:layout_toStartOf="@+id/pShuffle"-->
+            android:background="@drawable/custom_previous"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/pTvTime"
+            android:layout_toStartOf="@+id/pTvTime" />
 
     </RelativeLayout>
 

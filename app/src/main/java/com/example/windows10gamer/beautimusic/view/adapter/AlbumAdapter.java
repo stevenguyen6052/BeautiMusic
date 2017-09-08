@@ -77,7 +77,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         public ViewHolder(View itemView) {
             super(itemView);
             mContext = itemView.getContext();
-            cardView = (CardView) itemView.findViewById(R.id.cardView);
             nameAlbum = (TextView) itemView.findViewById(R.id.alTvNameAlbum);
             nameArtist = (TextView) itemView.findViewById(R.id.alTvNameArtist);
             itemView.setOnClickListener(this);
