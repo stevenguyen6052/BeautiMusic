@@ -43,12 +43,6 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private final static String TAG_ARTIST = "ARTIST";
     private final static String TAG_ALBUM = "ALBUM";
 
-    //service
-    private boolean paused = false, playbackPaused = false;
-    private Intent playIntent;
-    //binding
-    private boolean musicBound = false;
-
     private TextView mTvNameSong, mTvNameSinger, mTvTime;
     private ListView mListView;
     private ImageView mImgBackground, mImgNext, mImgPrevious, mImgPlayPause, mShffle, mReppeat, mControlPlayPause;
@@ -60,7 +54,6 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private MediaPlayer mMediaPlayer;
     private SongDatabase mSongDatabase;
     private int mPosition;
-    private SendListSong mSendListSong;
     private Random mRandom;
     private int mShuffleOn = 1;
 
@@ -323,15 +316,6 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         } else {
             processMediaPlayer();
         }
-
-    }
-
-    private void processMediaPlayerPause() {
-
-        mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse(mListSong.get(mPosition).getmFileSong()));
-        mMediaPlayer.pause();
-        mTvNameSong.setText(mListSong.get(mPosition).getmNameSong());
-        mTvNameSinger.setText(mListSong.get(mPosition).getmNameArtist());
 
     }
 
