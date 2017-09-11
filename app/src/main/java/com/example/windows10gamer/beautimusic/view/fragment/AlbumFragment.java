@@ -1,11 +1,14 @@
 package com.example.windows10gamer.beautimusic.view.fragment;
 
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.windows10gamer.beautimusic.view.adapter.AlbumAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
@@ -21,6 +24,7 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
     private RecyclerView mRecycleView;
     private SongDatabase mSongDatabase;
     private AlbumAdapter mAlbumAdapter;
+    private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

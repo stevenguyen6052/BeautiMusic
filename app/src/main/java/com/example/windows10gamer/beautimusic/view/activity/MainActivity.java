@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private int mPosition;
     private View mLayout;
     public static SlidingUpPanelLayout slidingUpPanelLayout;
+    public static MusicPlay mMusicPlay;
 
 
     @Override
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public void SendPosition(int positon) {
         mLayout.setVisibility(View.VISIBLE);
         mPosition = positon;
-        MusicPlay mMusicPlay = new MusicPlay();
+        mMusicPlay = new MusicPlay();
         Bundle args = new Bundle();
         args.putInt(POSITION, mPosition);
         args.putString(TAG,TAG_SONG);

@@ -38,7 +38,9 @@ public class DetailAlbum extends AppCompatActivity {
     private List<Song> mSongList;
     private String nameAlbum, nameArtist;
     private SongDatabase mSongDatabase;
-    private static SlidingUpPanelLayout slidingUpPanelLayout;
+    private SlidingUpPanelLayout slidingUpPanelLayout;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,8 @@ public class DetailAlbum extends AppCompatActivity {
         initView();
         mSongAdapter = new SongAdapter(DetailAlbum.this, mSongList, R.layout.item_song);
         mListView.setAdapter(mSongAdapter);
+
+//        getSupportFragmentManager().beginTransaction().remove(musicPlay);
         onItemClick();
 
     }
@@ -56,8 +60,9 @@ public class DetailAlbum extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 mLayout.setVisibility(View.VISIBLE);
-                DetailAlbum.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
                 MusicPlay mMusicPlay = new MusicPlay();
                 Bundle args = new Bundle();
                 args.putString(TAG, TAG_ALBUM);
@@ -67,7 +72,6 @@ public class DetailAlbum extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.myFrameLayout1, mMusicPlay).commit();
             }
         });
-
     }
 
     private void initView() {

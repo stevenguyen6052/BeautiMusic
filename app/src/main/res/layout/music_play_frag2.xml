@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="49dp"
-        android:layout_weight="0.24"
+        android:layout_weight="0.44"
         android:background="@color/colorAccent"
         android:orientation="horizontal">
 
@@ -74,6 +74,7 @@
             android:id="@+id/itmControlPlayPause"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_gravity="center"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -86,91 +87,103 @@
         <!--</LinearLayout>-->
     </LinearLayout>
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5.39"
-        android:background="@color/colorPink"
-        android:padding="5dp">
-
-        <me.tankery.lib.circularseekbar.CircularSeekBar
-            android:id="@+id/pItmSeekbar"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:backgroundTintMode="screen" />
-
-        <TextView
-            android:id="@+id/pTvTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="82dp"
-            android:text="00:00"
-            android:textColor="#ffffff"
-            android:textSize="@dimen/tvtime_size" />
-
+        >
         <ImageView
-            android:id="@+id/pShuffle"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-
-
-            android:layout_alignEnd="@+id/pImgPlayPause"
-            android:layout_alignRight="@+id/pImgPlayPause"
-            android:layout_below="@+id/pTvTime"
-            android:layout_marginEnd="34dp"
-            android:layout_marginRight="34dp"
-            android:layout_marginTop="14dp"
-            android:background="@drawable/ic_shuffle_white_48dp" />
-
-        <ImageView
-            android:id="@+id/pRepeat"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-
-            android:layout_alignEnd="@+id/pImgNext"
-            android:layout_alignRight="@+id/pImgNext"
-            android:layout_alignTop="@+id/pShuffle"
-            android:layout_marginEnd="36dp"
-            android:layout_marginRight="36dp"
-            android:background="@drawable/ic_repeat_white_48dp" />
-        <!--android:layout_toEndOf="@+id/pTvTime"-->
-        <!--android:layout_toRightOf="@+id/pTvTime"-->
-
-        <ImageView
-            android:id="@+id/pImgNext"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="right|center_vertical"
-            android:layout_toEndOf="@+id/pTvTime"
-            android:layout_toRightOf="@+id/pTvTime"
-            android:background="@drawable/custom_next" />
-
-        <ImageView
-            android:id="@+id/pImgPlayPause"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/background_playmusic"
             />
+        <RelativeLayout
+            android:background="@color/background_playsong"
+            android:id="@+id/relaytiveMusicPlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5.39"
+            android:padding="5dp">
 
-        <ImageView
-            android:id="@+id/pImgPrevious"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/custom_previous"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/pTvTime"
-            android:layout_toStartOf="@+id/pTvTime" />
+            <me.tankery.lib.circularseekbar.CircularSeekBar
+                android:id="@+id/pItmSeekbar"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:backgroundTintMode="screen" />
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/pTvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="82dp"
+                android:text="00:00"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/tvtime_size" />
+
+            <ImageView
+                android:id="@+id/pShuffle"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignEnd="@+id/pImgPlayPause"
+                android:layout_alignRight="@+id/pImgPlayPause"
+                android:layout_below="@+id/pTvTime"
+                android:layout_marginEnd="34dp"
+                android:layout_marginRight="34dp"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/ic_shuffle_white_48dp" />
+
+            <ImageView
+                android:id="@+id/pRepeat"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+
+                android:layout_alignEnd="@+id/pImgNext"
+                android:layout_alignRight="@+id/pImgNext"
+                android:layout_alignTop="@+id/pShuffle"
+                android:layout_marginEnd="36dp"
+                android:layout_marginRight="36dp"
+                android:background="@drawable/ic_repeat_white_48dp" />
+            <!--android:layout_toEndOf="@+id/pTvTime"-->
+            <!--android:layout_toRightOf="@+id/pTvTime"-->
+
+            <ImageView
+                android:id="@+id/pImgNext"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="right|center_vertical"
+                android:layout_toEndOf="@+id/pTvTime"
+                android:layout_toRightOf="@+id/pTvTime"
+                android:background="@drawable/custom_next" />
+
+            <ImageView
+                android:id="@+id/pImgPlayPause"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+
+                />
+
+            <ImageView
+                android:id="@+id/pImgPrevious"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="center_vertical"
+                android:layout_toLeftOf="@+id/pTvTime"
+                android:layout_toStartOf="@+id/pTvTime"
+                android:background="@drawable/custom_previous" />
+
+        </RelativeLayout>
+
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"

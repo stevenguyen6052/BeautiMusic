@@ -1,11 +1,15 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
@@ -29,12 +33,13 @@ public class DetailArtist extends AppCompatActivity {
     private static final String POSITION = "POSITION";
     private static final String NAME_ARTIST = "Name Artist";
 
+    private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
     private List<Song> mSongList;
     private SongDatabase mSongDatabase;
     private String nameArtist;
     private View mLayout;
     private static SlidingUpPanelLayout slidingUpPanelLayout;
-
+    private ImageView imgView;
     private ListView mListView;
     private SongAdapter mSongAdapter;
 
@@ -44,6 +49,7 @@ public class DetailArtist extends AppCompatActivity {
         setContentView(R.layout.detail_artist);
         getDataIntent();
         initView();
+        setImage();
         mSongAdapter = new SongAdapter(this, mSongList, R.layout.item_song);
         mListView.setAdapter(mSongAdapter);
         onItemListViewClick();
@@ -74,13 +80,28 @@ public class DetailArtist extends AppCompatActivity {
     }
 
     private void initView() {
+        imgView = (ImageView) findViewById(R.id.detailArtistImg);
         mLayout = findViewById(R.id.myFrameLayout2);
         slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout_artist);
         mListView = (ListView) findViewById(R.id.detailArtistRecycle);
         mSongDatabase = new SongDatabase(getApplication());
+
         if (mSongList == null) {
             mSongList = new ArrayList<>();
             mSongList = mSongDatabase.getAlLSongFromArtist(nameArtist);
         }
+
     }
+
+    private void setImage() {
+        mmr.setDataSource(mSongList.get(0).getmFileSong());
+        byte[] dataImageDisc = mmr.getEmbeddedPicture();
+        if (dataImageDisc != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
+            imgView.setImageBitmap(bitmap);
+        } else {
+            imgView.setImageResource(R.drawable.detaialbum);
+        }
+    }
+
 }

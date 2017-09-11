@@ -144,6 +144,8 @@ public class SongFragment extends android.support.v4.app.Fragment {
                 mSong.setmAlbumId(mAlbumId);
                 mSong.setmArtistId(mArtistId);
                 mSong.setmAlbumKey(mAlbumKey);
+
+
                 mSongList.add(mSong);
             }
             c.close();
@@ -162,5 +164,6 @@ public class SongFragment extends android.support.v4.app.Fragment {
             art = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.length, bfo);
         return art;
     }
+
 }
 

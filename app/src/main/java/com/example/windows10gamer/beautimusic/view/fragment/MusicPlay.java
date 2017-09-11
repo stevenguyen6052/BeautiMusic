@@ -1,9 +1,16 @@
 package com.example.windows10gamer.beautimusic.view.fragment;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,17 +18,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.MediaController;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.SendDataPosition;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
@@ -35,18 +43,30 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private final static String TAG_ARTIST = "ARTIST";
     private final static String TAG_ALBUM = "ALBUM";
 
+    //service
+    private boolean paused = false, playbackPaused = false;
+    private Intent playIntent;
+    //binding
+    private boolean musicBound = false;
+
     private TextView mTvNameSong, mTvNameSinger, mTvTime;
     private ListView mListView;
-    private ImageView mImgNext, mImgPrevious, mImgPlayPause, mShffle, mReppeat, mControlPlayPause;
+    private ImageView mImgBackground, mImgNext, mImgPrevious, mImgPlayPause, mShffle, mReppeat, mControlPlayPause;
     private CircularSeekBar mSeekbar1;
+    private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
     private List<Song> mListSong;
     private SongAdapter mSongAdapter;
     private MediaPlayer mMediaPlayer;
     private SongDatabase mSongDatabase;
     private int mPosition;
+    private SendListSong mSendListSong;
+    private Random mRandom;
+    private int mShuffleOn = 1;
+
 
     private View mRootView1;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,6 +77,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         if (bundle != null) {
             tag = getArguments().getString(TAG);
             if (tag.equals(TAG_ALBUM)) {
+
                 mPosition = getArguments().getInt(POSITION);
                 nameAlbum = getArguments().getString(NAME_ALBUM);
                 mSongDatabase = new SongDatabase(getContext());
@@ -66,7 +87,9 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 processMediaPlayer();
                 updateTimeSong();
                 seekBarChange();
+
             } else if (tag.equals(TAG_SONG)) {
+
                 mSongDatabase = new SongDatabase(getContext());
                 mListSong = mSongDatabase.getAllListSong();
                 mSongAdapter = new SongAdapter(getContext(), mListSong, R.layout.item_song);
@@ -75,7 +98,9 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 processMediaPlayer();
                 updateTimeSong();
                 seekBarChange();
+
             } else if (tag.equals(TAG_ARTIST)) {
+
                 mPosition = getArguments().getInt(POSITION);
                 nameArtist = getArguments().getString(NAME_ARTIST);
                 mSongDatabase = new SongDatabase(getContext());
@@ -85,6 +110,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 processMediaPlayer();
                 updateTimeSong();
                 seekBarChange();
+
             }
 
         }
@@ -164,7 +190,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                     public void onCompletion(MediaPlayer mp) {
                         processNextSong();
                         updateTimeSong();
-                        processMediaPlayer();
+
 
                     }
                 });
@@ -182,9 +208,23 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         mSeekbar1.setMax(mListSong.get(mPosition).getmDuaration());
         mImgPlayPause.setImageResource(R.drawable.playing);
         mControlPlayPause.setImageResource(R.drawable.playing);
+        setImageSong();
+    }
+
+    private void setImageSong() {
+        mmr.setDataSource(mListSong.get(mPosition).getmFileSong());
+        byte[] dataImageDisc = mmr.getEmbeddedPicture();
+        if (dataImageDisc != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
+            mImgBackground.setImageBitmap(bitmap);
+        } else {
+            mImgBackground.setImageResource(R.drawable.detaialbum);
+
+        }
     }
 
     private void initView() {
+        mRandom = new Random();
         mListSong = new ArrayList<>();
         mSeekbar1 = (CircularSeekBar) mRootView1.findViewById(R.id.pItmSeekbar);
         mListView = (ListView) mRootView1.findViewById(R.id.plistView);
@@ -197,6 +237,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         mShffle = (ImageView) mRootView1.findViewById(R.id.pShuffle);
         mReppeat = (ImageView) mRootView1.findViewById(R.id.pRepeat);
         mControlPlayPause = (ImageView) mRootView1.findViewById(R.id.itmControlPlayPause);
+        mImgBackground = (ImageView) mRootView1.findViewById(R.id.background_playmusic);
         mControlPlayPause.setOnClickListener(this);
         mImgNext.setOnClickListener(this);
         mImgPrevious.setOnClickListener(this);
@@ -228,6 +269,18 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.pShuffle:
+                if (mShuffleOn == 1) {
+                    int newSong = mPosition;
+                    while (newSong == mPosition) {
+                        newSong = mRandom.nextInt(mListSong.size());
+                    }
+                    mPosition = newSong;
+                    mShffle.setImageResource(R.drawable.ic_shuffle_black_48dp);
+                    mShuffleOn = 2;
+                } else if (mShuffleOn == 2) {
+                    mShffle.setImageResource(R.drawable.ic_shuffle_white_48dp);
+                    mShuffleOn = 1;
+                }
 
                 break;
             case R.id.pRepeat:
@@ -253,25 +306,24 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         mMediaPlayer.stop();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMediaPlayer.stop();
+
+    }
+
     private void processNextSong() {
         mPosition = mPosition + 1;
-        if (mMediaPlayer.isPlaying()) {
-            mMediaPlayer.stop();
-            mMediaPlayer.release();
-            if (mPosition >= mListSong.size()) {
-                mPosition = 0;
-                processMediaPlayer();
-            } else {
-                processMediaPlayer();
-            }
+        mMediaPlayer.stop();
+        mMediaPlayer.release();
+        if (mPosition >= mListSong.size()) {
+            mPosition = 0;
+            processMediaPlayer();
         } else {
-            if (mPosition >= mListSong.size()) {
-                mPosition = 0;
-                processMediaPlayerPause();
-            } else {
-                processMediaPlayerPause();
-            }
+            processMediaPlayer();
         }
+
     }
 
     private void processMediaPlayerPause() {
@@ -286,22 +338,17 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private void processPreviousSong() {
 
         mPosition = mPosition - 1;
-        if (mMediaPlayer.isPlaying()) {
-            mMediaPlayer.stop();
-            mMediaPlayer.release();
-            if (mPosition < 0) {
-                mPosition = mListSong.size() - 1;
-                processMediaPlayer();
-            } else {
-                processMediaPlayer();
-            }
+        mMediaPlayer.stop();
+        mMediaPlayer.release();
+        if (mPosition < 0) {
+            mPosition = mListSong.size() - 1;
+            processMediaPlayer();
         } else {
-            if (mPosition < 0) {
-                mPosition = mListSong.size() - 1;
-                processMediaPlayerPause();
-            } else {
-                processMediaPlayerPause();
-            }
+            processMediaPlayer();
         }
+    }
+
+    public interface SendListSong {
+        void SendList(List<Song> songList);
     }
 }

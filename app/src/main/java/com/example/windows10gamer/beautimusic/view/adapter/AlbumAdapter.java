@@ -2,19 +2,27 @@ package com.example.windows10gamer.beautimusic.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.windows10gamer.beautimusic.database.SongDatabase;
+import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.ItemClickListener;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbum;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +34,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     private static final String NAME_ARTIST = "Name Artist";
     private Context mContext;
     private List<Album> albumList;
+    private List<Song> songList;
+    private SongDatabase mSongDatabase;
+    private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
     public AlbumAdapter(Context mContext, List<Album> albumList) {
         this.mContext = mContext;
@@ -35,6 +46,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
+        mSongDatabase = new SongDatabase(mContext);
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         itemView = inflater.inflate(R.layout.item_album, parent, false);
         return new ViewHolder(itemView);
@@ -45,6 +57,20 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         Album mAlbum = albumList.get(position);
         holder.nameAlbum.setText(mAlbum.getNameAlbum());
         holder.nameArtist.setText(mAlbum.getNameArtist());
+        if (songList==null){
+            songList = new ArrayList<>();
+            songList = mSongDatabase.getAllListSong();
+        }
+        mmr.setDataSource(songList.get(position).getmFileSong());
+        byte[] dataImageDisc = mmr.getEmbeddedPicture();
+        if (dataImageDisc != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
+            holder.mImageView.setImageBitmap(bitmap);
+        } else {
+            holder.mImageView.setImageResource(R.drawable.detaialbum);
+        }
+
+
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
@@ -72,13 +98,14 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private ItemClickListener itemClickListener;
         TextView nameAlbum, nameArtist;
-        CardView cardView;
+        ImageView mImageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mContext = itemView.getContext();
             nameAlbum = (TextView) itemView.findViewById(R.id.alTvNameAlbum);
             nameArtist = (TextView) itemView.findViewById(R.id.alTvNameArtist);
+            mImageView = (ImageView) itemView.findViewById(R.id.alImgViewAlbum);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }
