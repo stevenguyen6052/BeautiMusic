@@ -22,16 +22,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHolder> implements ItemTouchHelperAdapter {
-    private  List<Song> mSongList = new ArrayList<>();
+    private List<Song> mSongList = new ArrayList<>();
     private Context mContext;
 
-    private  OnStartDragListener mDragStartListener;
+    private OnStartDragListener mDragStartListener;
 
-    public QueueAdapter(Context context, OnStartDragListener dragStartListener,List<Song> songList) {
+    public QueueAdapter(Context context, OnStartDragListener dragStartListener, List<Song> songList) {
         mDragStartListener = dragStartListener;
         mSongList = songList;
         mContext = context;
     }
+
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -57,14 +58,18 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
-                if (isLongClick){
+                if (isLongClick) {
 
-                }else {
+                } else {
                     //Toast.makeText(mContext,position +mSongList.get(position).getmNameSong(),Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+    public List<Song> getSongList(){
+        return mSongList;
+    }
+
 
 
     @Override
@@ -90,11 +95,13 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
         void onStartDrag(RecyclerView.ViewHolder viewHolder);
 
     }
+
     public static class ItemViewHolder extends RecyclerView.ViewHolder implements
-            ItemTouchHelperViewHolder,View.OnClickListener,View.OnLongClickListener{
-        public TextView mTvNameSong,mTvNameArtist;
+            ItemTouchHelperViewHolder, View.OnClickListener, View.OnLongClickListener {
+        public TextView mTvNameSong, mTvNameArtist;
         public ImageView handleView;
         private ItemClickListener itemClickListener;
+
         public ItemViewHolder(View itemView) {
             super(itemView);
             mTvNameSong = (TextView) itemView.findViewById(R.id.itm_que_nameSong);
@@ -114,6 +121,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
         public void onItemClear() {
             itemView.setBackgroundColor(0);
         }
+
         public void setItemClickListener(ItemClickListener itemClickListener) {
             this.itemClickListener = itemClickListener;
         }
@@ -128,5 +136,6 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
             itemClickListener.onClick(v, getAdapterPosition(), false);
             return true;
         }
+
     }
 }

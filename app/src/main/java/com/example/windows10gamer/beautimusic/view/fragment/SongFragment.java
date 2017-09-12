@@ -5,11 +5,18 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
@@ -30,11 +37,13 @@ public class SongFragment extends android.support.v4.app.Fragment {
     private SongAdapter mSongAdapter;
     private ListView mListView;
     private SendDataPosition mSendDataPosition;
+    private Context mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -60,10 +69,57 @@ public class SongFragment extends android.support.v4.app.Fragment {
         return mRootView;
     }
 
+
+    private void setListForAdapter(List<Song> mSongList) {
+        mSongAdapter = new SongAdapter(getActivity(), mSongList, R.layout.item_song);
+        mListView.setAdapter(mSongAdapter);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_item, menu);
+        MenuItem itemSearch = menu.findItem(R.id.itemSearch);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
+        MenuItemCompat.setShowAsAction(itemSearch, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setActionView(itemSearch, searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mSongList = mSongDatabase.getSongFromNameSong(newText);
+                setListForAdapter(mSongList);
+                mSongAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int idItem = item.getItemId();
+        switch (idItem) {
+            case R.id.itemSearch:
+
+                break;
+            case R.id.itemArrange:
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
     private void initView() {
         mSongDatabase = new SongDatabase(getActivity());
         mSendDataPosition = (SendDataPosition) getActivity();
-        mSongAdapter = new SongAdapter(getActivity(), mSongList1, R.layout.item_song);
+
         mListView = (ListView) mRootView.findViewById(R.id.mListViewSong);
         if (mSongList == null && mSongList1 == null) {
             mSongList = new ArrayList<>();
@@ -87,8 +143,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
             }
             mSongList1 = mSongDatabase.getAllListSong();
         }
-        mSongAdapter = new SongAdapter(getActivity(), mSongList1, R.layout.item_song);
-        mListView.setAdapter(mSongAdapter);
+        setListForAdapter(mSongList1);
     }
 
     private void onItemClick() {
@@ -143,6 +198,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
         }
         return mSongList;
     }
+
 
 }
 

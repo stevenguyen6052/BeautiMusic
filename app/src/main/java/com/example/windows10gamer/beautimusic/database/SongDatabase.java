@@ -84,6 +84,31 @@ public class SongDatabase extends SQLiteOpenHelper {
         }
 
     }
+    public List<Song> getSongFromNameSong(String params){
+        List<Song> mListSong = new ArrayList<>();
+        String SELECT_SONGS = "SELECT * FROM " + TBL_SONG + " WHERE " + CL_NAME_ALBUM + " LIKE  '%" + params + "%' ";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor mCursor = db.rawQuery(SELECT_SONGS, null);
+        if (mCursor.moveToFirst()) {
+            do {
+                Song mSong = new Song();
+                mSong.setmId(mCursor.getString(0));
+                mSong.setmNameSong(mCursor.getString(1));
+                mSong.setmNameAlbum(mCursor.getString(2));
+                mSong.setmNameArtist(mCursor.getString(3));
+                mSong.setmFileSong(mCursor.getString(4));
+                mSong.setmDuaration(mCursor.getInt(5));
+                mSong.setmAlbumId(mCursor.getString(6));
+                mSong.setmArtistId(mCursor.getString(7));
+                mSong.setmAlbumKey(mCursor.getString(8));
+                mSong.setmImage(mCursor.getInt(9));
+                mListSong.add(mSong);
+            } while (mCursor.moveToNext());
+        }
+        mCursor.close();
+        db.close();
+        return mListSong;
+    }
 
     public List<Song> getAllSongFromAlbum(String params) {
         List<Song> mListSong = new ArrayList<>();

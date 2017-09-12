@@ -32,6 +32,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
 
     private ItemTouchHelper mItemTouchHelper;
     private List<Song> mSongList;
+    private List<Song> sendListSong;
     private SongDatabase mSongDatabase;
 
     @Override
@@ -43,6 +44,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         setUpToolbar();
 
     }
+
 
     private void setUpToolbar() {
         if (getSupportActionBar() != null) {
@@ -61,7 +63,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     private void dataResult() {
         Intent intent = new Intent();
         Bundle sendData = new Bundle();
-        sendData.putSerializable(LIST, (Serializable) mSongList);
+        sendData.putSerializable(LIST, (Serializable) sendListSong);
         intent.putExtras(sendData);
         setResult(Activity.RESULT_OK, intent);
         finish();
@@ -77,6 +79,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
+        sendListSong = adapter.getSongList();
 
     }
 

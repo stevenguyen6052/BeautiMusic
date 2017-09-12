@@ -17,7 +17,7 @@ import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
 import com.example.windows10gamer.beautimusic.view.fragment.MusicPlay;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SendDataPosition {
+public class MainActivity extends AppCompatActivity implements SendDataPosition {
     private static final String POSITION = "POSITION";
     private static final String TAG = "TAG";
     private static final String TAG_SONG = "SONG";
@@ -52,43 +52,43 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         tabLayout.setupWithViewPager(mViewPager);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_item, menu);
-        MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-        SearchView searchView = (SearchView) itemSearch.getActionView();
-        searchView.setOnQueryTextListener(MainActivity.this);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int idItem = item.getItemId();
-        switch (idItem) {
-            case R.id.itemSearch:
-
-                break;
-            case R.id.itemArrange:
-
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        if (TextUtils.isEmpty(newText)) {
-
-        } else {
-
-        }
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_item, menu);
+//        MenuItem itemSearch = menu.findItem(R.id.itemSearch);
+//        SearchView searchView = (SearchView) itemSearch.getActionView();
+//        searchView.setOnQueryTextListener(MainActivity.this);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int idItem = item.getItemId();
+//        switch (idItem) {
+//            case R.id.itemSearch:
+//
+//                break;
+//            case R.id.itemArrange:
+//
+//                break;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    @Override
+//    public boolean onQueryTextSubmit(String query) {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean onQueryTextChange(String newText) {
+//        if (TextUtils.isEmpty(newText)) {
+//
+//        } else {
+//
+//        }
+//        return true;
+//    }
 
     @Override
     public void SendPosition(int positon) {
