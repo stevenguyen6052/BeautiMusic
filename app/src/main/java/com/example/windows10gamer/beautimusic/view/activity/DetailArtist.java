@@ -60,6 +60,9 @@ public class DetailArtist extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (MusicPlay.mMediaPlayer.isPlaying()) {
+                    MusicPlay.mMediaPlayer.pause();
+                }
                 mLayout.setVisibility(View.VISIBLE);
                 DetailArtist.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
                 MusicPlay mMusicPlay = new MusicPlay();

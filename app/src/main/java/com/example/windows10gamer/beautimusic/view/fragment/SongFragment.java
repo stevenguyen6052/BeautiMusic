@@ -2,20 +2,14 @@ package com.example.windows10gamer.beautimusic.view.fragment;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
@@ -63,7 +57,6 @@ public class SongFragment extends android.support.v4.app.Fragment {
         mRootView = inflater.inflate(R.layout.songs_fragment, container, false);
         initView();
         onItemClick();
-
         return mRootView;
     }
 
@@ -92,7 +85,6 @@ public class SongFragment extends android.support.v4.app.Fragment {
 
                 mSongDatabase.addNewSong(mSong);
             }
-
             mSongList1 = mSongDatabase.getAllListSong();
         }
         mSongAdapter = new SongAdapter(getActivity(), mSongList1, R.layout.item_song);
@@ -145,24 +137,11 @@ public class SongFragment extends android.support.v4.app.Fragment {
                 mSong.setmArtistId(mArtistId);
                 mSong.setmAlbumKey(mAlbumKey);
 
-
                 mSongList.add(mSong);
             }
             c.close();
         }
         return mSongList;
-    }
-
-    private Bitmap getImage(String path) {
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        byte[] rawArt;
-        Bitmap art = null;
-        BitmapFactory.Options bfo = new BitmapFactory.Options();
-        mmr.setDataSource(path);
-        rawArt = mmr.getEmbeddedPicture();
-        if (null != rawArt)
-            art = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.length, bfo);
-        return art;
     }
 
 }

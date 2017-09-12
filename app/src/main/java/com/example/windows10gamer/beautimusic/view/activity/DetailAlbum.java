@@ -50,8 +50,6 @@ public class DetailAlbum extends AppCompatActivity {
         initView();
         mSongAdapter = new SongAdapter(DetailAlbum.this, mSongList, R.layout.item_song);
         mListView.setAdapter(mSongAdapter);
-
-//        getSupportFragmentManager().beginTransaction().remove(musicPlay);
         onItemClick();
 
     }
@@ -60,8 +58,9 @@ public class DetailAlbum extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                mLayout.setVisibility(View.VISIBLE);
+                if(MusicPlay.mMediaPlayer.isPlaying()){
+                    MusicPlay.mMediaPlayer.pause();
+                }
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
                 MusicPlay mMusicPlay = new MusicPlay();
                 Bundle args = new Bundle();

@@ -1,8 +1,10 @@
 package com.example.windows10gamer.beautimusic.view.fragment;
 
-import android.content.ComponentName;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
@@ -10,15 +12,15 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.MediaController;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
@@ -51,17 +53,20 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
 
     private List<Song> mListSong;
     private SongAdapter mSongAdapter;
-    private MediaPlayer mMediaPlayer;
+    public static MediaPlayer mMediaPlayer;
     private SongDatabase mSongDatabase;
     private int mPosition;
     private Random mRandom;
     private int mShuffleOn = 1;
-
-
     private View mRootView1;
 
+    //notification
+    private NotificationCompat.Builder builder;
+    private NotificationManager notificationManager;
+    private int notification_id;
+    private RemoteViews remoteViews;
+    private Context mContext;
 
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView1 = inflater.inflate(R.layout.music_play_frag2, container, false);
         String tag, nameAlbum, nameArtist;
@@ -80,6 +85,8 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 processMediaPlayer();
                 updateTimeSong();
                 seekBarChange();
+                //createNotification();
+                //NotificationGenerator.customBigNotification(getActivity());
 
             } else if (tag.equals(TAG_SONG)) {
 
@@ -91,6 +98,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 processMediaPlayer();
                 updateTimeSong();
                 seekBarChange();
+                createNotification();
 
             } else if (tag.equals(TAG_ARTIST)) {
 
@@ -103,12 +111,31 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 processMediaPlayer();
                 updateTimeSong();
                 seekBarChange();
-
             }
 
         }
         listViewOnItemClick();
         return mRootView1;
+    }
+
+    private void createNotification() {
+        notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        RemoteViews contentView = new RemoteViews(mRootView1.getContext().getPackageName(), R.layout.custom_notification);
+        contentView.setTextViewText(R.id.notifiNameSong, mListSong.get(mPosition).getmNameSong());
+        contentView.setTextViewText(R.id.notifiNameArtist, mListSong.get(mPosition).getmNameArtist());
+        contentView.setImageViewResource(R.id.notifiPrevious, R.drawable.custom_previous);
+        contentView.setImageViewResource(R.id.notifiPlay, R.drawable.playing);
+        contentView.setImageViewResource(R.id.notifiNext, R.drawable.custom_next);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContent(contentView);
+
+        Notification notification = mBuilder.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.defaults |= Notification.DEFAULT_SOUND;
+        notification.defaults |= Notification.DEFAULT_VIBRATE;
+        notificationManager.notify(1, notification);
     }
 
     private void listViewOnItemClick() {
@@ -184,7 +211,6 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                         processNextSong();
                         updateTimeSong();
 
-
                     }
                 });
 
@@ -212,7 +238,6 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
             mImgBackground.setImageBitmap(bitmap);
         } else {
             mImgBackground.setImageResource(R.drawable.detaialbum);
-
         }
     }
 
@@ -293,19 +318,6 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mMediaPlayer.stop();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mMediaPlayer.stop();
-
-    }
-
     private void processNextSong() {
         mPosition = mPosition + 1;
         mMediaPlayer.stop();
@@ -332,7 +344,4 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         }
     }
 
-    public interface SendListSong {
-        void SendList(List<Song> songList);
-    }
 }

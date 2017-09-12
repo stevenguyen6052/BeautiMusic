@@ -9,14 +9,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
     </style>
-    <style name="Activitythem" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="colorPrimary">@color/colorAccent</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-    </style>
+    
 
 
     <style name="ItemSong_ListSong">

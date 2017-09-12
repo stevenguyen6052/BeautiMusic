@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="5dp"
+    >
 
     <ImageView
         android:id="@+id/itm_que_iconsong"
@@ -10,11 +12,13 @@
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:background="@drawable/notnhacchange"
+        />
 
     <LinearLayout
         android:paddingTop="5dp"
-        android:paddingLeft="5dp"
+        android:paddingLeft="1dp"
         android:id="@+id/linear_layout_customer_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,13 +31,17 @@
             android:id="@+id/itm_que_nameSong"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ABC"
+            android:maxLines="1"
+            android:textSize="20sp"
             />
         <TextView
             android:text="ABC"
             android:id="@+id/itm_que_nameArtist"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textSize="16sp"
+            />
     </LinearLayout>
 
     <ImageView
