@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mMusicPlay = new MusicPlay();
         Bundle args = new Bundle();
         args.putInt(POSITION, mPosition);
-        args.putString(TAG,TAG_SONG);
+        args.putString(TAG, TAG_SONG);
         mMusicPlay.setArguments(args);
         getSupportFragmentManager().beginTransaction().replace(R.id.myFrameLayout, mMusicPlay).commit();
     }

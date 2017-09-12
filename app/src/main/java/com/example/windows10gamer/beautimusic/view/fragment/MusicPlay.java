@@ -25,6 +25,7 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.view.activity.PlayingQueue;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
@@ -36,6 +37,8 @@ import java.util.Random;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class MusicPlay extends Fragment implements View.OnClickListener {
     private static final String POSITION = "POSITION";
@@ -45,10 +48,12 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private final static String TAG_SONG = "SONG";
     private final static String TAG_ARTIST = "ARTIST";
     private final static String TAG_ALBUM = "ALBUM";
+    private final static String LIST = "List";
+    private final static int REQUEST_LIST = 1;
 
     private TextView mTvNameSong, mTvNameSinger, mTvTime;
     private ListView mListView;
-    private ImageView mImgBackground, mImgNext, mImgPrevious, mImgPlayPause, mShffle, mReppeat, mControlPlayPause;
+    private ImageView mImgBackground, mImgNext, mImgPrevious, mImgPlayPause, mShffle, mReppeat, mControlPlayPause, mImgQueue;
     private CircularSeekBar mSeekbar1;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
@@ -68,11 +73,18 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private int notification_id;
     private RemoteViews remoteViews;
     private Context mContext;
+    private String tag, nameAlbum, nameArtist;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView1 = inflater.inflate(R.layout.music_play_frag2, container, false);
-        String tag, nameAlbum, nameArtist;
         initView();
+        events();
+        getData();
+        listViewOnItemClick();
+        return mRootView1;
+    }
+
+    private void getData() {
         Bundle bundle = getArguments();
         if (bundle != null) {
             tag = getArguments().getString(TAG);
@@ -115,8 +127,6 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
             }
 
         }
-        listViewOnItemClick();
-        return mRootView1;
     }
 
     private void createNotification() {
@@ -149,7 +159,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                     mMediaPlayer.release();
                     processMediaPlayerInListView(position);
                     if (mPosition > position) {
-                        mPosition =  position;
+                        mPosition = position;
                     } else if (mPosition < position) {
                         mPosition = position + mPosition;
                     }
@@ -257,12 +267,17 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         mReppeat = (ImageView) mRootView1.findViewById(R.id.pRepeat);
         mControlPlayPause = (ImageView) mRootView1.findViewById(R.id.itmControlPlayPause);
         mImgBackground = (ImageView) mRootView1.findViewById(R.id.background_playmusic);
+        mImgQueue = (ImageView) mRootView1.findViewById(R.id.pImgQueue);
+    }
+
+    private void events() {
         mControlPlayPause.setOnClickListener(this);
         mImgNext.setOnClickListener(this);
         mImgPrevious.setOnClickListener(this);
         mImgPlayPause.setOnClickListener(this);
         mShffle.setOnClickListener(this);
         mReppeat.setOnClickListener(this);
+        mImgQueue.setOnClickListener(this);
     }
 
     @Override
@@ -299,10 +314,10 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
 
                 break;
             case R.id.pRepeat:
-                if (mRepeat == false){
+                if (mRepeat == false) {
                     mRepeat = true;
                     mReppeat.setImageResource(R.drawable.ic_repeat_black_48dp);
-                }else {
+                } else {
                     mRepeat = false;
                     mReppeat.setImageResource(R.drawable.ic_repeat_white_48dp);
                 }
@@ -319,15 +334,45 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                     mControlPlayPause.setImageResource(R.drawable.playing);
                 }
                 break;
+            case R.id.pImgQueue:
+                Intent intent = new Intent(getActivity(), PlayingQueue.class);
+                Bundle bundle = new Bundle();
+                if (tag.equals(TAG_SONG)) {
+
+                    bundle.putString(TAG, TAG_SONG);
+                } else if (tag.equals(TAG_ARTIST)) {
+
+                    bundle.putString(TAG, TAG_ARTIST);
+                    bundle.putString(NAME_ARTIST, nameArtist);
+                } else if (tag.equals(TAG_ALBUM)) {
+
+                    bundle.putString(TAG, TAG_ALBUM);
+                    bundle.putString(NAME_ALBUM, nameAlbum);
+                }
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQUEST_LIST);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_LIST) {
+            if (resultCode == RESULT_OK) {
+                Bundle getData = data.getExtras();
+                mListSong = (List<Song>) getData.getSerializable(LIST);
+                mSongAdapter.notifyDataSetChanged();
+            }
         }
     }
 
     private void processNextSong() {
-        if (mRepeat==true){
+        if (mRepeat == true) {
             mMediaPlayer.stop();
             mMediaPlayer.release();
             processMediaPlayer();
-        }if (mRepeat==false){
+        }
+        if (mRepeat == false) {
             if (mShuffleOn == true) {
                 mMediaPlayer.stop();
                 mMediaPlayer.release();
@@ -353,11 +398,11 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     }
 
     private void processPreviousSong() {
-        if (mRepeat==true){
+        if (mRepeat == true) {
             mMediaPlayer.stop();
             mMediaPlayer.release();
             processMediaPlayer();
-        }else {
+        } else {
             if (mShuffleOn == true) {
                 mMediaPlayer.stop();
                 mMediaPlayer.release();
@@ -388,4 +433,5 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         super.onDestroy();
         mMediaPlayer.stop();
     }
+
 }

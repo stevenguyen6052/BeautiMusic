@@ -10,10 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.view.ItemClickListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +54,18 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
                 return false;
             }
         });
+        holder.setItemClickListener(new ItemClickListener() {
+            @Override
+            public void onClick(View view, int position, boolean isLongClick) {
+                if (isLongClick){
+
+                }else {
+                    //Toast.makeText(mContext,position +mSongList.get(position).getmNameSong(),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
+
 
     @Override
     public int getItemCount() {
@@ -78,14 +91,17 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
 
     }
     public static class ItemViewHolder extends RecyclerView.ViewHolder implements
-            ItemTouchHelperViewHolder{
+            ItemTouchHelperViewHolder,View.OnClickListener,View.OnLongClickListener{
         public TextView mTvNameSong,mTvNameArtist;
         public ImageView handleView;
+        private ItemClickListener itemClickListener;
         public ItemViewHolder(View itemView) {
             super(itemView);
             mTvNameSong = (TextView) itemView.findViewById(R.id.itm_que_nameSong);
             mTvNameArtist = (TextView) itemView.findViewById(R.id.itm_que_nameArtist);
-            handleView = (ImageView) itemView.findViewById(R.id.itm_que_iconsong);
+            handleView = (ImageView) itemView.findViewById(R.id.handle);
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
 
         }
 
@@ -97,6 +113,20 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
         @Override
         public void onItemClear() {
             itemView.setBackgroundColor(0);
+        }
+        public void setItemClickListener(ItemClickListener itemClickListener) {
+            this.itemClickListener = itemClickListener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            itemClickListener.onClick(v, getAdapterPosition(), false);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            itemClickListener.onClick(v, getAdapterPosition(), false);
+            return true;
         }
     }
 }
