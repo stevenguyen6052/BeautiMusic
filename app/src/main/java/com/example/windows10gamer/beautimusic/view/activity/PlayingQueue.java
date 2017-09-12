@@ -30,7 +30,6 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         setContentView(R.layout.activity_playing_queue);
 
         QueueAdapter adapter = new QueueAdapter(this, this, mSongList);
-
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycleQueue);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
@@ -39,7 +38,6 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
-
     }
 
     @Override

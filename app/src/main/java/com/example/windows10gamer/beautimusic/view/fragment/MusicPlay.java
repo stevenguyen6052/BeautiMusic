@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,8 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private SongDatabase mSongDatabase;
     private int mPosition;
     private Random mRandom;
-    private int mShuffleOn = 1;
+    private boolean mShuffleOn = false;
+    private boolean mRepeat = false;
     private View mRootView1;
 
     //notification
@@ -85,8 +87,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 processMediaPlayer();
                 updateTimeSong();
                 seekBarChange();
-                //createNotification();
-                //NotificationGenerator.customBigNotification(getActivity());
+
 
             } else if (tag.equals(TAG_SONG)) {
 
@@ -148,7 +149,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                     mMediaPlayer.release();
                     processMediaPlayerInListView(position);
                     if (mPosition > position) {
-                        mPosition = mPosition - position;
+                        mPosition =  position;
                     } else if (mPosition < position) {
                         mPosition = position + mPosition;
                     }
@@ -287,21 +288,24 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.pShuffle:
-                if (mShuffleOn == 1) {
-                    int newSong = mPosition;
-                    while (newSong == mPosition) {
-                        newSong = mRandom.nextInt(mListSong.size());
-                    }
-                    mPosition = newSong;
+                if (mShuffleOn == false) {
+                    mShuffleOn = true;
                     mShffle.setImageResource(R.drawable.ic_shuffle_black_48dp);
-                    mShuffleOn = 2;
-                } else if (mShuffleOn == 2) {
+                } else if (mShuffleOn == true) {
                     mShffle.setImageResource(R.drawable.ic_shuffle_white_48dp);
-                    mShuffleOn = 1;
+                    mShuffleOn = false;
                 }
+
 
                 break;
             case R.id.pRepeat:
+                if (mRepeat == false){
+                    mRepeat = true;
+                    mReppeat.setImageResource(R.drawable.ic_repeat_black_48dp);
+                }else {
+                    mRepeat = false;
+                    mReppeat.setImageResource(R.drawable.ic_repeat_white_48dp);
+                }
 
                 break;
             case R.id.itmControlPlayPause:
@@ -319,29 +323,69 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     }
 
     private void processNextSong() {
-        mPosition = mPosition + 1;
-        mMediaPlayer.stop();
-        mMediaPlayer.release();
-        if (mPosition >= mListSong.size()) {
-            mPosition = 0;
+        if (mRepeat==true){
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
             processMediaPlayer();
-        } else {
-            processMediaPlayer();
+        }if (mRepeat==false){
+            if (mShuffleOn == true) {
+                mMediaPlayer.stop();
+                mMediaPlayer.release();
+                int newSong = mPosition;
+                while (newSong == mPosition) {
+                    newSong = mRandom.nextInt(mListSong.size());
+                }
+                mPosition = newSong;
+                processMediaPlayer();
+            } else if (mShuffleOn == false) {
+                mPosition = mPosition + 1;
+                mMediaPlayer.stop();
+                mMediaPlayer.release();
+                if (mPosition >= mListSong.size()) {
+                    mPosition = 0;
+                    processMediaPlayer();
+                } else {
+                    processMediaPlayer();
+                }
+            }
         }
 
     }
 
     private void processPreviousSong() {
-
-        mPosition = mPosition - 1;
-        mMediaPlayer.stop();
-        mMediaPlayer.release();
-        if (mPosition < 0) {
-            mPosition = mListSong.size() - 1;
+        if (mRepeat==true){
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
             processMediaPlayer();
-        } else {
-            processMediaPlayer();
+        }else {
+            if (mShuffleOn == true) {
+                mMediaPlayer.stop();
+                mMediaPlayer.release();
+                int newSong = mPosition;
+                while (newSong == mPosition) {
+                    newSong = mRandom.nextInt(mListSong.size());
+                }
+                mPosition = newSong;
+                processMediaPlayer();
+            } else if (mShuffleOn == false) {
+                mPosition = mPosition - 1;
+                mMediaPlayer.stop();
+                mMediaPlayer.release();
+                if (mPosition < 0) {
+                    mPosition = mListSong.size() - 1;
+                    processMediaPlayer();
+                } else {
+                    processMediaPlayer();
+                }
+            }
         }
+
+
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMediaPlayer.stop();
+    }
 }

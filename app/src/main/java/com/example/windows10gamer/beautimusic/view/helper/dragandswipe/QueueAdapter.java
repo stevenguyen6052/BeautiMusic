@@ -42,7 +42,6 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
         holder.mTvNameSong.setText(mSongList.get(position).getmNameSong());
         holder.mTvNameArtist.setText(mSongList.get(position).getmNameArtist());
-        holder.handleView.setImageResource(R.drawable.notnhacchange);
         // Start a drag whenever the handle view it touched
         holder.handleView.setOnTouchListener(new View.OnTouchListener() {
             @Override

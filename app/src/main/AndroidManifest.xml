@@ -21,7 +21,6 @@
         <activity android:name=".view.activity.DetailArtist"></activity>
         <activity android:name=".view.activity.DetailAlbum"></activity>
         <activity android:name=".view.activity.PlayingQueue">
-
         </activity>
         <receiver android:name=".view.helper.notification.NotificationReceiver">
             <intent-filter>
