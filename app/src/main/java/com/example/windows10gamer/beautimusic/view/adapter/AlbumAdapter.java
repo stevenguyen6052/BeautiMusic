@@ -33,41 +33,44 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     private static final String NAME_ALBUM = "Name Album";
     private static final String NAME_ARTIST = "Name Artist";
     private Context mContext;
-    private List<Album> albumList;
-    private List<Song> songList;
+    private List<Album> mAlbumList;
+    private List<Song> mSongList;
     private SongDatabase mSongDatabase;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
     public AlbumAdapter(Context mContext, List<Album> albumList) {
         this.mContext = mContext;
-        this.albumList = albumList;
+        this.mAlbumList = albumList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
+
         mSongDatabase = new SongDatabase(mContext);
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         itemView = inflater.inflate(R.layout.item_album, parent, false);
+
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Album mAlbum = albumList.get(position);
+
+        Album mAlbum = mAlbumList.get(position);
         holder.nameAlbum.setText(mAlbum.getNameAlbum());
         holder.nameArtist.setText(mAlbum.getNameArtist());
-        if (songList==null){
-            songList = new ArrayList<>();
-            songList = mSongDatabase.getAllListSong();
+        if (mSongList==null){
+            mSongList = new ArrayList<>();
+            mSongList = mSongDatabase.getAllListSong();
         }
-        mmr.setDataSource(songList.get(position).getmFileSong());
+        mmr.setDataSource(mSongList.get(position).getmFileSong());
         byte[] dataImageDisc = mmr.getEmbeddedPicture();
         if (dataImageDisc != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
-            holder.mImageView.setImageBitmap(bitmap);
+            holder.imageView.setImageBitmap(bitmap);
         } else {
-            holder.mImageView.setImageResource(R.drawable.detaialbum);
+            holder.imageView.setImageResource(R.drawable.detaialbum);
         }
 
 
@@ -79,8 +82,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
                 } else {
                     Intent intent = new Intent(view.getContext(), DetailAlbum.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString(NAME_ALBUM, albumList.get(position).getNameAlbum());
-                    bundle.putString(NAME_ARTIST, albumList.get(position).getNameArtist());
+                    bundle.putString(NAME_ALBUM, mAlbumList.get(position).getNameAlbum());
+                    bundle.putString(NAME_ARTIST, mAlbumList.get(position).getNameArtist());
                     intent.putExtras(bundle);
                     view.getContext().startActivity(intent);
                 }
@@ -91,21 +94,21 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return albumList.size();
+        return mAlbumList.size();
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private ItemClickListener itemClickListener;
         TextView nameAlbum, nameArtist;
-        ImageView mImageView;
+        ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mContext = itemView.getContext();
             nameAlbum = (TextView) itemView.findViewById(R.id.alTvNameAlbum);
             nameArtist = (TextView) itemView.findViewById(R.id.alTvNameArtist);
-            mImageView = (ImageView) itemView.findViewById(R.id.alImgViewAlbum);
+            imageView = (ImageView) itemView.findViewById(R.id.alImgViewAlbum);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }

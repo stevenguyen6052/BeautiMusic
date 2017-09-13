@@ -1,7 +1,9 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,12 +41,12 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing_queue);
+
         getData();
         setUpAdapter();
         setUpToolbar();
 
     }
-
 
     private void setUpToolbar() {
         if (getSupportActionBar() != null) {
@@ -79,6 +81,8 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
+
+
         sendListSong = adapter.getSongList();
 
     }
@@ -105,7 +109,6 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
             nameArtist = bundle.getString(NAME_ARTIST);
             mSongList = mSongDatabase.getAlLSongFromArtist(nameArtist);
         }
-
     }
 
     @Override

@@ -45,6 +45,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
         holder.mTvNameSong.setText(mSongList.get(position).getmNameSong());
         holder.mTvNameArtist.setText(mSongList.get(position).getmNameArtist());
+
         // Start a drag whenever the handle view it touched
         holder.handleView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -70,8 +71,6 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
         return mSongList;
     }
 
-
-
     @Override
     public int getItemCount() {
         return mSongList.size();
@@ -95,6 +94,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
         void onStartDrag(RecyclerView.ViewHolder viewHolder);
 
     }
+
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder implements
             ItemTouchHelperViewHolder, View.OnClickListener, View.OnLongClickListener {

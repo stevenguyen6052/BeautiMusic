@@ -12,10 +12,6 @@ import com.example.windows10gamer.beautimusic.R;
 
 import java.util.List;
 
-/**
- * Created by Windows 10 Gamer on 21/08/2017.
- */
-
 public class SongAdapter extends BaseAdapter {
     private Context mContext;
     private List<Song> mSongList;

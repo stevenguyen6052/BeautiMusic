@@ -16,12 +16,11 @@ import com.example.windows10gamer.beautimusic.R;
 
 import java.util.List;
 
-/**
- * Created by Windows 10 Gamer on 01/09/2017.
- */
 
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
-    private static final String NAME_ARTIST="Name Artist";
+    private static final String NAME_ARTIST = "Name Artist";
+    private static final String ALBUM = "Album";
+    private static final String SONG = "Song";
     private List<Artist> mArtistList;
     private Context mContext;
 
@@ -43,17 +42,17 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Artist mArtist = mArtistList.get(position);
         holder.mTvNameArtist.setText(mArtist.getNameArtist());
-        holder.mTvSumAlbum.setText(mArtist.getSumAlbum()+" Album");
-        holder.mTvSumSong.setText(mArtist.getSumSong()+" Song");
+        holder.mTvSumAlbum.setText(mArtist.getSumAlbum() + ALBUM);
+        holder.mTvSumSong.setText(mArtist.getSumSong() + SONG);
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
-                if (isLongClick){
+                if (isLongClick) {
 
-                }else {
+                } else {
                     Intent intent = new Intent(view.getContext(), DetailArtist.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString(NAME_ARTIST,mArtistList.get(position).getNameArtist());
+                    bundle.putString(NAME_ARTIST, mArtistList.get(position).getNameArtist());
                     intent.putExtras(bundle);
                     view.getContext().startActivity(intent);
 

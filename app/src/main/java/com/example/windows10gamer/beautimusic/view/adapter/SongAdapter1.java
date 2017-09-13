@@ -15,9 +15,7 @@ import com.example.windows10gamer.beautimusic.R;
 import java.util.List;
 
 
-/**
- * Created by Windows 10 Gamer on 30/08/2017.
- */
+
 
 public class SongAdapter1 extends RecyclerView.Adapter<SongAdapter1.ViewHolder> {
     private static final String POSITION = "POSITION";
@@ -47,11 +45,6 @@ public class SongAdapter1 extends RecyclerView.Adapter<SongAdapter1.ViewHolder> 
                 if (isLongClick) {
 
                 } else {
-//                    //Intent mIntent = new Intent(view.getContext(), PlayMusic.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putInt(POSITION, position);
-//                    mIntent.putExtras(bundle);
-//                    view.getContext().startActivity(mIntent);
                 }
             }
         });

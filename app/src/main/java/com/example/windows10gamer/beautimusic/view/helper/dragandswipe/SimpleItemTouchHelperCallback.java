@@ -5,9 +5,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-/**
- * Created by Windows 10 Gamer on 12/09/2017.
- */
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public static final float ALPHA_FULL = 1.0f;

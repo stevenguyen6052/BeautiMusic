@@ -29,6 +29,7 @@ import com.example.windows10gamer.beautimusic.view.activity.PlayingQueue;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.view.helper.notification.NotificationGenerator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,13 +52,18 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private final static String LIST = "List";
     private final static int REQUEST_LIST = 1;
 
+    public static final String NOTIFY_PREVIOUS = "com.example.windows10gamer.beautimusic.previous";
+    public static final String NOTIFY_PLAY = "com.example.windows10gamer.beautimusic.play";
+    public static final String NOTIFY_NEXT = "com.example.windows10gamer.beautimusic.next";
+
     private TextView mTvNameSong, mTvNameSinger, mTvTime;
     private ListView mListView;
-    private ImageView mImgBackground, mImgNext, mImgPrevious, mImgPlayPause, mShffle, mReppeat, mControlPlayPause, mImgQueue;
+    private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat, mImgQueue;
+    public static ImageView mControlPlayPause, mImgPlayPause;
     private CircularSeekBar mSeekbar1;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
-    private List<Song> mListSong;
+    public static List<Song> mSongList;
     private SongAdapter mSongAdapter;
     public static MediaPlayer mMediaPlayer;
     private SongDatabase mSongDatabase;
@@ -68,6 +74,8 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private View mRootView1;
 
     //notification
+
+
     private NotificationCompat.Builder builder;
     private NotificationManager notificationManager;
     private int notification_id;
@@ -89,41 +97,44 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         if (bundle != null) {
             tag = getArguments().getString(TAG);
             if (tag.equals(TAG_ALBUM)) {
-
                 mPosition = getArguments().getInt(POSITION);
                 nameAlbum = getArguments().getString(NAME_ALBUM);
                 mSongDatabase = new SongDatabase(getContext());
-                mListSong = mSongDatabase.getAllSongFromAlbum(nameAlbum);
-                mSongAdapter = new SongAdapter(getContext(), mListSong, R.layout.item_song);
+                mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbum);
+                mSongAdapter = new SongAdapter(getContext(), mSongList, R.layout.item_song);
                 mListView.setAdapter(mSongAdapter);
                 processMediaPlayer();
                 updateTimeSong();
                 seekBarChange();
-
 
             } else if (tag.equals(TAG_SONG)) {
 
                 mSongDatabase = new SongDatabase(getContext());
-                mListSong = mSongDatabase.getAllListSong();
-                mSongAdapter = new SongAdapter(getContext(), mListSong, R.layout.item_song);
+                mSongList = mSongDatabase.getAllListSong();
+                mSongAdapter = new SongAdapter(getContext(), mSongList, R.layout.item_song);
                 mListView.setAdapter(mSongAdapter);
                 mPosition = getArguments().getInt(POSITION);
                 processMediaPlayer();
                 updateTimeSong();
                 seekBarChange();
-                createNotification();
+
+                //newNotification();
+                //NotificationGenerator.customBigNotification(getContext());
+                //createNotification();
 
             } else if (tag.equals(TAG_ARTIST)) {
 
                 mPosition = getArguments().getInt(POSITION);
                 nameArtist = getArguments().getString(NAME_ARTIST);
                 mSongDatabase = new SongDatabase(getContext());
-                mListSong = mSongDatabase.getAlLSongFromArtist(nameArtist);
-                mSongAdapter = new SongAdapter(getContext(), mListSong, R.layout.item_song);
+                mSongList = mSongDatabase.getAlLSongFromArtist(nameArtist);
+                mSongAdapter = new SongAdapter(getContext(), mSongList, R.layout.item_song);
                 mListView.setAdapter(mSongAdapter);
+
                 processMediaPlayer();
                 updateTimeSong();
                 seekBarChange();
+
             }
 
         }
@@ -132,11 +143,12 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     private void createNotification() {
         notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         RemoteViews contentView = new RemoteViews(mRootView1.getContext().getPackageName(), R.layout.custom_notification);
-        contentView.setTextViewText(R.id.notifiNameSong, mListSong.get(mPosition).getmNameSong());
-        contentView.setTextViewText(R.id.notifiNameArtist, mListSong.get(mPosition).getmNameArtist());
-        contentView.setImageViewResource(R.id.notifiPrevious, R.drawable.custom_previous);
+
+        contentView.setTextViewText(R.id.notifiNameSong, mSongList.get(mPosition).getmNameSong());
+        contentView.setTextViewText(R.id.notifiNameArtist, mSongList.get(mPosition).getmNameArtist());
+        //contentView.setImageViewResource(R.id.notifiPrevious, R.drawable.custom_previous);
         contentView.setImageViewResource(R.id.notifiPlay, R.drawable.playing);
-        contentView.setImageViewResource(R.id.notifiNext, R.drawable.custom_next);
+        //contentView.setImageViewResource(R.id.notifiNext, R.drawable.custom_next);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -147,6 +159,28 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         notification.defaults |= Notification.DEFAULT_SOUND;
         notification.defaults |= Notification.DEFAULT_VIBRATE;
         notificationManager.notify(1, notification);
+    }
+
+    private void newNotification() {
+        mContext = getContext();
+        notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        remoteViews = new RemoteViews(getContext().getPackageName(), R.layout.custom_notification);
+        remoteViews.setTextViewText(R.id.notifiNameSong, mSongList.get(mPosition).getmNameSong());
+        remoteViews.setTextViewText(R.id.notifiNameArtist, mSongList.get(mPosition).getmNameArtist());
+        notification_id = (int) System.currentTimeMillis();
+        //Intent previous = new Intent(NOTIFY_PREVIOUS);
+        Intent play = new Intent(NOTIFY_PLAY);
+        //Intent next = new Intent(NOTIFY_NEXT);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 123, play, 0);
+        remoteViews.setOnClickPendingIntent(R.id.notifiPlay, pendingIntent);
+
+        builder = new NotificationCompat.Builder(getContext())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContent(remoteViews);
+        notificationManager.notify(notification_id, builder.build());
+
+
     }
 
     private void listViewOnItemClick() {
@@ -179,15 +213,16 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     }
 
     private void processMediaPlayerInListView(int position) {
-        mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse(mListSong.get(position).getmFileSong()));
+        mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse(mSongList.get(position).getmFileSong()));
         mMediaPlayer.start();
-        mTvNameSong.setText(mListSong.get(position).getmNameSong());
-        mTvNameSinger.setText(mListSong.get(position).getmNameArtist());
-        mSeekbar1.setMax(mListSong.get(position).getmDuaration());
+        mTvNameSong.setText(mSongList.get(position).getmNameSong());
+        mTvNameSinger.setText(mSongList.get(position).getmNameArtist());
+        mSeekbar1.setMax(mSongList.get(position).getmDuaration());
     }
 
     private void seekBarChange() {
         mSeekbar1.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+
             @Override
             public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
 
@@ -195,6 +230,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
+
 
             }
 
@@ -221,28 +257,26 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                     public void onCompletion(MediaPlayer mp) {
                         processNextSong();
                         updateTimeSong();
-
                     }
                 });
-
             }
         }, 100);
-
     }
 
     private void processMediaPlayer() {
-        mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse(mListSong.get(mPosition).getmFileSong()));
+        mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse(mSongList.get(mPosition).getmFileSong()));
         mMediaPlayer.start();
-        mTvNameSong.setText(mListSong.get(mPosition).getmNameSong());
-        mTvNameSinger.setText(mListSong.get(mPosition).getmNameArtist());
-        mSeekbar1.setMax(mListSong.get(mPosition).getmDuaration());
+        mTvNameSong.setText(mSongList.get(mPosition).getmNameSong());
+        mTvNameSinger.setText(mSongList.get(mPosition).getmNameArtist());
+        mSeekbar1.setMax(mSongList.get(mPosition).getmDuaration());
         mImgPlayPause.setImageResource(R.drawable.playing);
         mControlPlayPause.setImageResource(R.drawable.playing);
         setImageSong();
+
     }
 
     private void setImageSong() {
-        mmr.setDataSource(mListSong.get(mPosition).getmFileSong());
+        mmr.setDataSource(mSongList.get(mPosition).getmFileSong());
         byte[] dataImageDisc = mmr.getEmbeddedPicture();
         if (dataImageDisc != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
@@ -254,7 +288,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
 
     private void initView() {
         mRandom = new Random();
-        mListSong = new ArrayList<>();
+        mSongList = new ArrayList<>();
         mSeekbar1 = (CircularSeekBar) mRootView1.findViewById(R.id.pItmSeekbar);
         mListView = (ListView) mRootView1.findViewById(R.id.plistView);
         mTvNameSong = (TextView) mRootView1.findViewById(R.id.itmNameSong);
@@ -268,6 +302,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         mControlPlayPause = (ImageView) mRootView1.findViewById(R.id.itmControlPlayPause);
         mImgBackground = (ImageView) mRootView1.findViewById(R.id.background_playmusic);
         mImgQueue = (ImageView) mRootView1.findViewById(R.id.pImgQueue);
+
     }
 
     private void events() {
@@ -360,7 +395,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         if (requestCode == REQUEST_LIST) {
             if (resultCode == RESULT_OK) {
                 Bundle getData = data.getExtras();
-                mListSong = (List<Song>) getData.getSerializable(LIST);
+                mSongList = (List<Song>) getData.getSerializable(LIST);
                 mSongAdapter.notifyDataSetChanged();
             }
         }
@@ -378,26 +413,28 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 mMediaPlayer.release();
                 int newSong = mPosition;
                 while (newSong == mPosition) {
-                    newSong = mRandom.nextInt(mListSong.size());
+                    newSong = mRandom.nextInt(mSongList.size());
                 }
                 mPosition = newSong;
                 processMediaPlayer();
+                newNotification();
             } else if (mShuffleOn == false) {
                 mPosition = mPosition + 1;
                 mMediaPlayer.stop();
                 mMediaPlayer.release();
-                if (mPosition >= mListSong.size()) {
+                if (mPosition >= mSongList.size()) {
                     mPosition = 0;
                     processMediaPlayer();
+                    newNotification();
                 } else {
                     processMediaPlayer();
+                    newNotification();
                 }
             }
         }
-
     }
 
-    private void processPreviousSong() {
+    public void processPreviousSong() {
         if (mRepeat == true) {
             mMediaPlayer.stop();
             mMediaPlayer.release();
@@ -408,7 +445,7 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 mMediaPlayer.release();
                 int newSong = mPosition;
                 while (newSong == mPosition) {
-                    newSong = mRandom.nextInt(mListSong.size());
+                    newSong = mRandom.nextInt(mSongList.size());
                 }
                 mPosition = newSong;
                 processMediaPlayer();
@@ -417,21 +454,13 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
                 mMediaPlayer.stop();
                 mMediaPlayer.release();
                 if (mPosition < 0) {
-                    mPosition = mListSong.size() - 1;
+                    mPosition = mSongList.size() - 1;
                     processMediaPlayer();
                 } else {
                     processMediaPlayer();
                 }
             }
         }
-
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mMediaPlayer.stop();
     }
 
 }

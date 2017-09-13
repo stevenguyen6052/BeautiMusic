@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -27,6 +28,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.support.v4.app.ActivityCompat.invalidateOptionsMenu;
 
 
 public class SongFragment extends android.support.v4.app.Fragment {
@@ -107,9 +110,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
             case R.id.itemSearch:
 
                 break;
-            case R.id.itemArrange:
 
-                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -151,7 +152,13 @@ public class SongFragment extends android.support.v4.app.Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mSendDataPosition.SendPosition(position);
-                MainActivity.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                if (MusicPlay.mMediaPlayer == null) {
+                    MainActivity.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                } else {
+                    MusicPlay.mMediaPlayer.stop();
+                    MainActivity.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                }
+
             }
         });
     }

@@ -4,11 +4,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
-import android.text.Layout;
-import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.example.windows10gamer.beautimusic.R;
@@ -26,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition 
     private int mPosition;
     private View mLayout;
     public static SlidingUpPanelLayout slidingUpPanelLayout;
-    public static MusicPlay mMusicPlay;
+    public static MusicPlay mMusicPlay ;
 
 
     @Override
@@ -52,44 +47,6 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition 
         tabLayout.setupWithViewPager(mViewPager);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_item, menu);
-//        MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-//        SearchView searchView = (SearchView) itemSearch.getActionView();
-//        searchView.setOnQueryTextListener(MainActivity.this);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int idItem = item.getItemId();
-//        switch (idItem) {
-//            case R.id.itemSearch:
-//
-//                break;
-//            case R.id.itemArrange:
-//
-//                break;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//    @Override
-//    public boolean onQueryTextSubmit(String query) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean onQueryTextChange(String newText) {
-//        if (TextUtils.isEmpty(newText)) {
-//
-//        } else {
-//
-//        }
-//        return true;
-//    }
-
     @Override
     public void SendPosition(int positon) {
         mLayout.setVisibility(View.VISIBLE);
@@ -99,6 +56,6 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition 
         args.putInt(POSITION, mPosition);
         args.putString(TAG, TAG_SONG);
         mMusicPlay.setArguments(args);
-        getSupportFragmentManager().beginTransaction().replace(R.id.myFrameLayout, mMusicPlay).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.myFrameLayout , mMusicPlay).commit();
     }
 }

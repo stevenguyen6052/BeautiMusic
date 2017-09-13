@@ -8,7 +8,10 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
+
+import java.util.List;
 
 /**
  * Created by Windows 10 Gamer on 11/09/2017.
@@ -67,21 +70,19 @@ public class NotificationGenerator {
 
     private static void setListeners(RemoteViews view, Context context) {
         Intent previous = new Intent(NOTIFY_PREVIOUS);
-//        Intent delete = new Intent(NOTIFY_DELETE);
-//        Intent pause = new Intent(NOTIFY_PAUSE);
         Intent next = new Intent(NOTIFY_NEXT);
         Intent play = new Intent(NOTIFY_PLAY);
 
-        PendingIntent pPrevious = PendingIntent.getBroadcast(context, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
-        view.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
+//        PendingIntent pPrevious = PendingIntent.getBroadcast(context, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
+//        view.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
 
 
         PendingIntent pPlay = PendingIntent.getBroadcast(context, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
         view.setOnClickPendingIntent(R.id.notifiPlay, pPlay);
 
 
-        PendingIntent pNext = PendingIntent.getBroadcast(context, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
-        view.setOnClickPendingIntent(R.id.notifiNext, pNext);
+//        PendingIntent pNext = PendingIntent.getBroadcast(context, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
+//        view.setOnClickPendingIntent(R.id.notifiNext, pNext);
 
     }
 }

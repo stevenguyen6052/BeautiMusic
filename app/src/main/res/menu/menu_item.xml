@@ -9,12 +9,12 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         />
 
-    <item
-        android:id="@+id/itemArrange"
-        android:title="Sắp xếp"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        />
+    <!--<item-->
+        <!--android:id="@+id/itemArrange"-->
+        <!--android:title="Sắp xếp"-->
+        <!--android:orderInCategory="100"-->
+        <!--app:showAsAction="never"-->
+        <!--/>-->
 
 
 </menu>

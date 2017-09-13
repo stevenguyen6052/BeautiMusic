@@ -50,8 +50,7 @@ public class DetailArtist extends AppCompatActivity {
         getDataIntent();
         initView();
         setImage();
-        mSongAdapter = new SongAdapter(this, mSongList, R.layout.item_song);
-        mListView.setAdapter(mSongAdapter);
+        setUpAdapter();
         onItemListViewClick();
 
     }
@@ -75,6 +74,10 @@ public class DetailArtist extends AppCompatActivity {
             }
         });
     }
+    private void setUpAdapter(){
+        mSongAdapter = new SongAdapter(this, mSongList, R.layout.item_song);
+        mListView.setAdapter(mSongAdapter);
+    }
 
     private void getDataIntent() {
         Intent mIntent = getIntent();
@@ -83,6 +86,9 @@ public class DetailArtist extends AppCompatActivity {
     }
 
     private void initView() {
+
+
+
         imgView = (ImageView) findViewById(R.id.detailArtistImg);
         mLayout = findViewById(R.id.myFrameLayout2);
         slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout_artist);
