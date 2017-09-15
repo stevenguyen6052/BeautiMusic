@@ -28,26 +28,27 @@ public class NotificationReceiver extends BroadcastReceiver {
                 MainActivity.musicService.pausePlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.pause);
                 PlayMusicActivity.mControlPlayPause.setImageResource(R.drawable.pause);
+                Toast.makeText(context, "PAUSE", Toast.LENGTH_LONG).show();
             }
             else{
                 MainActivity.musicService.pausePlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.playing);
                 PlayMusicActivity.mControlPlayPause.setImageResource(R.drawable.playing);
             }
-            Toast.makeText(context, "NOTIFY_PAUSE", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "PLAY", Toast.LENGTH_LONG).show();
         }else if (intent.getAction().equals(NOTIFY_NEXT)){
 
             MainActivity.musicService.playNext();
             PlayMusicActivity.mTvNameSong.setText(MainActivity.musicService.nameSong());
             PlayMusicActivity.mTvNameSinger.setText(MainActivity.musicService.nameArtist());
-            Toast.makeText(context, "NOTIFY_NEXT", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "NEXT", Toast.LENGTH_LONG).show();
         }else if (intent.getAction().equals(NOTIFY_DELETE)){
 
-            Toast.makeText(context, "NOTIFY_DELETE", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "DELETE", Toast.LENGTH_LONG).show();
         }else if (intent.getAction().equals(NOTIFY_PREVIOUS)){
 
             MainActivity.musicService.playPrev();
-            Toast.makeText(context, "NOTIFY_PREVIOUS", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "PREVIOUS", Toast.LENGTH_LONG).show();
         }
 
     }
