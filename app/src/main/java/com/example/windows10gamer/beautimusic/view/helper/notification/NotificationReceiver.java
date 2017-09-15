@@ -8,7 +8,6 @@ import android.widget.Toast;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
 import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
-import com.example.windows10gamer.beautimusic.view.fragment.MusicPlay;
 
 import static com.example.windows10gamer.beautimusic.view.helper.service.MusicService.NOTIFY_NEXT;
 import static com.example.windows10gamer.beautimusic.view.helper.service.MusicService.NOTIFY_DELETE;

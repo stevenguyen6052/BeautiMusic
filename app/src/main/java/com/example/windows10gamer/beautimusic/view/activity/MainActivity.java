@@ -18,11 +18,7 @@ import android.widget.TextView;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.SendDataPosition;
 import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
-import com.example.windows10gamer.beautimusic.view.fragment.MusicPlay;
 import com.example.windows10gamer.beautimusic.view.helper.service.MusicService;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import java.text.SimpleDateFormat;
 
 public class MainActivity extends AppCompatActivity implements SendDataPosition {
     // tag of current song
