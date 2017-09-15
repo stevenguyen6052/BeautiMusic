@@ -50,7 +50,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private int mPosition;
 
 
-    private List<Song> mSongList;
+    public static List<Song> mSongList;
 
 
     //activity and playback pause flags
@@ -297,16 +297,16 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         startActivityForResult(intent, REQUEST_LIST);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_LIST) {
-            if (resultCode == RESULT_OK) {
-                Bundle getData = data.getExtras();
-                mSongList = (List<Song>) getData.getSerializable(TAG_REQUEST);
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == REQUEST_LIST) {
+//            if (resultCode == RESULT_OK) {
+//                Bundle getData = data.getExtras();
+//                mSongList = (List<Song>) getData.getSerializable(TAG_REQUEST);
+//            }
+//        }
+//    }
 
     // set image of song
     private void setImageSong() {

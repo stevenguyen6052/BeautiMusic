@@ -64,11 +64,12 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     }
 
     private void dataResult() {
-        Intent intent = new Intent();
-        Bundle sendData = new Bundle();
-        sendData.putSerializable(LIST, (Serializable) sendListSong);
-        intent.putExtras(sendData);
-        setResult(Activity.RESULT_OK, intent);
+        PlayMusicActivity.mSongList = mSongList;
+//        Intent intent = new Intent();
+//        Bundle sendData = new Bundle();
+//        sendData.putSerializable(LIST, (Serializable) sendListSong);
+//        intent.putExtras(sendData);
+//        setResult(Activity.RESULT_OK, intent);
         finish();
     }
 
