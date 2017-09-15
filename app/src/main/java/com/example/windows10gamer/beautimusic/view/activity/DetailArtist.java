@@ -24,21 +24,15 @@ import com.example.windows10gamer.beautimusic.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.windows10gamer.beautimusic.view.fragment.MusicPlay.mTvNameSong;
-import static com.example.windows10gamer.beautimusic.view.fragment.MusicPlay.mTvTime;
-
-
-public class DetailArtist extends AppCompatActivity {
+public class DetailArtist extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "TAG";
     private static final String TAG_ARTIST = "ARTIST";
     private static final String POSITION = "POSITION";
     private static final String NAME_ARTIST = "Name Artist";
 
-    //test
     private TextView mTvNameSong;
     private TextView mTvNameArtist;
     private ImageView mImgPlayPause;
-    private SeekBar mSeekbar;
 
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
     private SongDatabase mSongDatabase;
@@ -142,7 +136,7 @@ public class DetailArtist extends AppCompatActivity {
     }
 
     private void initView() {
-        mSeekbar = (SeekBar) findViewById(R.id.seekBar);
+
         mTvNameSong = (TextView) findViewById(R.id.artistNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.artistNameArtist);
         mImgPlayPause = (ImageView) findViewById(R.id.artistControlPlay);
@@ -165,6 +159,13 @@ public class DetailArtist extends AppCompatActivity {
             imgView.setImageBitmap(bitmap);
         } else {
             imgView.setImageResource(R.drawable.detaialbum);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.artistControlPlay:
         }
     }
 }

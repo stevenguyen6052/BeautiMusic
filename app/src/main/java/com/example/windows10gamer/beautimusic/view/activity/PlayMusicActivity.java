@@ -32,6 +32,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private final static String TAG_SONG = "SONG";
     private final static String TAG_ARTIST = "ARTIST";
     private final static String TAG_ALBUM = "ALBUM";
+
+    private final static String TAG_REQUEST = "LIST";
     private final static int REQUEST_LIST = 1;
 
     private String tag, nameAlbum, nameArtist;
@@ -45,10 +47,10 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
     private SongAdapter mSongAdapter;
     private SongDatabase mSongDatabase;
-    public static int mPosition;
+    private int mPosition;
 
 
-    public static List<Song> mSongList;
+    private List<Song> mSongList;
 
 
     //activity and playback pause flags
@@ -64,6 +66,15 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         listViewClick();
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mSongList != null) {
+            mSongAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     // list song item click
     private void listViewClick() {
@@ -258,10 +269,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 doRepeat();
 
                 break;
-            case R.id.itmControlPlayPause:
-                doControlPlay();
 
-                break;
             case R.id.pImgQueue:
                 doQueue();
 
@@ -289,6 +297,17 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         startActivityForResult(intent, REQUEST_LIST);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_LIST) {
+            if (resultCode == RESULT_OK) {
+                Bundle getData = data.getExtras();
+                mSongList = (List<Song>) getData.getSerializable(TAG_REQUEST);
+            }
+        }
+    }
+
     // set image of song
     private void setImageSong() {
         mmr.setDataSource(MainActivity.musicService.pathSong());
@@ -301,16 +320,4 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-
-    private void doControlPlay() {
-        if (MainActivity.musicService.mPlayer.isPlaying()) {
-            MainActivity.musicService.pausePlayer();
-            mImgPlayPause.setImageResource(R.drawable.pause);
-
-        } else {
-            MainActivity.musicService.mPlayer.start();
-            mImgPlayPause.setImageResource(R.drawable.playing);
-
-        }
-    }
 }

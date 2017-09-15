@@ -23,7 +23,7 @@ import com.example.windows10gamer.beautimusic.view.helper.service.MusicService;
 public class MainActivity extends AppCompatActivity implements SendDataPosition {
     // tag of current song
     private static final String POSITION = "POSITION";
-    public static int mPosition;
+    private int mPosition;
 
     private static final String TAG = "TAG";
     private static final String TAG_SONG = "SONG";
@@ -67,7 +67,10 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition 
             bindService(playIntent, getMusicConnection, Context.BIND_AUTO_CREATE);
             startService(playIntent);
         }
+
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition 
     // when click item in song fragment send index of item to activity and activity send to playmusicactivity
     @Override
     public void SendPosition(int positon) {
-
+        mPosition = positon;
         Intent intent = new Intent(this,PlayMusicActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(TAG, TAG_SONG);
