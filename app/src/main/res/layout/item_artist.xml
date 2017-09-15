@@ -19,7 +19,7 @@
             android:background="@drawable/imagemusi" />
 
         <LinearLayout
-            android:id="@id/layout1"
+            android:id="@+id/layout1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">

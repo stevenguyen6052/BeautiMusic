@@ -5,8 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.Handler;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -20,10 +22,10 @@ import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.fragment.MusicPlay;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.windows10gamer.beautimusic.view.activity.MainActivity.mMusicPlay;
 
 
 public class DetailAlbum extends AppCompatActivity {
@@ -36,25 +38,39 @@ public class DetailAlbum extends AppCompatActivity {
     private SongAdapter mSongAdapter;
     private ListView mListView;
     private View mLayout;
-    private TextView mTvNameArtist;
     private ImageView imgAlbum;
+    private Toolbar toolbar;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+
+    private TextView mTvNameSong, mTvNameArtist;
+    private ImageView mControlPlayPause;
 
     private List<Song> mSongList;
-    private String nameAlbum, nameArtist;
+    private String nameAlbum;
+
     private SongDatabase mSongDatabase;
-    private SlidingUpPanelLayout slidingUpPanelLayout;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-    MusicPlay musicPlay = new MusicPlay();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_album);
         getDataIntent();
+        setUpToolBar();
         initView();
         setUpAdapter();
         onItemClick();
         setImageSong();
+
+    }
+
+    private void setUpToolBar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(nameAlbum);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
+        collapsingToolbarLayout.setTitle(nameAlbum);
 
     }
 
@@ -63,56 +79,71 @@ public class DetailAlbum extends AppCompatActivity {
         mListView.setAdapter(mSongAdapter);
     }
 
+    // if media player isplaying set update name song,name artist
+    private void toolBarControlPlaying() {
+        if (MainActivity.musicService.mPlayer != null) {
+            if (MainActivity.musicService.mPlayer.isPlaying()) {
+                mTvNameSong.setText(MainActivity.musicService.nameSong());
+                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
+                mControlPlayPause.setImageResource(R.drawable.playing);
+                updateTimeSong();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        toolBarControlPlaying();
+    }
+
+    // update current song and listener player oncomplete
+    private void updateTimeSong() {
+        final Handler mHandler = new Handler();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mHandler.postDelayed(this, 500);
+                MainActivity.musicService.setOnComplete();
+                mTvNameSong.setText(MainActivity.musicService.nameSong());
+                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
+            }
+        }, 100);
+    }
+
+    // list song item click
     private void onItemClick() {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (MusicPlay.mMediaPlayer.isPlaying()) {
+                Intent intent = new Intent(DetailAlbum.this, PlayMusicActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(TAG, TAG_ALBUM);
+                bundle.putString(NAME_ALBUM, nameAlbum);
+                bundle.putInt(POSITION, position);
+                intent.putExtras(bundle);
+                startActivity(intent);
 
-                    MusicPlay.mMediaPlayer.stop();
-                    slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-                    MusicPlay mMusicPlay = new MusicPlay();
-                    Bundle args = new Bundle();
-                    args.putString(TAG, TAG_ALBUM);
-                    args.putInt(POSITION, position);
-                    args.putString(NAME_ALBUM, mSongList.get(position).getmNameAlbum());
-                    mMusicPlay.setArguments(args);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.myFrameLayout1, mMusicPlay).commit();
-
-                } else {
-
-                    slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-                    MusicPlay mMusicPlay = new MusicPlay();
-                    Bundle args = new Bundle();
-                    args.putString(TAG, TAG_ALBUM);
-                    args.putInt(POSITION, position);
-                    args.putString(NAME_ALBUM, mSongList.get(position).getmNameAlbum());
-                    mMusicPlay.setArguments(args);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.myFrameLayout1, mMusicPlay).commit();
-
-                }
             }
         });
     }
 
     private void initView() {
 
-        getSupportFragmentManager().beginTransaction().add(R.id.myFrameLayout1,musicPlay).commit();
-
+        mTvNameSong = (TextView) findViewById(R.id.albumNameSong);
+        mTvNameArtist = (TextView) findViewById(R.id.albumNameArtist);
+        mControlPlayPause = (ImageView) findViewById(R.id.albumControlPlayPause);
         imgAlbum = (ImageView) findViewById(R.id.detailAlbumImg);
-        mLayout = findViewById(R.id.myFrameLayout1);
-        slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout1);
-        mListView = (ListView) findViewById(R.id.detailAlbumListView);
-        mTvNameArtist = (TextView) findViewById(R.id.detailAlbumTvNameArtist);
+        mListView = (ListView) findViewById(R.id.detaialbum_listview);
 
         mSongDatabase = new SongDatabase(getApplication());
         if (mSongList == null) {
             mSongList = new ArrayList<>();
             mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbum);
         }
-        mTvNameArtist.setText(nameArtist);
-    }
 
+    }
+    // set image of album
     private void setImageSong() {
         mmr.setDataSource(mSongList.get(0).getmFileSong());
         byte[] dataImageDisc = mmr.getEmbeddedPicture();
@@ -128,7 +159,6 @@ public class DetailAlbum extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         nameAlbum = bundle.getString(NAME_ALBUM);
-        nameArtist = bundle.getString(NAME_ARTIST);
 
     }
 }

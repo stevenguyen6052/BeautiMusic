@@ -1,10 +1,10 @@
 package com.example.windows10gamer.beautimusic.view.fragment;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.Fragment;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
@@ -12,24 +12,23 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.ActionBar;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RemoteViews;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.view.activity.PlayingQueue;
-import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.helper.notification.NotificationGenerator;
+import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
+import com.example.windows10gamer.beautimusic.view.activity.PlayingQueue;
+import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,10 +37,11 @@ import java.util.Random;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
-import static android.app.Activity.RESULT_OK;
+/**
+ * Created by Windows 10 Gamer on 14/09/2017.
+ */
 
-
-public class MusicPlay extends Fragment implements View.OnClickListener {
+public class MusicPlay extends android.support.v4.app.Fragment implements View.OnClickListener {
     private static final String POSITION = "POSITION";
     private static final String NAME_ALBUM = "Name Album";
     private static final String NAME_ARTIST = "Name Artist";
@@ -55,43 +55,60 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
     public static final String NOTIFY_PREVIOUS = "com.example.windows10gamer.beautimusic.previous";
     public static final String NOTIFY_PLAY = "com.example.windows10gamer.beautimusic.play";
     public static final String NOTIFY_NEXT = "com.example.windows10gamer.beautimusic.next";
+    private String tag, nameAlbum, nameArtist;
 
-    private TextView mTvNameSong, mTvNameSinger, mTvTime;
+    public static TextView mTvNameSong, mTvNameSinger, mTvTime;
     private ListView mListView;
     private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat, mImgQueue;
     public static ImageView mControlPlayPause, mImgPlayPause;
     private CircularSeekBar mSeekbar1;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
-    public static List<Song> mSongList;
     private SongAdapter mSongAdapter;
-    public static MediaPlayer mMediaPlayer;
     private SongDatabase mSongDatabase;
-    private int mPosition;
-    private Random mRandom;
-    private boolean mShuffleOn = false;
-    private boolean mRepeat = false;
+    public static int mPosition;
+
+
+    public static List<Song> mSongList;
+    private ListView songView;
+
+    //activity and playback pause flags
+    private boolean paused = false, playbackPaused = false;
     private View mRootView1;
 
-    //notification
 
-
-    private NotificationCompat.Builder builder;
-    private NotificationManager notificationManager;
-    private int notification_id;
-    private RemoteViews remoteViews;
-    private Context mContext;
-    private String tag, nameAlbum, nameArtist;
-
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView1 = inflater.inflate(R.layout.music_play_frag2, container, false);
+
         initView();
-        events();
+        addEvents();
         getData();
-        listViewOnItemClick();
+        listViewClick();
+
+
         return mRootView1;
     }
 
+    private void listViewClick() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                playMusicItem(position);
+            }
+        });
+    }
+
+    //play music in item click
+    private void playMusicItem(int position) {
+        if (MainActivity.musicService.mPosition < position)
+            MainActivity.musicService.mPosition += position;
+        else MainActivity.musicService.mPosition = position;
+        playMusic();
+
+    }
+
+    //get agurment from activity
     private void getData() {
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -99,195 +116,83 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
             if (tag.equals(TAG_ALBUM)) {
                 mPosition = getArguments().getInt(POSITION);
                 nameAlbum = getArguments().getString(NAME_ALBUM);
-                mSongDatabase = new SongDatabase(getContext());
+                mSongDatabase = new SongDatabase(mRootView1.getContext());
                 mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbum);
-                mSongAdapter = new SongAdapter(getContext(), mSongList, R.layout.item_song);
-                mListView.setAdapter(mSongAdapter);
-                processMediaPlayer();
-                updateTimeSong();
-                seekBarChange();
 
             } else if (tag.equals(TAG_SONG)) {
 
-                mSongDatabase = new SongDatabase(getContext());
+                mSongDatabase = new SongDatabase(getActivity());
                 mSongList = mSongDatabase.getAllListSong();
-                mSongAdapter = new SongAdapter(getContext(), mSongList, R.layout.item_song);
-                mListView.setAdapter(mSongAdapter);
                 mPosition = getArguments().getInt(POSITION);
-                processMediaPlayer();
-                updateTimeSong();
-                seekBarChange();
-
-                //newNotification();
-                //NotificationGenerator.customBigNotification(getContext());
-                //createNotification();
 
             } else if (tag.equals(TAG_ARTIST)) {
 
                 mPosition = getArguments().getInt(POSITION);
                 nameArtist = getArguments().getString(NAME_ARTIST);
-                mSongDatabase = new SongDatabase(getContext());
+                mSongDatabase = new SongDatabase(mRootView1.getContext());
                 mSongList = mSongDatabase.getAlLSongFromArtist(nameArtist);
-                mSongAdapter = new SongAdapter(getContext(), mSongList, R.layout.item_song);
-                mListView.setAdapter(mSongAdapter);
-
-                processMediaPlayer();
-                updateTimeSong();
-                seekBarChange();
-
             }
+            mSongAdapter = new SongAdapter(mRootView1.getContext(), mSongList, R.layout.item_song);
+            mListView.setAdapter(mSongAdapter);
+            setDataSource();
+            playMusic();
+
 
         }
+        listenerSeekbarChange();
     }
 
-    private void createNotification() {
-        notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        RemoteViews contentView = new RemoteViews(mRootView1.getContext().getPackageName(), R.layout.custom_notification);
 
-        contentView.setTextViewText(R.id.notifiNameSong, mSongList.get(mPosition).getmNameSong());
-        contentView.setTextViewText(R.id.notifiNameArtist, mSongList.get(mPosition).getmNameArtist());
-        //contentView.setImageViewResource(R.id.notifiPrevious, R.drawable.custom_previous);
-        contentView.setImageViewResource(R.id.notifiPlay, R.drawable.playing);
-        //contentView.setImageViewResource(R.id.notifiNext, R.drawable.custom_next);
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContent(contentView);
-
-        Notification notification = mBuilder.build();
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notification.defaults |= Notification.DEFAULT_SOUND;
-        notification.defaults |= Notification.DEFAULT_VIBRATE;
-        notificationManager.notify(1, notification);
+    // set datasource for service
+    private void setDataSource() {
+        MainActivity.musicService.mSongList = mSongList;
+        MainActivity.musicService.mPosition = mPosition;
     }
 
-    private void newNotification() {
-        mContext = getContext();
-        notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        remoteViews = new RemoteViews(getContext().getPackageName(), R.layout.custom_notification);
-        remoteViews.setTextViewText(R.id.notifiNameSong, mSongList.get(mPosition).getmNameSong());
-        remoteViews.setTextViewText(R.id.notifiNameArtist, mSongList.get(mPosition).getmNameArtist());
-        notification_id = (int) System.currentTimeMillis();
-        //Intent previous = new Intent(NOTIFY_PREVIOUS);
-        Intent play = new Intent(NOTIFY_PLAY);
-        //Intent next = new Intent(NOTIFY_NEXT);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 123, play, 0);
-        remoteViews.setOnClickPendingIntent(R.id.notifiPlay, pendingIntent);
-
-        builder = new NotificationCompat.Builder(getContext())
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContent(remoteViews);
-        notificationManager.notify(notification_id, builder.build());
-
+    private void playMusic() {
+        mTvNameSong.setText(MainActivity.musicService.nameSong());
+        mTvNameSinger.setText(MainActivity.musicService.nameArtist());
+        mImgPlayPause.setImageResource(R.drawable.playing);
+        mControlPlayPause.setImageResource(R.drawable.playing);
+        mSeekbar1.setMax(MainActivity.musicService.getDuaration());
+        setImageSong();
+        updateTimeSong();
+        MainActivity.musicService.playSong();
 
     }
 
-    private void listViewOnItemClick() {
-
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mMediaPlayer.isPlaying()) {
-                    mMediaPlayer.stop();
-                    mMediaPlayer.release();
-                    processMediaPlayerInListView(position);
-                    if (mPosition > position) {
-                        mPosition = position;
-                    } else if (mPosition < position) {
-                        mPosition = position + mPosition;
-                    }
-                } else {
-                    mMediaPlayer.stop();
-                    mMediaPlayer.release();
-                    processMediaPlayerInListView(position);
-                    if (mPosition > position) {
-                        mPosition = mPosition - position;
-                    } else if (mPosition < position) {
-                        mPosition = position + mPosition;
-                    }
-                }
-                updateTimeSong();
-            }
-        });
-    }
-
-    private void processMediaPlayerInListView(int position) {
-        mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse(mSongList.get(position).getmFileSong()));
-        mMediaPlayer.start();
-        mTvNameSong.setText(mSongList.get(position).getmNameSong());
-        mTvNameSinger.setText(mSongList.get(position).getmNameArtist());
-        mSeekbar1.setMax(mSongList.get(position).getmDuaration());
-    }
-
-    private void seekBarChange() {
+    // seekbar change listener
+    private void listenerSeekbarChange() {
         mSeekbar1.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
 
             @Override
             public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
-
             }
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
-
             }
 
             @Override
             public void onStartTrackingTouch(CircularSeekBar seekBar) {
-                mMediaPlayer.seekTo((int) mSeekbar1.getProgress());
+                MainActivity.musicService.seek((int) mSeekbar1.getProgress());
             }
         });
 
     }
 
-    // update current time and seekbar
-    private void updateTimeSong() {
-        final Handler mHandler = new Handler();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SimpleDateFormat mSimPleDateFormat = new SimpleDateFormat("mm:ss");
-                mTvTime.setText(mSimPleDateFormat.format(mMediaPlayer.getCurrentPosition()));
-                mSeekbar1.setProgress(mMediaPlayer.getCurrentPosition());
-                mHandler.postDelayed(this, 500);
-                mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        processNextSong();
-                        updateTimeSong();
-                    }
-                });
-            }
-        }, 100);
-    }
-
-    private void processMediaPlayer() {
-        mMediaPlayer = MediaPlayer.create(getContext(), Uri.parse(mSongList.get(mPosition).getmFileSong()));
-        mMediaPlayer.start();
-        mTvNameSong.setText(mSongList.get(mPosition).getmNameSong());
-        mTvNameSinger.setText(mSongList.get(mPosition).getmNameArtist());
-        mSeekbar1.setMax(mSongList.get(mPosition).getmDuaration());
-        mImgPlayPause.setImageResource(R.drawable.playing);
-        mControlPlayPause.setImageResource(R.drawable.playing);
-        setImageSong();
-
-    }
-
-    private void setImageSong() {
-        mmr.setDataSource(mSongList.get(mPosition).getmFileSong());
-        byte[] dataImageDisc = mmr.getEmbeddedPicture();
-        if (dataImageDisc != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
-            mImgBackground.setImageBitmap(bitmap);
-        } else {
-            mImgBackground.setImageResource(R.drawable.detaialbum);
-        }
+    private void addEvents() {
+        mControlPlayPause.setOnClickListener(this);
+        mImgNext.setOnClickListener(this);
+        mImgPrevious.setOnClickListener(this);
+        mImgPlayPause.setOnClickListener(this);
+        mShffle.setOnClickListener(this);
+        mReppeat.setOnClickListener(this);
+        mImgQueue.setOnClickListener(this);
     }
 
     private void initView() {
-        mRandom = new Random();
         mSongList = new ArrayList<>();
         mSeekbar1 = (CircularSeekBar) mRootView1.findViewById(R.id.pItmSeekbar);
         mListView = (ListView) mRootView1.findViewById(R.id.plistView);
@@ -302,164 +207,140 @@ public class MusicPlay extends Fragment implements View.OnClickListener {
         mControlPlayPause = (ImageView) mRootView1.findViewById(R.id.itmControlPlayPause);
         mImgBackground = (ImageView) mRootView1.findViewById(R.id.background_playmusic);
         mImgQueue = (ImageView) mRootView1.findViewById(R.id.pImgQueue);
+    }
+
+    private void nextSong() {
+        MainActivity.musicService.playNext();
+        setImageSong();
+        mTvNameSong.setText(MainActivity.musicService.nameSong());
+        mTvNameSinger.setText(MainActivity.musicService.nameArtist());
+    }
+
+    private void previousSong() {
+        MainActivity.musicService.playPrev();
+        setImageSong();
+        mTvNameSong.setText(MainActivity.musicService.nameSong());
+        mTvNameSinger.setText(MainActivity.musicService.nameArtist());
+    }
+
+    private void doPlayPause() {
+        if (MainActivity.musicService.isPlaying()) {
+            MainActivity.musicService.pausePlayer();
+            mImgPlayPause.setImageResource(R.drawable.pause);
+            mControlPlayPause.setImageResource(R.drawable.pause);
+        } else {
+            MainActivity.musicService.startPlayer();
+            mImgPlayPause.setImageResource(R.drawable.playing);
+            mControlPlayPause.setImageResource(R.drawable.playing);
+        }
+    }
+
+    // update current time and seekbar of song
+    private void updateTimeSong() {
+        final Handler mHandler = new Handler();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat mSimPleDateFormat = new SimpleDateFormat("mm:ss");
+                mTvTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getCurrentPosition()));
+                mSeekbar1.setProgress(MainActivity.musicService.getCurrentPosition());
+                mHandler.postDelayed(this, 500);
+                MainActivity.musicService.setOnComplete();
+                mTvNameSong.setText(MainActivity.musicService.nameSong());
+                mTvNameSinger.setText(MainActivity.musicService.nameArtist());
+            }
+        }, 100);
+    }
+
+    private void doShuffle() {
+        if (MainActivity.musicService.setShuffle() == true)
+            mShffle.setImageResource(R.drawable.ic_shuffle_black_48dp);
+        else mShffle.setImageResource(R.drawable.ic_shuffle_white_48dp);
 
     }
 
-    private void events() {
-        mControlPlayPause.setOnClickListener(this);
-        mImgNext.setOnClickListener(this);
-        mImgPrevious.setOnClickListener(this);
-        mImgPlayPause.setOnClickListener(this);
-        mShffle.setOnClickListener(this);
-        mReppeat.setOnClickListener(this);
-        mImgQueue.setOnClickListener(this);
+    private void doRepeat() {
+        if (MainActivity.musicService.setRepeat() == true)
+            mReppeat.setImageResource(R.drawable.ic_repeat_black_48dp);
+        else mReppeat.setImageResource(R.drawable.ic_repeat_white_48dp);
     }
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.pImgNext:
-                processNextSong();
+                nextSong();
                 break;
 
             case R.id.pImgPrevious:
-                processPreviousSong();
+                previousSong();
                 break;
 
             case R.id.pImgPlayPause:
-                if (mMediaPlayer.isPlaying()) {
-                    mMediaPlayer.pause();
-                    mImgPlayPause.setImageResource(R.drawable.pause);
-                    mControlPlayPause.setImageResource(R.drawable.pause);
-                } else {
-                    mMediaPlayer.start();
-                    mImgPlayPause.setImageResource(R.drawable.playing);
-                    mControlPlayPause.setImageResource(R.drawable.playing);
-                }
+                doPlayPause();
                 break;
             case R.id.pShuffle:
-                if (mShuffleOn == false) {
-                    mShuffleOn = true;
-                    mShffle.setImageResource(R.drawable.ic_shuffle_black_48dp);
-                } else if (mShuffleOn == true) {
-                    mShffle.setImageResource(R.drawable.ic_shuffle_white_48dp);
-                    mShuffleOn = false;
-                }
-
-
+                doShuffle();
                 break;
+
             case R.id.pRepeat:
-                if (mRepeat == false) {
-                    mRepeat = true;
-                    mReppeat.setImageResource(R.drawable.ic_repeat_black_48dp);
-                } else {
-                    mRepeat = false;
-                    mReppeat.setImageResource(R.drawable.ic_repeat_white_48dp);
-                }
+                doRepeat();
 
                 break;
             case R.id.itmControlPlayPause:
-                if (mMediaPlayer.isPlaying()) {
-                    mMediaPlayer.pause();
-                    mImgPlayPause.setImageResource(R.drawable.pause);
-                    mControlPlayPause.setImageResource(R.drawable.pause);
-                } else {
-                    mMediaPlayer.start();
-                    mImgPlayPause.setImageResource(R.drawable.playing);
-                    mControlPlayPause.setImageResource(R.drawable.playing);
-                }
+                doControlPlay();
+
                 break;
             case R.id.pImgQueue:
-                Intent intent = new Intent(getActivity(), PlayingQueue.class);
-                Bundle bundle = new Bundle();
-                if (tag.equals(TAG_SONG)) {
+                doQueue();
 
-                    bundle.putString(TAG, TAG_SONG);
-                } else if (tag.equals(TAG_ARTIST)) {
-
-                    bundle.putString(TAG, TAG_ARTIST);
-                    bundle.putString(NAME_ARTIST, nameArtist);
-                } else if (tag.equals(TAG_ALBUM)) {
-
-                    bundle.putString(TAG, TAG_ALBUM);
-                    bundle.putString(NAME_ALBUM, nameAlbum);
-                }
-                intent.putExtras(bundle);
-                startActivityForResult(intent, REQUEST_LIST);
+                break;
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_LIST) {
-            if (resultCode == RESULT_OK) {
-                Bundle getData = data.getExtras();
-                mSongList = (List<Song>) getData.getSerializable(LIST);
-                mSongAdapter.notifyDataSetChanged();
-            }
+    // queue song playing
+    private void doQueue() {
+        Intent intent = new Intent(getContext(), PlayingQueue.class);
+        Bundle bundle = new Bundle();
+        if (tag.equals(TAG_SONG)) {
+
+            bundle.putString(TAG, TAG_SONG);
+        } else if (tag.equals(TAG_ARTIST)) {
+
+            bundle.putString(TAG, TAG_ARTIST);
+            bundle.putString(NAME_ARTIST, nameArtist);
+        } else if (tag.equals(TAG_ALBUM)) {
+
+            bundle.putString(TAG, TAG_ALBUM);
+            bundle.putString(NAME_ALBUM, nameAlbum);
         }
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_LIST);
     }
 
-    private void processNextSong() {
-        if (mRepeat == true) {
-            mMediaPlayer.stop();
-            mMediaPlayer.release();
-            processMediaPlayer();
-        }
-        if (mRepeat == false) {
-            if (mShuffleOn == true) {
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-                int newSong = mPosition;
-                while (newSong == mPosition) {
-                    newSong = mRandom.nextInt(mSongList.size());
-                }
-                mPosition = newSong;
-                processMediaPlayer();
-                newNotification();
-            } else if (mShuffleOn == false) {
-                mPosition = mPosition + 1;
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-                if (mPosition >= mSongList.size()) {
-                    mPosition = 0;
-                    processMediaPlayer();
-                    newNotification();
-                } else {
-                    processMediaPlayer();
-                    newNotification();
-                }
-            }
-        }
-    }
-
-    public void processPreviousSong() {
-        if (mRepeat == true) {
-            mMediaPlayer.stop();
-            mMediaPlayer.release();
-            processMediaPlayer();
+    // set image of song
+    private void setImageSong() {
+        mmr.setDataSource(MainActivity.musicService.pathSong());
+        byte[] dataImageDisc = mmr.getEmbeddedPicture();
+        if (dataImageDisc != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
+            mImgBackground.setImageBitmap(bitmap);
         } else {
-            if (mShuffleOn == true) {
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-                int newSong = mPosition;
-                while (newSong == mPosition) {
-                    newSong = mRandom.nextInt(mSongList.size());
-                }
-                mPosition = newSong;
-                processMediaPlayer();
-            } else if (mShuffleOn == false) {
-                mPosition = mPosition - 1;
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-                if (mPosition < 0) {
-                    mPosition = mSongList.size() - 1;
-                    processMediaPlayer();
-                } else {
-                    processMediaPlayer();
-                }
-            }
+            mImgBackground.setImageResource(R.drawable.detaialbum);
+        }
+    }
+
+
+    private void doControlPlay() {
+        if (MainActivity.musicService.mPlayer.isPlaying()) {
+            MainActivity.musicService.pausePlayer();
+            mImgPlayPause.setImageResource(R.drawable.pause);
+            mControlPlayPause.setImageResource(R.drawable.pause);
+        } else {
+            MainActivity.musicService.mPlayer.start();
+            mImgPlayPause.setImageResource(R.drawable.playing);
+            mControlPlayPause.setImageResource(R.drawable.playing);
         }
     }
 

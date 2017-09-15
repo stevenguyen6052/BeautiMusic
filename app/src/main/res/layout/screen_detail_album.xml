@@ -4,40 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background_itemalbum"
-        >
-
-        <ImageView
-            android:id="@+id/detailAlbumImg"
-            android:layout_width="match_parent"
-            android:layout_height="250dp" />
-        <TextView
-            android:id="@+id/detailAlbumTvNameArtist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="NAME ARTIST"
-            android:textColor="@color/colorWhite"
-            android:textSize="30dp"
-            android:layout_marginLeft="27dp"
-            android:layout_marginStart="27dp"
-            android:layout_marginBottom="16dp"
-            android:layout_alignBottom="@+id/detailAlbumImg"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-    </RelativeLayout>
-
-    <ListView
-        android:id="@+id/detailAlbumListView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-
-    </ListView>
-
-
+    <include
+        android:id="@+id/toolbar2"
+        layout="@layout/custom_toolbar_cosllap" />
 
 </LinearLayout>

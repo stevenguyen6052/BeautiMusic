@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/colorAccent"
     android:orientation="horizontal"
     android:weightSum="1">
 
@@ -9,60 +10,66 @@
         android:id="@+id/notifiIcoin"
         android:layout_width="@dimen/size_icon_music"
         android:layout_height="@dimen/size_icon_music"
+        android:layout_gravity="center"
         android:background="@drawable/notnhacchange" />
 
     <LinearLayout
-        android:layout_width="90dp"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
+        android:layout_weight="0.80"
         android:orientation="vertical"
-        android:layout_weight="0.88">
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp">
 
         <TextView
             android:id="@+id/notifiNameSong"
-            style="@style/ItemSong_ListSong"
-            android:textSize="20sp"
-            android:text="Name song"
-            />
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/notifiNameArtist"
-            style="@style/ItemSong_ListSong"
-            android:text="Name artist"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:maxLines="1"
             android:textSize="16sp" />
     </LinearLayout>
+
     <RelativeLayout
-        android:layout_width="100dp"
+        android:layout_width="130dp"
         android:layout_height="50dp"
         android:orientation="horizontal">
 
-        <!--<ImageView-->
-            <!--android:id="@+id/notifiPrevious"-->
-            <!--android:layout_width="30dp"-->
-            <!--android:layout_height="30dp"-->
-            <!--android:background="@drawable/custom_previous"-->
-            <!--android:layout_alignTop="@+id/notifiPlay"-->
-            <!--android:layout_alignParentLeft="true"-->
-            <!--android:layout_alignParentStart="true" />-->
+        <ImageView
+            android:id="@+id/notifiPrevious"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/notifiPlay"
+            android:background="@drawable/custom_previous" />
 
         <ImageView
-
             android:id="@+id/notifiPlay"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/playing" />
+
+        <ImageView
+            android:id="@+id/notifiNext"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/notifiPlay"
             android:layout_centerInParent="true"
-            android:background="@drawable/playing"
-
-             />
-        <!--<ImageView-->
-            <!--android:background="@drawable/custom_next"-->
-            <!--android:id="@+id/notifiNext"-->
-            <!--android:layout_width="30dp"-->
-            <!--android:layout_height="30dp"-->
-            <!--android:layout_toRightOf="@id/notifiPlay"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--/>-->
+            android:background="@drawable/custom_next" />
     </RelativeLayout>
-
 
 
 </LinearLayout>

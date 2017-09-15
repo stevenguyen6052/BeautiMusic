@@ -36,7 +36,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
     private View mRootView;
     private SongDatabase mSongDatabase;
     private List<Song> mSongList;
-    private List<Song> mSongList1;
+    public static List<Song> mSongList1;
     private SongAdapter mSongAdapter;
     private ListView mListView;
     private SendDataPosition mSendDataPosition;
@@ -45,7 +45,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+        //setRetainInstance(true);
         setHasOptionsMenu(true);
     }
 
@@ -112,7 +112,6 @@ public class SongFragment extends android.support.v4.app.Fragment {
                 break;
 
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -152,13 +151,8 @@ public class SongFragment extends android.support.v4.app.Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mSendDataPosition.SendPosition(position);
-                if (MusicPlay.mMediaPlayer == null) {
-                    MainActivity.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-                } else {
-                    MusicPlay.mMediaPlayer.stop();
-                    MainActivity.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-                }
 
+                    //MainActivity.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
         });
     }

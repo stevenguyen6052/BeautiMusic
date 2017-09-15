@@ -3,6 +3,7 @@
     package="com.example.windows10gamer.beautimusic">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -18,11 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.DetailArtist"
-
-            >
-
-        </activity>
+        <activity android:name=".view.activity.DetailArtist"></activity>
         <activity android:name=".view.activity.DetailAlbum"></activity>
         <activity android:name=".view.activity.PlayingQueue"></activity>
 
@@ -35,6 +32,10 @@
                 <action android:name="com.example.windows10gamer.beautimusic.play" />
             </intent-filter>
         </receiver>
+
+        <service android:name=".view.helper.service.MusicService" />
+
+        <activity android:name=".view.activity.PlayMusicActivity"></activity>
     </application>
 
 </manifest>
