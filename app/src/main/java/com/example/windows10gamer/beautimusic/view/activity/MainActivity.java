@@ -25,24 +25,28 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.text.SimpleDateFormat;
 
 public class MainActivity extends AppCompatActivity implements SendDataPosition {
+    // tag of current song
     private static final String POSITION = "POSITION";
+    public static int mPosition;
+
     private static final String TAG = "TAG";
     private static final String TAG_SONG = "SONG";
+
     private ViewPager mViewPager;
     private AdapterTab adapterTab;
-    public static int mPosition;
+
+    // layout contain toolbar control play music
     private View mLayout;
-    public static SlidingUpPanelLayout slidingUpPanelLayout;
-    public static MusicPlay mMusicPlay ;
+
+    // service
     public static MusicService musicService;
 
-    //test
     public static TextView mTvNameSong;
     public static TextView mTvNameArtist;
     public static ImageView mImgContrlPlay;
 
     private Intent playIntent;
-    //binding
+
     private boolean musicBound = false;
 
     private ServiceConnection getMusicConnection = new ServiceConnection() {
@@ -77,10 +81,9 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition 
         if (toolbar != null)
             setSupportActionBar(toolbar);
         initView();
-        //toolBarControlPlaying();
-        //hideFragmentControl();
 
     }
+
 
     @Override
     protected void onResume() {
@@ -89,23 +92,24 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition 
 
     }
 
+    // update current nameSong,nameArtist of song isplaying
     private void toolBarControlPlaying(){
         if (musicService.mPlayer != null){
         if ( musicService.mPlayer.isPlaying()){
             mTvNameSong.setText(musicService.nameSong());
             mTvNameArtist.setText(musicService.nameArtist());
             mImgContrlPlay.setImageResource(R.drawable.playing);
-            updateTimeSong();
+            updateToolbarControl();
         }
         }
-
     }
-    private void updateTimeSong() {
+
+    // update view when song complete
+    private void updateToolbarControl() {
         final Handler mHandler = new Handler();
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                SimpleDateFormat mSimPleDateFormat = new SimpleDateFormat("mm:ss");
                 mHandler.postDelayed(this, 500);
                 MainActivity.musicService.setOnComplete();
                 mTvNameSong.setText(MainActivity.musicService.nameSong());
@@ -114,39 +118,25 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition 
         }, 100);
     }
 
-//    private void hideFragmentControl() {
-//        if (musicService.mPlayer != null && musicService.mPlayer.isPlaying()) mLayout.setVisibility(View.VISIBLE);
-//        else mLayout.setVisibility(View.INVISIBLE);
-//
-//    }
 
     private void initView() {
-        //mLayout = findViewById(R.id.myFrameLayout);
-        //slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+
         adapterTab = new AdapterTab(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mViewPager.setAdapter(adapterTab);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(mViewPager);
 
-        //test
         mTvNameSong = (TextView) findViewById(R.id.mainNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.mainNameSingle);
         mImgContrlPlay = (ImageView) findViewById(R.id.mainControlPlay);
 
     }
 
+    // when click item in song fragment send index of item to activity and activity send to playmusicactivity
     @Override
     public void SendPosition(int positon) {
-//        mLayout.setVisibility(View.VISIBLE);
-//        mPosition = positon;
-//        mMusicPlay = new MusicPlay();
-//        MusicPlay.mPosition = positon;
-//        Bundle args = new Bundle();
-//        args.putInt(POSITION, mPosition);
-//        args.putString(TAG, TAG_SONG);
-//        mMusicPlay.setArguments(args);
-//        getSupportFragmentManager().beginTransaction().replace(R.id.myFrameLayout,mMusicPlay).commit();
+
         Intent intent = new Intent(this,PlayMusicActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(TAG, TAG_SONG);

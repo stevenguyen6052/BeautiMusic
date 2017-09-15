@@ -32,18 +32,14 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private final static String TAG_SONG = "SONG";
     private final static String TAG_ARTIST = "ARTIST";
     private final static String TAG_ALBUM = "ALBUM";
-    private final static String LIST = "List";
     private final static int REQUEST_LIST = 1;
 
-    public static final String NOTIFY_PREVIOUS = "com.example.windows10gamer.beautimusic.previous";
-    public static final String NOTIFY_PLAY = "com.example.windows10gamer.beautimusic.play";
-    public static final String NOTIFY_NEXT = "com.example.windows10gamer.beautimusic.next";
     private String tag, nameAlbum, nameArtist;
 
     public static TextView mTvNameSong, mTvNameSinger, mTvTime;
     private ListView mListView;
     private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat, mImgQueue;
-    public static ImageView mControlPlayPause, mImgPlayPause;
+    public static ImageView mImgPlayPause;
     private CircularSeekBar mSeekbar1;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
@@ -53,7 +49,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
 
     public static List<Song> mSongList;
-    private ListView songView;
+
 
     //activity and playback pause flags
     private boolean paused = false, playbackPaused = false;
@@ -69,23 +65,19 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    // list song item click
     private void listViewClick() {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                playMusicItem(position);
+                if (MainActivity.musicService.mPosition < position)
+                    MainActivity.musicService.mPosition += position;
+                else MainActivity.musicService.mPosition = position;
+                playMusic();
             }
         });
     }
 
-    //play music in item click
-    private void playMusicItem(int position) {
-        if (MainActivity.musicService.mPosition < position)
-            MainActivity.musicService.mPosition += position;
-        else MainActivity.musicService.mPosition = position;
-        playMusic();
-
-    }
 
     //get agurment from activity
     private void getData() {
@@ -121,18 +113,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             playMusic();
 
         }
-
-//        }else if (MainActivity.musicService.mPlayer.isPlaying()){
-//            mTvNameSong.setText(MainActivity.musicService.nameSong());
-//            mTvNameSinger.setText(MainActivity.musicService.nameArtist());
-//            mImgPlayPause.setImageResource(R.drawable.playing);
-//            mControlPlayPause.setImageResource(R.drawable.playing);
-//            mSeekbar1.setMax(MainActivity.musicService.getDuaration());
-//            setImageSong();
-//            updateTimeSong();
-//
-//        }
-
         listenerSeekbarChange();
     }
 
@@ -148,7 +128,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         mTvNameSong.setText(MainActivity.musicService.nameSong());
         mTvNameSinger.setText(MainActivity.musicService.nameArtist());
         mImgPlayPause.setImageResource(R.drawable.playing);
-        mControlPlayPause.setImageResource(R.drawable.playing);
         mSeekbar1.setMax(MainActivity.musicService.getDuaration());
         setImageSong();
         updateTimeSong();
@@ -177,7 +156,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void addEvents() {
-        mControlPlayPause.setOnClickListener(this);
         mImgNext.setOnClickListener(this);
         mImgPrevious.setOnClickListener(this);
         mImgPlayPause.setOnClickListener(this);
@@ -198,7 +176,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         mImgPlayPause = (ImageView) findViewById(R.id.pImgPlayPause);
         mShffle = (ImageView) findViewById(R.id.pShuffle);
         mReppeat = (ImageView) findViewById(R.id.pRepeat);
-        mControlPlayPause = (ImageView) findViewById(R.id.itmControlPlayPause);
         mImgBackground = (ImageView) findViewById(R.id.background_playmusic);
         mImgQueue = (ImageView) findViewById(R.id.pImgQueue);
     }
@@ -221,11 +198,10 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         if (MainActivity.musicService.isPlaying()) {
             MainActivity.musicService.pausePlayer();
             mImgPlayPause.setImageResource(R.drawable.pause);
-            mControlPlayPause.setImageResource(R.drawable.pause);
+
         } else {
             MainActivity.musicService.startPlayer();
             mImgPlayPause.setImageResource(R.drawable.playing);
-            mControlPlayPause.setImageResource(R.drawable.playing);
         }
     }
 
@@ -330,11 +306,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         if (MainActivity.musicService.mPlayer.isPlaying()) {
             MainActivity.musicService.pausePlayer();
             mImgPlayPause.setImageResource(R.drawable.pause);
-            mControlPlayPause.setImageResource(R.drawable.pause);
+
         } else {
             MainActivity.musicService.mPlayer.start();
             mImgPlayPause.setImageResource(R.drawable.playing);
-            mControlPlayPause.setImageResource(R.drawable.playing);
+
         }
     }
 }
