@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
@@ -22,7 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnStartDragListener {
+public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnStartDragListener,View.OnClickListener {
 
     private static final String NAME_ALBUM = "Name Album";
     private static final String NAME_ARTIST = "Name Artist";
@@ -37,15 +39,29 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     private List<Song> sendListSong;
     private SongDatabase mSongDatabase;
 
+    //test
+    private TextView mTvNameSong,mTvNameArtist;
+    private ImageView mPlayPause,mOpenPlayMusic;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing_queue);
-
+        initView();
         getData();
         setUpAdapter();
         setUpToolbar();
 
+    }
+
+    private void initView() {
+        mTvNameSong = (TextView) findViewById(R.id.queueNameSong);
+        mTvNameArtist = (TextView) findViewById(R.id.queueNameArtist);
+        mPlayPause = (ImageView) findViewById(R.id.queuePlayPause);
+        mOpenPlayMusic = (ImageView) findViewById(R.id.queueOpenPlayMusic);
+        mPlayPause.setOnClickListener(this);
+        mOpenPlayMusic.setOnClickListener(this);
     }
 
     private void setUpToolbar() {
@@ -118,4 +134,20 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         mItemTouchHelper.startDrag(viewHolder);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.queuePlayPause:
+                if (MainActivity.musicService.isPlaying()){
+                    MainActivity.musicService.pausePlayer();
+                    mPlayPause.setImageResource(R.drawable.pause);
+                    PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.pause);
+                }
+                break;
+            case R.id.queueOpenPlayMusic:
+                Intent intent = new Intent(this,PlayMusicActivity.class);
+                startActivity(intent);
+                break;
+        }
+    }
 }

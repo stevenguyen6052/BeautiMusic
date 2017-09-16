@@ -25,7 +25,7 @@ import java.util.List;
 
 
 
-public class DetailAlbum extends AppCompatActivity {
+public class DetailAlbum extends AppCompatActivity implements View.OnClickListener{
     private static final String POSITION = "POSITION";
     private static final String NAME_ALBUM = "Name Album";
     private static final String NAME_ARTIST = "Name Artist";
@@ -40,7 +40,7 @@ public class DetailAlbum extends AppCompatActivity {
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
     private TextView mTvNameSong, mTvNameArtist;
-    private ImageView mControlPlayPause;
+    private ImageView mControlPlayPause,mOpenPlayMusic;
 
     private List<Song> mSongList;
     private String nameAlbum;
@@ -94,6 +94,12 @@ public class DetailAlbum extends AppCompatActivity {
         toolBarControlPlaying();
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
     // update current song and listener player oncomplete
     private void updateTimeSong() {
         final Handler mHandler = new Handler();
@@ -130,6 +136,7 @@ public class DetailAlbum extends AppCompatActivity {
         mTvNameSong = (TextView) findViewById(R.id.albumNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.albumNameArtist);
         mControlPlayPause = (ImageView) findViewById(R.id.albumControlPlayPause);
+        mOpenPlayMusic = (ImageView) findViewById(R.id.album_openplaymusic);
         imgAlbum = (ImageView) findViewById(R.id.detailAlbumImg);
         mListView = (ListView) findViewById(R.id.detaialbum_listview);
 
@@ -138,6 +145,9 @@ public class DetailAlbum extends AppCompatActivity {
             mSongList = new ArrayList<>();
             mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbum);
         }
+
+        mControlPlayPause.setOnClickListener(this);
+        mOpenPlayMusic.setOnClickListener(this);
 
     }
     // set image of album
@@ -157,5 +167,23 @@ public class DetailAlbum extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         nameAlbum = bundle.getString(NAME_ALBUM);
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.album_openplaymusic:
+                Intent intent = new Intent(this,PlayMusicActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.albumControlPlayPause:
+                if (MainActivity.musicService.isPlaying()){
+                    MainActivity.musicService.pausePlayer();
+                    mControlPlayPause.setImageResource(R.drawable.pause);
+                }else {
+                    mControlPlayPause.setImageResource(R.drawable.playing);
+                }
+                break;
+        }
     }
 }

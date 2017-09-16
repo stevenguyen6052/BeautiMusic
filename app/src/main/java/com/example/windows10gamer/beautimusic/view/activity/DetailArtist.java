@@ -107,6 +107,11 @@ public class DetailArtist extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         toolBarControlPlaying();
     }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
     // click item listview
     private void onItemListViewClick() {
@@ -140,7 +145,7 @@ public class DetailArtist extends AppCompatActivity implements View.OnClickListe
         mTvNameSong = (TextView) findViewById(R.id.artistNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.artistNameArtist);
         mImgPlayPause = (ImageView) findViewById(R.id.artistControlPlay);
-        imgView = (ImageView) findViewById(R.id.artistImgOpenPlayMusic);
+        imgView = (ImageView) findViewById(R.id.detailAlbumImg);
         mListView = (ListView) findViewById(R.id.detaialbum_listview);
 
         mSongDatabase = new SongDatabase(getApplication());

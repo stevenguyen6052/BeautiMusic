@@ -93,12 +93,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return musicBind;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    //@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onUnbind(Intent intent) {
         mPlayer.stop();
         mPlayer.release();
-        mediaSession.release();
+        //mediaSession.release();
         return false;
     }
 
@@ -110,7 +110,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+   // @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onPrepared(MediaPlayer mp) {
         mPlayer.start();
@@ -327,7 +327,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1,builder.build());
 
+    }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopForeground(true);
     }
 }

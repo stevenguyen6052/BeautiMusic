@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,6 +14,71 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycleQueue"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
 
-</LinearLayout>
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/queueOpenPlayMusic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/itmImgButton"
+            android:layout_gravity="center"
+            android:background="@drawable/notnhacchange"
+            android:paddingTop="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/queueNameSong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
+                android:text="Tên bài hát"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/queueNameArtist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/itmNameSong"
+
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
+                android:text="Tên ca sĩ"
+                android:textColor="@color/colorWhite"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/queuePlayPause"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

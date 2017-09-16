@@ -33,6 +33,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private final static String TAG_ARTIST = "ARTIST";
     private final static String TAG_ALBUM = "ALBUM";
 
+    // request result list after queue
     private final static String TAG_REQUEST = "LIST";
     private final static int REQUEST_LIST = 1;
 
@@ -70,9 +71,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onStart() {
         super.onStart();
-        if (mSongList != null) {
-            mSongAdapter.notifyDataSetChanged();
-        }
+//        if (mSongList != null) {
+//            mSongAdapter.notifyDataSetChanged();
+//        }
     }
 
 
@@ -92,11 +93,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
     //get agurment from activity
     private void getData() {
-//        if (MainActivity.musicService.mPlayer == null){
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
+            //open this when click list song item from in activities song,album,artist
             tag = bundle.getString(TAG);
             if (tag.equals(TAG_ALBUM)) {
 
@@ -104,12 +105,16 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 nameAlbum = bundle.getString(NAME_ALBUM);
                 mSongDatabase = new SongDatabase(this);
                 mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbum);
+                setDataSource();
+                playMusic();
 
             } else if (tag.equals(TAG_SONG)) {
 
                 mSongDatabase = new SongDatabase(this);
                 mSongList = mSongDatabase.getAllListSong();
                 mPosition = bundle.getInt(POSITION);
+                setDataSource();
+                playMusic();
 
             } else if (tag.equals(TAG_ARTIST)) {
 
@@ -117,18 +122,42 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 nameArtist = bundle.getString(NAME_ARTIST);
                 mSongDatabase = new SongDatabase(this);
                 mSongList = mSongDatabase.getAlLSongFromArtist(nameArtist);
+                setDataSource();
+                playMusic();
             }
-            mSongAdapter = new SongAdapter(this, mSongList, R.layout.item_song);
-            mListView.setAdapter(mSongAdapter);
-            setDataSource();
-            playMusic();
 
+
+        }else {
+            // open this when click from toolbar mini control
+            openPlayMusic();
+            mSongList = MainActivity.musicService.mSongList;
         }
+        mSongAdapter = new SongAdapter(this, mSongList, R.layout.item_song);
+        mListView.setAdapter(mSongAdapter);
+
         listenerSeekbarChange();
     }
 
 
-    // set datasource for service
+    private void openPlayMusic(){
+        if (MainActivity.musicService.isPlaying()){
+            mImgPlayPause.setImageResource(R.drawable.playing);
+            mTvNameSong.setText(MainActivity.musicService.nameSong());
+            mTvNameSinger.setText(MainActivity.musicService.nameArtist());
+            mSeekbar1.setMax(MainActivity.musicService.getDuaration());
+            setImageSong();
+            updateTimeSong();
+        }else {
+            mImgPlayPause.setImageResource(R.drawable.pause);
+            mTvNameSong.setText(MainActivity.musicService.nameSong());
+            mTvNameSinger.setText(MainActivity.musicService.nameArtist());
+            mSeekbar1.setMax(MainActivity.musicService.getDuaration());
+            setImageSong();
+        }
+    }
+
+
+    // set data for service
     private void setDataSource() {
         MainActivity.musicService.mSongList = mSongList;
         MainActivity.musicService.mPosition = mPosition;
