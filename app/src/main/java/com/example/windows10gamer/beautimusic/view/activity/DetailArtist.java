@@ -32,7 +32,7 @@ public class DetailArtist extends AppCompatActivity implements View.OnClickListe
 
     private TextView mTvNameSong;
     private TextView mTvNameArtist;
-    private ImageView mImgPlayPause;
+    private ImageView mControlPlayPause, mOpenPlayMusic;
 
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
     private SongDatabase mSongDatabase;
@@ -60,10 +60,7 @@ public class DetailArtist extends AppCompatActivity implements View.OnClickListe
         onItemListViewClick();
 
         //update current music isplaying in toolbar control
-        mTvNameSong.setText(MainActivity.musicService.nameSong());
-        mTvNameArtist.setText(MainActivity.musicService.nameArtist());
-        updateTimeSong();
-
+        toolBarControlPlaying();
 
     }
 
@@ -95,7 +92,7 @@ public class DetailArtist extends AppCompatActivity implements View.OnClickListe
             if (MainActivity.musicService.mPlayer.isPlaying()) {
                 mTvNameSong.setText(MainActivity.musicService.nameSong());
                 mTvNameArtist.setText(MainActivity.musicService.nameArtist());
-                mImgPlayPause.setImageResource(R.drawable.playing);
+                mControlPlayPause.setImageResource(R.drawable.playing);
                 updateTimeSong();
             }
         }
@@ -107,6 +104,7 @@ public class DetailArtist extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         toolBarControlPlaying();
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -144,7 +142,7 @@ public class DetailArtist extends AppCompatActivity implements View.OnClickListe
 
         mTvNameSong = (TextView) findViewById(R.id.artistNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.artistNameArtist);
-        mImgPlayPause = (ImageView) findViewById(R.id.artistControlPlay);
+        mControlPlayPause = (ImageView) findViewById(R.id.artistControlPlay);
         imgView = (ImageView) findViewById(R.id.detailAlbumImg);
         mListView = (ListView) findViewById(R.id.detaialbum_listview);
 
@@ -169,8 +167,23 @@ public class DetailArtist extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.artistControlPlay:
+                if (MainActivity.musicService.isPlaying()) {
+                    MainActivity.musicService.pausePlayer();
+                    mControlPlayPause.setImageResource(R.drawable.pause);
+                    MainActivity.mImgContrlPlay.setImageResource(R.drawable.pause);
+                    DetailAlbum.mControlPlayPause.setImageResource(R.drawable.pause);
+                } else {
+                    mControlPlayPause.setImageResource(R.drawable.playing);
+                    MainActivity.mImgContrlPlay.setImageResource(R.drawable.playing);
+                    DetailAlbum.mControlPlayPause.setImageResource(R.drawable.playing);
+                }
+                break;
+            case R.id.artistImgOpenPlayMusic:
+                Intent intent = new Intent(this, PlayMusicActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 }

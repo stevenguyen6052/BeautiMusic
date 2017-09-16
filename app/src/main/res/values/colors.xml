@@ -7,6 +7,6 @@
     <color name="colorWhite">#ffff</color>
     <color name="colorBack">#000</color>
     <color name="click_item">#ccffff</color>
-    <color name="background_itemalbum">#5ef5f5f5</color>
+    <color name="background_itemalbum">#2af5f5f5</color>
     <color name="background_playsong">#a2000000</color>
 </resources>

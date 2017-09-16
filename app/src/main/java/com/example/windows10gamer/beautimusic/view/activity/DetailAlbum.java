@@ -40,7 +40,7 @@ public class DetailAlbum extends AppCompatActivity implements View.OnClickListen
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
     private TextView mTvNameSong, mTvNameArtist;
-    private ImageView mControlPlayPause,mOpenPlayMusic;
+    public static ImageView mControlPlayPause,mOpenPlayMusic;
 
     private List<Song> mSongList;
     private String nameAlbum;
@@ -180,8 +180,10 @@ public class DetailAlbum extends AppCompatActivity implements View.OnClickListen
                 if (MainActivity.musicService.isPlaying()){
                     MainActivity.musicService.pausePlayer();
                     mControlPlayPause.setImageResource(R.drawable.pause);
+                    MainActivity.mImgContrlPlay.setImageResource(R.drawable.pause);
                 }else {
                     mControlPlayPause.setImageResource(R.drawable.playing);
+                    MainActivity.mImgContrlPlay.setImageResource(R.drawable.playing);
                 }
                 break;
         }
