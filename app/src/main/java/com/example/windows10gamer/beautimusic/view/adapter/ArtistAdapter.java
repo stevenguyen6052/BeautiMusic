@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
     private static final String NAME_ARTIST = "Name Artist";
-    private static final String ALBUM = "Album";
+    private static final String ALBUM = "Album  ";
     private static final String SONG = "Song";
     private List<Artist> mArtistList;
     private Context mContext;
@@ -72,9 +72,9 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mTvNameArtist = (TextView) itemView.findViewById(R.id.item_artist);
-            mTvSumAlbum = (TextView) itemView.findViewById(R.id.item_sum_album);
-            mTvSumSong = (TextView) itemView.findViewById(R.id.item_sum_song);
+            mTvNameArtist = (TextView) itemView.findViewById(R.id.item_nameartist);
+            mTvSumAlbum = (TextView) itemView.findViewById(R.id.item_sumg_album);
+            mTvSumSong = (TextView) itemView.findViewById(R.id.item_sumg_song);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }
