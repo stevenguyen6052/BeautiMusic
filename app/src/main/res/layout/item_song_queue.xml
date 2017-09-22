@@ -3,56 +3,56 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="5dp"
-    >
+    android:padding="5dp">
 
     <ImageView
         android:id="@+id/itm_que_iconsong"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="@drawable/notnhacchange"
-        />
+        android:layout_alignParentTop="true"
+        android:background="@drawable/notnhacchange" />
 
     <LinearLayout
-        android:paddingTop="5dp"
-        android:paddingLeft="1dp"
         android:id="@+id/linear_layout_customer_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/itm_que_iconsong"
+        android:layout_toRightOf="@+id/itm_que_iconsong"
         android:layout_weight="3"
         android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/itm_que_iconsong"
-        android:layout_toEndOf="@+id/itm_que_iconsong">
+        android:paddingLeft="1dp"
+        android:paddingTop="5dp">
+
         <TextView
             android:id="@+id/itm_que_nameSong"
-            android:layout_width="wrap_content"
+            android:layout_width="225dp"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:maxLines="1"
-            android:textSize="20sp"
-            />
+            android:textSize="20sp" />
+
         <TextView
-            android:text="ABC"
             android:id="@+id/itm_que_nameArtist"
-            android:layout_width="match_parent"
+            android:layout_width="225dp"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:maxLines="1"
-            android:textSize="16sp"
-            />
+            android:text="ABC"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/handle"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_gravity="center_vertical|right"
-        android:scaleType="center"
-        android:background="@drawable/move"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_vertical|right"
+        android:background="@drawable/move"
+        android:scaleType="center" />
 
 </RelativeLayout>

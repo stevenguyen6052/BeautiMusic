@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.windows10gamer.beautimusic.view.activity.DetailArtist;
+import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.view.ItemClickListener;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.R;
@@ -50,8 +50,9 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
                 if (isLongClick) {
 
                 } else {
-                    Intent intent = new Intent(view.getContext(), DetailArtist.class);
+                    Intent intent = new Intent(view.getContext(), DetailAlbumArtist.class);
                     Bundle bundle = new Bundle();
+                    bundle.putString("TAG", "ARTIST");
                     bundle.putString(NAME_ARTIST, mArtistList.get(position).getNameArtist());
                     intent.putExtras(bundle);
                     view.getContext().startActivity(intent);

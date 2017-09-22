@@ -60,11 +60,12 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mSong1.setmNameAlbum(mCursor.getString(2));
                 mSong1.setmNameArtist(mCursor.getString(3));
                 mSong1.setmFileSong(mCursor.getString(4));
-                mSong1.setmDuaration(mCursor.getInt(5));
+                mSong1.setmDuaration(mCursor.getString(5));
                 mSong1.setmAlbumId(mCursor.getString(6));
                 mSong1.setmArtistId(mCursor.getString(7));
                 mSong1.setmAlbumKey(mCursor.getString(8));
-                mSong1.setmImage(mCursor.getInt(8));
+                mSong1.setmImage(mCursor.getInt(9));
+
             } while (mCursor.moveToNext());
         }
         if (mSong1.getmId() != mSong.getmId()) {
@@ -84,7 +85,8 @@ public class SongDatabase extends SQLiteOpenHelper {
         }
 
     }
-    public List<Song> getSongFromNameSong(String params){
+
+    public List<Song> getSongFromNameSong(String params) {
         List<Song> mListSong = new ArrayList<>();
         String SELECT_SONGS = "SELECT * FROM " + TBL_SONG + " WHERE " + CL_NAME_ALBUM + " LIKE  '%" + params + "%' ";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -97,7 +99,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mSong.setmNameAlbum(mCursor.getString(2));
                 mSong.setmNameArtist(mCursor.getString(3));
                 mSong.setmFileSong(mCursor.getString(4));
-                mSong.setmDuaration(mCursor.getInt(5));
+                mSong.setmDuaration(mCursor.getString(5));
                 mSong.setmAlbumId(mCursor.getString(6));
                 mSong.setmArtistId(mCursor.getString(7));
                 mSong.setmAlbumKey(mCursor.getString(8));
@@ -123,7 +125,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mSong.setmNameAlbum(mCursor.getString(2));
                 mSong.setmNameArtist(mCursor.getString(3));
                 mSong.setmFileSong(mCursor.getString(4));
-                mSong.setmDuaration(mCursor.getInt(5));
+                mSong.setmDuaration(mCursor.getString(5));
                 mSong.setmAlbumId(mCursor.getString(6));
                 mSong.setmArtistId(mCursor.getString(7));
                 mSong.setmAlbumKey(mCursor.getString(8));
@@ -135,6 +137,8 @@ public class SongDatabase extends SQLiteOpenHelper {
         db.close();
         return mListSong;
     }
+
+
 
     public List<Album> getAllAlbum1() {
         List<Album> mAlbumList = new ArrayList<>();
@@ -154,7 +158,6 @@ public class SongDatabase extends SQLiteOpenHelper {
         db.close();
         return mAlbumList;
     }
-
 
     public List<Artist> getAllArtist() {
         List<Artist> mArtistList = new ArrayList<>();
@@ -188,7 +191,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mSong.setmNameAlbum(mCursor.getString(2));
                 mSong.setmNameArtist(mCursor.getString(3));
                 mSong.setmFileSong(mCursor.getString(4));
-                mSong.setmDuaration(mCursor.getInt(5));
+                mSong.setmDuaration(mCursor.getString(5));
                 mSong.setmAlbumId(mCursor.getString(6));
                 mSong.setmArtistId(mCursor.getString(7));
                 mSong.setmAlbumKey(mCursor.getString(8));
@@ -214,7 +217,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mSong.setmNameAlbum(mCursor.getString(2));
                 mSong.setmNameArtist(mCursor.getString(3));
                 mSong.setmFileSong(mCursor.getString(4));
-                mSong.setmDuaration(mCursor.getInt(5));
+                mSong.setmDuaration(mCursor.getString(5));
                 mSong.setmAlbumId(mCursor.getString(6));
                 mSong.setmArtistId(mCursor.getString(7));
                 mSong.setmAlbumKey(mCursor.getString(8));
@@ -226,7 +229,6 @@ public class SongDatabase extends SQLiteOpenHelper {
         db.close();
         return mListSong;
     }
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {

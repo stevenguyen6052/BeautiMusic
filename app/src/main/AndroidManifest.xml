@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.windows10gamer.beautimusic">
-
+    <!--<uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL"/>-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
@@ -19,11 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.DetailArtist"></activity>
-        <activity android:name=".view.activity.DetailAlbum"></activity>
+        <activity android:name=".view.activity.DetailAlbumArtist"></activity>
         <activity android:name=".view.activity.PlayingQueue"></activity>
 
-        <receiver android:name=".view.helper.notification.NotificationReceiver">
+        <receiver android:name=".view.utilities.notification.NotificationReceiver">
             <intent-filter>
                 <action android:name="com.example.windows10gamer.beautimusic.previous" />
                 <action android:name="com.example.windows10gamer.beautimusic.delete" />
@@ -33,7 +32,10 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".view.helper.service.MusicService" />
+        <service android:name=".view.utilities.service.MusicService"
+            android:enabled="true"
+
+            />
 
         <activity android:name=".view.activity.PlayMusicActivity"></activity>
     </application>

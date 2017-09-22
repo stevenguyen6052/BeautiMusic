@@ -1,4 +1,4 @@
-package com.example.windows10gamer.beautimusic.view.helper.service;
+package com.example.windows10gamer.beautimusic.view.utilities.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -29,6 +29,9 @@ import java.util.Random;
 
 
 public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+    // tag check playmusic error
+    private static final String TAG_CHECK_BUG = "MainActivity";
+    public static String TAG = "";
     // notification
     public static final String NOTIFY_PREVIOUS = "com.example.windows10gamer.beautimusic.previous";
     public static final String NOTIFY_DELETE = "com.example.windows10gamer.beautimusic.delete";
@@ -50,7 +53,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public static List<Song> mSongList;
     //current position
     public static int mPosition;
-    public static int mPositionItem;
+
     private String songTitle = "";
     private String artistTitle = "";
 
@@ -63,9 +66,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private boolean repeat = false;
     private Random rand;
 
+    @Override
     public void onCreate() {
-        //create the service
-
+        super.onCreate();
         rand = new Random();
         //create player
         mPlayer = new MediaPlayer();
@@ -73,8 +76,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     private void initMusicPlayer() {
-        mPlayer.setWakeMode(getApplicationContext(),
-                PowerManager.PARTIAL_WAKE_LOCK);
+        mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         //set listeners
@@ -88,33 +90,45 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 
+
     @Override
     public IBinder onBind(Intent intent) {
         return musicBind;
     }
 
-    //@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @Override
+        @Override
     public boolean onUnbind(Intent intent) {
+        stopForeground(true);
+        return super.onUnbind(intent);
+    }
+    public void stopMusic() {
         mPlayer.stop();
         mPlayer.release();
-        //mediaSession.release();
-        return false;
+        mPlayer = null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_NOT_STICKY;
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.v("MUSIC PLAYER", "Playback Error");
-        mPlayer.stop();
-        mPlayer.release();
+        Log.d(TAG_CHECK_BUG, "Playback Error");
+        if (mPlayer != null) {
+            try {
+                mPlayer.stop();
+                mPlayer.release();
+            } finally {
+                mPlayer = null;
+            }
+        }
         return false;
     }
 
-   // @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onPrepared(MediaPlayer mp) {
         mPlayer.start();
-
         // create notification
         RemoteViews remoteView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.custom_notification);
         setListeners(remoteView, getApplicationContext());
@@ -126,8 +140,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        nc.setVisibility(Notification.VISIBILITY_PUBLIC);
+        nc.setOngoing(true);
         nc.setContentIntent(pendingIntent);
-        nc.setSmallIcon(R.drawable.playing);
+        nc.setSmallIcon(R.drawable.ic_play_arrow_white_48dp);
         nc.setAutoCancel(true);
         nc.setCustomBigContentView(remoteView);
         nc.setContentTitle("Playing");
@@ -137,17 +153,16 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         Notification notification = nc.build();
         startForeground(NOTIFICATION_ID_CUSTOM_BIG, notification);
+
         // create notification in lockscree
-
-
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initMediSession() {
-        mediaSession = new MediaSession(getApplicationContext(),"EXAMPLE");
+        mediaSession = new MediaSession(getApplicationContext(), "EXAMPLE");
 
-        mediaSession.setCallback(new MediaSession.Callback(){
+        mediaSession.setCallback(new MediaSession.Callback() {
             @Override
             public void onPlay() {
                 super.onPlay();
@@ -158,16 +173,16 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     // create actions listener service from notification
     private void setListeners(RemoteViews expandedView, Context applicationContext) {
+        int playButtonResId = mPlayer.isPlaying()
+                ? R.drawable.playing : R.drawable.pause;
         Intent previous = new Intent(NOTIFY_PREVIOUS);
         Intent next = new Intent(NOTIFY_NEXT);
         Intent play = new Intent(NOTIFY_PLAY);
         PendingIntent pPrevious = PendingIntent.getBroadcast(applicationContext, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
         expandedView.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
 
-
         PendingIntent pPlay = PendingIntent.getBroadcast(applicationContext, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
-        expandedView.setOnClickPendingIntent(R.id.notifiPlay, pPlay);
-
+        expandedView.setOnClickPendingIntent(R.drawable.playing, pPlay);
 
         PendingIntent pNext = PendingIntent.getBroadcast(applicationContext, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
         expandedView.setOnClickPendingIntent(R.id.notifiNext, pNext);
@@ -175,7 +190,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
     public int getDuaration() {
-        return mSongList.get(mPosition).getmDuaration();
+        return Integer.valueOf(mSongList.get(mPosition).getmDuaration());
     }
 
     public void pausePlayer() {
@@ -230,7 +245,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             @Override
             public void onCompletion(MediaPlayer mp) {
                 playNext();
-
             }
         });
     }
@@ -238,7 +252,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public boolean isPlaying() {
         return mPlayer.isPlaying();
     }
-
 
     public void playNext() {
         if (repeat) {
@@ -266,7 +279,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         try {
             mPlayer.setDataSource(getApplicationContext(), Uri.parse(mSongList.get(mPosition).getmFileSong()));
         } catch (Exception e) {
-            Log.e("MUSIC SERVICE", "Error setting data source", e);
+            Log.d(TAG_CHECK_BUG, "Error setting data source", e);
         }
 
         mPlayer.prepareAsync();
@@ -313,25 +326,29 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Notification.MediaStyle style = new Notification.MediaStyle();
         Intent intent = new Intent(getApplicationContext(), MusicService.class);
         intent.setAction(NOTIFI_STOP);
-        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(),1,intent,0);
+        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 1, intent, 0);
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.playing)
                 .setContentTitle("Lock screen")
-                .setContentText("Tao la hung day")
+                .setContentText(" la day")
                 .setDeleteIntent(pendingIntent)
                 .setStyle(style);
-       // builder.addAction((android.R.drawable.ic_media_previous,"Previous",NOTIFY_PREVIOUS );
+        // builder.addAction((android.R.drawable.ic_media_previous,"Previous",NOTIFY_PREVIOUS );
         builder.addAction(action);
         //builder.addAction((android.R.drawable.ic_media_next,"Previous",NOTIFY_NEXT );
-        style.setShowActionsInCompactView(0,1,2);
+        style.setShowActionsInCompactView(0, 1, 2);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1,builder.build());
+        notificationManager.notify(1, builder.build());
 
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopForeground(true);
+        Log.d(TAG_CHECK_BUG, "Service is destroyed");
+        mPlayer.stop();
+        mPlayer.release();
+        mPlayer = null;
+
     }
 }

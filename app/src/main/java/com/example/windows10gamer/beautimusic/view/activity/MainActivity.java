@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.TabLayout;
@@ -11,20 +12,30 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.database.SongDatabase;
+import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.SendDataPosition;
 import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
-import com.example.windows10gamer.beautimusic.view.helper.service.MusicService;
+import com.example.windows10gamer.beautimusic.view.utilities.service.MusicService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-public class MainActivity extends AppCompatActivity implements SendDataPosition,View.OnClickListener {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements SendDataPosition, View.OnClickListener {
+    //tag for check debug
+    private static final String TAG_CHECK_DEBUG = "Mainactivity";
     // tag of current song
     private static final String POSITION = "POSITION";
     private int mPosition;
-
+    //tag for send data
     private static final String TAG = "TAG";
     private static final String TAG_SONG = "SONG";
 
@@ -33,88 +44,181 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
 
     // layout contain toolbar control play music
     private View mLayoutControl;
-
+    private View mMiniControl;
+    //string save list id of last song player
+    private static final String LAST_LIST = "LastList";
+    private static final String LAST_POSITION = "LastPosition";
+    private String jsongListSongId;
+    private List<Song> mSongList;
+    SharedPreferences mSharedPreferences;
     // service
     public static MusicService musicService;
 
     public static TextView mTvNameSong;
     public static TextView mTvNameArtist;
-    public static ImageView mImgContrlPlay,mOpenMusicPlay;
+    public static ImageView mImgContrlPlay, mOpenMusicPlay;
 
     private Intent playIntent;
 
     private boolean musicBound = false;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // bind service
-        if (playIntent == null) {
-            playIntent = new Intent(this, MusicService.class);
-            bindService(playIntent, getMusicConnection, Context.BIND_AUTO_CREATE);
-            startService(playIntent);
-        }
-        checkPlayMusic();
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG_CHECK_DEBUG, "onCreate ");
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null)
-            setSupportActionBar(toolbar);
+        if (toolbar != null) setSupportActionBar(toolbar);
+
         initView();
 
     }
 
+    @Override
+    protected void onStart() {
+        Log.d(TAG_CHECK_DEBUG, "onStart");
+        super.onStart();
+        // bind service
+
+        if (playIntent == null) {
+            playIntent = new Intent(this, MusicService.class);
+            startService(playIntent);
+            doBindService();
+        }
+//        mSharedPreferences = this.getSharedPreferences("LastSong", Context.MODE_PRIVATE);
+//        if (musicService.mSongList.size() ==) {
+//            if (mSharedPreferences != null) {
+//                mSongList = getLastListSongPlayer();
+//                mPosition = mSharedPreferences.getInt("Position", 0);
+//                musicService.mSongList = mSongList;
+//                musicService.mPosition = mPosition;
+//            }
+//        }
+        checkPlayMusic();
+
+    }
 
 
     @Override
     protected void onResume() {
+        Log.e(TAG_CHECK_DEBUG, "onResume");
         super.onResume();
-        toolBarControlPlaying();
+        if ( musicService.mPlayer != null) {
+            miniControlPlayMusic();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG_CHECK_DEBUG, "onDestroy");
+        super.onDestroy();
+        if (musicService.mPlayer.isPlaying()) {
+
+            Log.d(TAG_CHECK_DEBUG, "Service is running !");
+
+        } else {
+            Log.d(TAG_CHECK_DEBUG, "Unbind to service and destroy service !");
+            doUnbindService();
+            //Intent intent = new Intent(MainActivity.this,MusicService.class);
+            //stopService(intent);
+
+        }
+        //doUnbindService();
+    }
+
+    private void saveLastListSong() {
+        List<Long> listSongId = new ArrayList<Long>();
+        for (Song song : musicService.mSongList) {
+            listSongId.add(Long.valueOf(song.getmId()));
+        }
+        //convert the List of Longs to a JSON string
+        Gson gson = new Gson();
+        jsongListSongId = gson.toJson(listSongId);
+        SharedPreferences sharedPreferences = getSharedPreferences("LastSong", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(LAST_LIST, jsongListSongId);
+        editor.putInt(LAST_POSITION, musicService.mPosition);
+        editor.apply();
+    }
+
+    private List<Song> getLastListSongPlayer() {
+        SongDatabase db = new SongDatabase(this);
+        mSongList = db.getAllListSong();
+        List<Song> mSongListReturn = new ArrayList<>();
+
+        //get the JSON array of the ordered of sorted song
+        String jsonListSongId = mSharedPreferences.getString(LAST_LIST, "");
+        //check for null
+        if (!jsonListSongId.isEmpty()) {
+
+            //convert JSON array into a List<Long>
+            Gson gson = new Gson();
+            List<Long> listOfSortedCustomersId = gson.fromJson(jsonListSongId,
+                    new TypeToken<List<Long>>() {
+                    }.getType());
+
+            //build sorted list
+            if (listOfSortedCustomersId != null && listOfSortedCustomersId.size() > 0) {
+                for (Long id : listOfSortedCustomersId) {
+                    for (Song mSong : mSongList) {
+                        if (mSong.getmId().equals(id)) {
+                            mSongListReturn.add(mSong);
+                            break;
+
+                        }
+                    }
+                }
+            }
+        }
+        return mSongListReturn;
     }
 
     // update current nameSong,nameArtist of song isplaying
-    private void toolBarControlPlaying(){
-        if (musicService.mPlayer != null){
-        if ( musicService.mPlayer.isPlaying()){
-            mTvNameSong.setText(musicService.nameSong());
-            mTvNameArtist.setText(musicService.nameArtist());
-            mImgContrlPlay.setImageResource(R.drawable.playing);
-            updateToolbarControl();
-        }
+    private void miniControlPlayMusic() {
+        if (musicService.mSongList.size()>0) {
+
+            if (musicService.mPlayer.isPlaying()) {
+                mTvNameSong.setText(musicService.nameSong());
+                mTvNameArtist.setText(musicService.nameArtist());
+                mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+                currentSongPlaying();
+            } else {
+
+                mTvNameSong.setText(musicService.nameSong());
+                mTvNameArtist.setText(musicService.nameArtist());
+                mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                currentSongPlaying();
+            }
         }
     }
 
     // update view when song complete
-    private void updateToolbarControl() {
+    private void currentSongPlaying() {
         final Handler mHandler = new Handler();
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mHandler.postDelayed(this, 500);
-                MainActivity.musicService.setOnComplete();
-                mTvNameSong.setText(MainActivity.musicService.nameSong());
-                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
+                if (musicService.mPlayer != null) {
+                    musicService.setOnComplete();
+                }
+                mTvNameSong.setText(musicService.nameSong());
+                mTvNameArtist.setText(musicService.nameArtist());
             }
         }, 100);
     }
 
-    // check if music is playing display toolbar mini control music
-    private void checkPlayMusic(){
-//        if (musicService.mPlayer == null){
-//            mLayoutControl.setVisibility(View.INVISIBLE);
-//        }else {
-//            mLayoutControl.setVisibility(View.VISIBLE);
-//        }
-        if (musicService.mPlayer != null){
+    // check if music is playing display mini control music
+    private void checkPlayMusic() {
+        if (musicService.mPlayer!= null) {
             mLayoutControl.setVisibility(View.VISIBLE);
+        }else {
+            mLayoutControl.setVisibility(View.INVISIBLE);
         }
     }
-
 
     private void initView() {
 
@@ -125,33 +229,27 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
         tabLayout.setupWithViewPager(mViewPager);
 
         mLayoutControl = findViewById(R.id.mainLayoutControl);
-        mLayoutControl.setVisibility(View.GONE);
         mTvNameSong = (TextView) findViewById(R.id.mainNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.mainNameSingle);
         mImgContrlPlay = (ImageView) findViewById(R.id.mainControlPlay);
         mOpenMusicPlay = (ImageView) findViewById(R.id.mainOpenPlayMusic);
+        mMiniControl = findViewById(R.id.mainMiniControl);
+
+        mMiniControl.setOnClickListener(this);
         mImgContrlPlay.setOnClickListener(this);
         mOpenMusicPlay.setOnClickListener(this);
-
     }
 
-    // when click item in song fragment send index of item to activity and activity send to playmusicactivity
+    // when click item in list song in song fragment send index of item to activity and activity send to playmusic activity
     @Override
     public void SendPosition(int positon) {
         mPosition = positon;
-        Intent intent = new Intent(this,PlayMusicActivity.class);
+        Intent intent = new Intent(this, PlayMusicActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(TAG, TAG_SONG);
         bundle.putInt(POSITION, mPosition);
         intent.putExtras(bundle);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindService(getMusicConnection);
-
     }
 
     // set connection to service
@@ -171,19 +269,32 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.mainOpenPlayMusic:
-                Intent intent = new Intent(this,PlayMusicActivity.class);
+        switch (v.getId()) {
+            case R.id.mainMiniControl:
+                Intent intent = new Intent(this, PlayMusicActivity.class);
                 startActivity(intent);
                 break;
             case R.id.mainControlPlay:
-                if (musicService.isPlaying()){
+                if (musicService.isPlaying()) {
                     musicService.pausePlayer();
-                    mImgContrlPlay.setImageResource(R.drawable.pause);
-                }else {
-                    mImgContrlPlay.setImageResource(R.drawable.playing);
+                    mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                } else {
+                    musicService.startPlayer();
+                    mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
                 }
                 break;
+        }
+    }
+
+    public void doBindService() {
+        bindService(playIntent, getMusicConnection, Context.BIND_AUTO_CREATE);
+        musicBound = true;
+    }
+
+    public void doUnbindService() {
+        if (musicBound) {
+            unbindService(getMusicConnection);
+            musicBound = false;
         }
     }
 }

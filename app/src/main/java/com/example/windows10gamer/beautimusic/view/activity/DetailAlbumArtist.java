@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -24,13 +25,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
-public class DetailAlbum extends AppCompatActivity implements View.OnClickListener{
+public class DetailAlbumArtist extends AppCompatActivity implements View.OnClickListener {
+    //tag check debug
+    private static final String TAG_CHECK_ERROR = "DetailAlbumArtist";
+    // tag for get data
     private static final String POSITION = "POSITION";
     private static final String NAME_ALBUM = "Name Album";
-    private static final String NAME_ARTIST = "Name Artist";
     private static final String TAG = "TAG";
+    private static final String TAG_DETAIL = "DETAIL";
+    private static final String TAG_ARTIST = "ARTIST";
     private static final String TAG_ALBUM = "ALBUM";
+    private static final String NAME_ARTIST = "Name Artist";
 
     private SongAdapter mSongAdapter;
     private ListView mListView;
@@ -40,20 +45,29 @@ public class DetailAlbum extends AppCompatActivity implements View.OnClickListen
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
     private TextView mTvNameSong, mTvNameArtist;
-    public static ImageView mControlPlayPause,mOpenPlayMusic;
+    public static ImageView mControlPlayPause;
 
     private List<Song> mSongList;
-    private String nameAlbum;
+    private String nameAlbumArtist, tag;
 
     private SongDatabase mSongDatabase;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG_CHECK_ERROR, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_album);
+
         getDataIntent();
-        setUpToolBar();
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(nameAlbumArtist);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
+        collapsingToolbarLayout.setTitle(nameAlbumArtist);
+
         initView();
         setUpAdapter();
         onItemClick();
@@ -61,37 +75,42 @@ public class DetailAlbum extends AppCompatActivity implements View.OnClickListen
 
     }
 
-    private void setUpToolBar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(nameAlbum);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
-        collapsingToolbarLayout.setTitle(nameAlbum);
+    @Override
+    protected void onResume() {
+        Log.d(TAG_CHECK_ERROR, "onResume");
+        super.onResume();
 
-    }
+        if (MainActivity.musicService.mPlayer != null && MainActivity.musicService.mPlayer != null) {
+            miniControlPlayMusic();
 
-    private void setUpAdapter() {
-        mSongAdapter = new SongAdapter(DetailAlbum.this, mSongList, R.layout.item_song);
-        mListView.setAdapter(mSongAdapter);
-    }
+        } else {
 
-    // if media player isplaying set update name song,name artist
-    private void toolBarControlPlaying() {
-        if (MainActivity.musicService.mPlayer != null) {
-            if (MainActivity.musicService.mPlayer.isPlaying()) {
-                mTvNameSong.setText(MainActivity.musicService.nameSong());
-                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
-                mControlPlayPause.setImageResource(R.drawable.playing);
-                updateTimeSong();
-            }
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        toolBarControlPlaying();
+    private void setUpAdapter() {
+        mSongAdapter = new SongAdapter(DetailAlbumArtist.this, mSongList, R.layout.item_song);
+        mListView.setAdapter(mSongAdapter);
+    }
+
+    // update name song,name artist for mini control play music
+    private void miniControlPlayMusic() {
+        if (MainActivity.musicService.mSongList != null) {
+
+            if (MainActivity.musicService.mPlayer.isPlaying()) {
+                mTvNameSong.setText(MainActivity.musicService.nameSong());
+                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
+                mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                currentSongPlaying();
+
+            } else {
+                mTvNameSong.setText(MainActivity.musicService.nameSong());
+                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
+                mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                currentSongPlaying();
+            }
+        }
+
     }
 
     @Override
@@ -100,8 +119,8 @@ public class DetailAlbum extends AppCompatActivity implements View.OnClickListen
         return true;
     }
 
-    // update current song and listener player oncomplete
-    private void updateTimeSong() {
+    // update current song is playing and listener player oncomplete
+    private void currentSongPlaying() {
         final Handler mHandler = new Handler();
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -119,10 +138,16 @@ public class DetailAlbum extends AppCompatActivity implements View.OnClickListen
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(DetailAlbum.this, PlayMusicActivity.class);
+                Intent intent = new Intent(DetailAlbumArtist.this, PlayMusicActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(TAG, TAG_ALBUM);
-                bundle.putString(NAME_ALBUM, nameAlbum);
+                bundle.putString(TAG, TAG_DETAIL);
+
+                if (tag.equals(TAG_ALBUM)) {
+                    bundle.putString(TAG_ALBUM, TAG_ALBUM);
+                } else if (tag.equals(TAG_ARTIST)) {
+                    bundle.putString(TAG_ALBUM, TAG_ARTIST);
+                }
+                bundle.putString("Name", nameAlbumArtist);
                 bundle.putInt(POSITION, position);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -132,24 +157,25 @@ public class DetailAlbum extends AppCompatActivity implements View.OnClickListen
     }
 
     private void initView() {
-
+        mLayout = findViewById(R.id.album_openplaymusic);
         mTvNameSong = (TextView) findViewById(R.id.albumNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.albumNameArtist);
         mControlPlayPause = (ImageView) findViewById(R.id.albumControlPlayPause);
-        mOpenPlayMusic = (ImageView) findViewById(R.id.album_openplaymusic);
         imgAlbum = (ImageView) findViewById(R.id.detailAlbumImg);
         mListView = (ListView) findViewById(R.id.detaialbum_listview);
 
         mSongDatabase = new SongDatabase(getApplication());
-        if (mSongList == null) {
-            mSongList = new ArrayList<>();
-            mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbum);
+        mSongList = new ArrayList<>();
+        if (tag.equals(TAG_ALBUM)) {
+            mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbumArtist);
+        } else if (tag.equals(TAG_ARTIST)) {
+            mSongList = mSongDatabase.getAlLSongFromArtist(nameAlbumArtist);
         }
-
+        mLayout.setOnClickListener(this);
         mControlPlayPause.setOnClickListener(this);
-        mOpenPlayMusic.setOnClickListener(this);
 
     }
+
     // set image of album
     private void setImageSong() {
         mmr.setDataSource(mSongList.get(0).getmFileSong());
@@ -165,25 +191,31 @@ public class DetailAlbum extends AppCompatActivity implements View.OnClickListen
     private void getDataIntent() {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        nameAlbum = bundle.getString(NAME_ALBUM);
-
+        tag = bundle.getString("TAG");
+        if (tag.equals(TAG_ALBUM)) {
+            nameAlbumArtist = bundle.getString(NAME_ALBUM);
+        } else if (tag.equals(TAG_ARTIST)) {
+            nameAlbumArtist = bundle.getString(NAME_ARTIST);
+        }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.album_openplaymusic:
-                Intent intent = new Intent(this,PlayMusicActivity.class);
+                Intent intent = new Intent(this, PlayMusicActivity.class);
                 startActivity(intent);
                 break;
             case R.id.albumControlPlayPause:
-                if (MainActivity.musicService.isPlaying()){
+
+                if (MainActivity.musicService.isPlaying()) {
                     MainActivity.musicService.pausePlayer();
-                    mControlPlayPause.setImageResource(R.drawable.pause);
-                    MainActivity.mImgContrlPlay.setImageResource(R.drawable.pause);
-                }else {
-                    mControlPlayPause.setImageResource(R.drawable.playing);
-                    MainActivity.mImgContrlPlay.setImageResource(R.drawable.playing);
+                    mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                } else {
+                    MainActivity.musicService.startPlayer();
+                    mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
                 }
                 break;
         }

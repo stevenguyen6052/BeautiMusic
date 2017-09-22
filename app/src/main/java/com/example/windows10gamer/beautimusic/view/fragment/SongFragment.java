@@ -9,6 +9,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,12 +42,13 @@ public class SongFragment extends android.support.v4.app.Fragment {
     private ListView mListView;
     private SendDataPosition mSendDataPosition;
     private Context mContext;
+    SearchView searchView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setRetainInstance(true);
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
     }
 
     @Override
@@ -72,49 +74,46 @@ public class SongFragment extends android.support.v4.app.Fragment {
         return mRootView;
     }
 
-
     private void setListForAdapter(List<Song> mSongList) {
         mSongAdapter = new SongAdapter(getActivity(), mSongList, R.layout.item_song);
         mListView.setAdapter(mSongAdapter);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-        inflater.inflate(R.menu.menu_item, menu);
-        MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
-        MenuItemCompat.setShowAsAction(itemSearch, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-        MenuItemCompat.setActionView(itemSearch, searchView);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                mSongList = mSongDatabase.getSongFromNameSong(newText);
-                setListForAdapter(mSongList);
-                mSongAdapter.notifyDataSetChanged();
-                return true;
-            }
-        });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int idItem = item.getItemId();
-        switch (idItem) {
-            case R.id.itemSearch:
-
-                break;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        menu.clear();
+//        inflater.inflate(R.menu.menu_item, menu);
+//        MenuItem itemSearch = menu.findItem(R.id.itemSearch);
+//        searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int idItem = item.getItemId();
+//        switch (idItem) {
+//            case R.id.itemSearch:
+//                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//                    @Override
+//                    public boolean onQueryTextSubmit(String query) {
+//
+//                        return false;
+//                    }
+//                    @Override
+//                    public boolean onQueryTextChange(String newText) {
+//                        mSongList = mSongDatabase.getSongFromNameSong(newText);
+//                        //MainActivity.musicService.mSongList = mSongList;
+//                        setListForAdapter(mSongList);
+//                        mSongAdapter.notifyDataSetChanged();
+//                        return true;
+//                    }
+//                });
+//
+//                break;
+//            case R.id.itemArrange:
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     private void initView() {
         mSongDatabase = new SongDatabase(getActivity());
@@ -126,22 +125,11 @@ public class SongFragment extends android.support.v4.app.Fragment {
             mSongList1 = new ArrayList<>();
             mSongList = getAllMp3FromDevice(getActivity());
 
-            for (int i = 0; i < mSongList.size(); i++) {
-                Song mSong = new Song();
-                mSong.setmId(mSongList.get(i).getmId());
-                mSong.setmNameSong(mSongList.get(i).getmNameSong());
-                mSong.setmNameAlbum(mSongList.get(i).getmNameAlbum());
-                mSong.setmNameArtist(mSongList.get(i).getmNameArtist());
-                mSong.setmFileSong(mSongList.get(i).getmFileSong());
-                mSong.setmDuaration(mSongList.get(i).getmDuaration());
-                mSong.setmAlbumId(mSongList.get(i).getmAlbumId());
-                mSong.setmArtistId(mSongList.get(i).getmArtistId());
-                mSong.setmAlbumKey(mSongList.get(i).getmAlbumKey());
-                mSong.setmImage(R.drawable.imagemusi);
-
-                mSongDatabase.addNewSong(mSong);
+            for (Song song: mSongList){
+                mSongDatabase.addNewSong(song);
             }
             mSongList1 = mSongDatabase.getAllListSong();
+            //Log.d("DATABASE", String.valueOf(mSongList1.size()));
         }
         setListForAdapter(mSongList1);
     }
@@ -151,8 +139,6 @@ public class SongFragment extends android.support.v4.app.Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mSendDataPosition.SendPosition(position);
-
-                    //MainActivity.slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
         });
     }
@@ -160,7 +146,6 @@ public class SongFragment extends android.support.v4.app.Fragment {
     public List<Song> getAllMp3FromDevice(final Context context) {
 
         mSongList = new ArrayList<>();
-
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {MediaStore.Audio.AudioColumns.DATA, MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.ArtistColumns.ARTIST, MediaStore.Audio.AudioColumns._ID,
@@ -188,18 +173,15 @@ public class SongFragment extends android.support.v4.app.Fragment {
                 mSong.setmNameAlbum(mAlbum);
                 mSong.setmNameArtist(mArtist);
                 mSong.setmFileSong(mPath);
-                mSong.setmDuaration(Integer.parseInt(mDuaration));
+                mSong.setmDuaration(mDuaration);
                 mSong.setmAlbumId(mAlbumId);
                 mSong.setmArtistId(mArtistId);
                 mSong.setmAlbumKey(mAlbumKey);
-
                 mSongList.add(mSong);
             }
             c.close();
         }
         return mSongList;
     }
-
-
 }
 

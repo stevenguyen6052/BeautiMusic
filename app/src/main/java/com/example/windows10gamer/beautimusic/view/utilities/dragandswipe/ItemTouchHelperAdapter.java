@@ -1,4 +1,4 @@
-package com.example.windows10gamer.beautimusic.view.helper.dragandswipe;
+package com.example.windows10gamer.beautimusic.view.utilities.dragandswipe;
 
 /**
  * Created by Windows 10 Gamer on 12/09/2017.

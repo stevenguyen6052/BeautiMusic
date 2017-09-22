@@ -12,7 +12,7 @@ public class Song implements Serializable {
     private String mNameArtist;
     private String mNameAlbum;
     private String mFileSong;
-    private int mDuaration;
+    private String mDuaration;
     private String mAlbumId;
     private String mArtistId;
     private String mAlbumKey;
@@ -28,7 +28,7 @@ public class Song implements Serializable {
         this.mAlbumId = mAlbumId;
     }
 
-    public Song(String mId,String mNameSong, String mNameArtist, String mNameAlbum, String mFileSong,int mDuaration,String mAlbumId,String mArtistId,String mAlbumKey, int mImage) {
+    public Song(String mId,String mNameSong, String mNameArtist, String mNameAlbum, String mFileSong,String mDuaration,String mAlbumId,String mArtistId,String mAlbumKey, int mImage) {
         this.mId = mId ;
         this.mNameSong = mNameSong;
         this.mNameArtist = mNameArtist;
@@ -65,11 +65,11 @@ public class Song implements Serializable {
         this.mArtistId = mArtistId;
     }
 
-    public int getmDuaration() {
+    public String getmDuaration() {
         return mDuaration;
     }
 
-    public void setmDuaration(int mDuaration) {
+    public void setmDuaration(String mDuaration) {
         this.mDuaration = mDuaration;
     }
 

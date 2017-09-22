@@ -9,18 +9,24 @@ import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SongAdapter extends BaseAdapter {
     private Context mContext;
     private List<Song> mSongList;
     private int mLayout;
+    private List<Song> mSongListChange;
 
     public SongAdapter(Context mContext, List<Song> mSongList, int mLayout) {
         this.mContext = mContext;
         this.mSongList = mSongList;
         this.mLayout = mLayout;
+        //this.mSongListChange = new ArrayList<>();
+        //this.mSongListChange.addAll(mSongList);
     }
 
     @Override
@@ -56,6 +62,23 @@ public class SongAdapter extends BaseAdapter {
         mViewHolder.mTvNameArtist.setText(song.getmNameArtist());
         return convertView;
     }
+//    public void filter(String charText) {
+//        charText = charText.toLowerCase(Locale.getDefault());
+//        mSongList.clear();
+//        if (charText.length() == 0) {
+//            mSongList.addAll(mSongListChange);
+//            MainActivity.musicService.mSongList = mSongList;
+//        } else {
+//
+//            for (Song song : mSongListChange) {
+//                if (song.getmNameSong().toLowerCase(Locale.getDefault()).contains(charText)) {
+//                    mSongList.add(song);
+//                }
+//            }
+//            MainActivity.musicService.mSongList = mSongList;
+//        }
+//        notifyDataSetChanged();
+//    }
 
     private class ViewHolder {
         TextView mTvNameSong, mTvNameArtist;

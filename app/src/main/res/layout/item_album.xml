@@ -13,9 +13,9 @@
         />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:background="@color/background_itemalbum"
+        android:background="@color/background_item"
         android:orientation="vertical">
 
         <TextView
@@ -26,7 +26,9 @@
         <TextView
             android:id="@+id/alTvNameArtist"
             style="@style/item_album_artist"
-            android:text="@string/name_artist" />
+            android:text="@string/name_artist"
+            android:paddingBottom="5dp"
+            />
     </LinearLayout>
 
 </RelativeLayout>
