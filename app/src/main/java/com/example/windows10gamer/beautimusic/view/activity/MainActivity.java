@@ -89,13 +89,13 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
             doBindService();
         }
 //        mSharedPreferences = this.getSharedPreferences("LastSong", Context.MODE_PRIVATE);
-//        if (musicService.mSongList.size() ==) {
+//        //if (musicService.mSongList.size() ==0) {
 //            if (mSharedPreferences != null) {
 //                mSongList = getLastListSongPlayer();
 //                mPosition = mSharedPreferences.getInt("Position", 0);
 //                musicService.mSongList = mSongList;
 //                musicService.mPosition = mPosition;
-//            }
+//            //}
 //        }
         checkPlayMusic();
 
@@ -121,12 +121,13 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
 
         } else {
             Log.d(TAG_CHECK_DEBUG, "Unbind to service and destroy service !");
-            doUnbindService();
-            //Intent intent = new Intent(MainActivity.this,MusicService.class);
-            //stopService(intent);
+            //doUnbindService();
+            saveLastListSong();
+            Intent intent = new Intent(MainActivity.this,MusicService.class);
+            stopService(intent);
 
         }
-        //doUnbindService();
+
     }
 
     private void saveLastListSong() {
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(LAST_LIST, jsongListSongId);
         editor.putInt(LAST_POSITION, musicService.mPosition);
-        editor.apply();
+        editor.commit();
     }
 
     private List<Song> getLastListSongPlayer() {
@@ -229,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
         tabLayout.setupWithViewPager(mViewPager);
 
         mLayoutControl = findViewById(R.id.mainLayoutControl);
+        mLayoutControl.setVisibility(View.GONE);
         mTvNameSong = (TextView) findViewById(R.id.mainNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.mainNameSingle);
         mImgContrlPlay = (ImageView) findViewById(R.id.mainControlPlay);
@@ -240,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
         mOpenMusicPlay.setOnClickListener(this);
     }
 
-    // when click item in list song in song fragment send index of item to activity and activity send to playmusic activity
+    // when click item in list song send index and list to playmusic
     @Override
     public void SendPosition(int positon) {
         mPosition = positon;

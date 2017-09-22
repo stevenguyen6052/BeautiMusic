@@ -123,13 +123,13 @@ public class SongFragment extends android.support.v4.app.Fragment {
         if (mSongList == null && mSongList1 == null) {
             mSongList = new ArrayList<>();
             mSongList1 = new ArrayList<>();
-            mSongList = getAllMp3FromDevice(getActivity());
+            mSongList = getAllMp3FromDevice(getContext());
 
             for (Song song: mSongList){
                 mSongDatabase.addNewSong(song);
             }
             mSongList1 = mSongDatabase.getAllListSong();
-            //Log.d("DATABASE", String.valueOf(mSongList1.size()));
+
         }
         setListForAdapter(mSongList1);
     }

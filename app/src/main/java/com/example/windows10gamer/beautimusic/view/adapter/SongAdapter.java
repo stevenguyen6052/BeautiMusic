@@ -31,7 +31,9 @@ public class SongAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mSongList.size();
+        if (mSongList.size()>0) {
+            return mSongList.size();
+        }else return 0;
     }
 
     @Override
