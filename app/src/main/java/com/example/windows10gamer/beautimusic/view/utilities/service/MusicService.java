@@ -34,7 +34,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public static String TAG = "";
     // notification
     public static final String NOTIFY_PREVIOUS = "com.example.windows10gamer.beautimusic.previous";
-    public static final String NOTIFY_DELETE = "com.example.windows10gamer.beautimusic.delete";
     public static final String NOTIFY_PAUSE = "com.example.windows10gamer.beautimusic.pause";
     public static final String NOTIFY_PLAY = "com.example.windows10gamer.beautimusic.play";
     public static final String NOTIFY_NEXT = "com.example.windows10gamer.beautimusic.next";
@@ -98,7 +97,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         @Override
     public boolean onUnbind(Intent intent) {
-        stopForeground(true);
+
         return super.onUnbind(intent);
     }
     public void stopMusic() {
@@ -346,6 +345,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG_CHECK_BUG, "Service is destroyed");
+        stopForeground(true);
         mPlayer.stop();
         mPlayer.release();
         mPlayer = null;

@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.SendDataPosition;
+import com.example.windows10gamer.beautimusic.view.utilities.SendDataPosition;
 import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
 import com.example.windows10gamer.beautimusic.view.utilities.service.MusicService;
 import com.google.gson.Gson;

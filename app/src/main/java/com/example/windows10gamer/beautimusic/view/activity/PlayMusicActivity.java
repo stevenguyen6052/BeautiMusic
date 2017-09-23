@@ -6,14 +6,13 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,18 +23,14 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
-import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
@@ -330,26 +325,23 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LIST) {
             if (resultCode == RESULT_OK) {
+                String name = "";
+                name = MainActivity.musicService.nameSong();
                 Bundle getData = data.getExtras();
                 mSongList.clear();
                 mSongList.addAll((List<Song>) getData.getSerializable(TAG_REQUEST));
                 mSongAdapter.notifyDataSetChanged();
-                String nameSong = null, nameArtist = null;
-
-//                SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
-//                if (prefs != null) {
-//                    nameSong = prefs.getString("NameSong", "");
-//                    nameArtist = prefs.getString("NameArtist", "");
-//                    mTvNameSong.setText(nameSong);
-//                    mTvNameSinger.setText(nameArtist);
-//                }
+                // update position của bài hát sau khi sắp xếp
+                for (int i = 0; i < mSongList.size(); i++) {
+                    if (name.equals(mSongList.get(i).getmNameSong()))
+                        MainActivity.musicService.mPosition = i;
+                }
             }
         }
     }
 
     // set image song
     private void setImageSong() {
-
         mmr.setDataSource(MainActivity.musicService.pathSong());
         byte[] dataImageDisc = mmr.getEmbeddedPicture();
         if (dataImageDisc != null) {
@@ -379,27 +371,38 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         //return super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_item, menu);
-        //MenuItem itemSearch = menu.findItem(R.id.itemSearch);
+        MenuItem itemSearch = menu.findItem(R.id.itemSearch);
 
-//        searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
-//        MenuItemCompat.setShowAsAction(itemSearch, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-//        MenuItemCompat.setActionView(itemSearch, searchView);
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//
-//                mSongAdapter.filter(newText);
-//                mListView.invalidate();
-//                mSongAdapter.notifyDataSetChanged();
-//
-//                return false;
-//            }
-//        });
+        searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
+        MenuItemCompat.setShowAsAction(itemSearch, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setActionView(itemSearch, searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                String name = MainActivity.musicService.nameSong();
+                mSongList.clear();
+                mSongList.addAll(mSongDatabase.getSongFromNameSong(newText));
+                MainActivity.musicService.mSongList = mSongList;
+                MainActivity.musicService.mPosition = 0;
+                mSongAdapter.notifyDataSetChanged();
+                for (int i =0;i<MainActivity.musicService.mSongList.size();i++){
+                    if (name.equals(MainActivity.musicService.mSongList.get(i).getmNameSong())){
+                        MainActivity.musicService.mPosition = i;
+                    }
+                }
+                //mTvNameSong.setText(mSongList.get(MainActivity.musicService.mPosition).getmNameSong());
+
+                //mSongAdapter.filter(newText);
+                //mListView.invalidate();
+
+                return false;
+            }
+        });
 
         return true;
     }
@@ -418,13 +421,4 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-//        SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = prefs.edit();
-//        editor.putString("NameSong", MainActivity.musicService.nameSong());
-//        editor.putString("NaneArtist", MainActivity.musicService.nameArtist());
-//        editor.commit();
-    }
 }

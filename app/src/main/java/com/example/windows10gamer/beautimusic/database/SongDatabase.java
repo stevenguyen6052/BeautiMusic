@@ -108,6 +108,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mListSong.add(mSong);
             } while (mCursor.moveToNext());
         }
+        InitClass.sortCollection(mListSong);
         mCursor.close();
         db.close();
         return mListSong;

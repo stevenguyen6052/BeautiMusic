@@ -116,10 +116,11 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         }
 
     }
+
     private void checkPlayMusic() {
         if (MainActivity.musicService.mSongList != null) {
             mLayoutControl.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mLayoutControl.setVisibility(View.INVISIBLE);
         }
     }

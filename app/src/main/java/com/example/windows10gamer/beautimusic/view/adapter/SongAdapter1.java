@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.windows10gamer.beautimusic.view.ItemClickListener;
+import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
 //import com.example.windows10gamer.beautimusic.view.activity.PlayMusic;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.ItemClickListener;
+import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;

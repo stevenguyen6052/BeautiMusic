@@ -1,4 +1,4 @@
-package com.example.windows10gamer.beautimusic.view;
+package com.example.windows10gamer.beautimusic.view.utilities;
 
 import android.view.View;
 

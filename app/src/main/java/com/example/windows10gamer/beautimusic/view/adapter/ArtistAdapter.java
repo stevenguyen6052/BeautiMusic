@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
-import com.example.windows10gamer.beautimusic.view.ItemClickListener;
+import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.R;
 

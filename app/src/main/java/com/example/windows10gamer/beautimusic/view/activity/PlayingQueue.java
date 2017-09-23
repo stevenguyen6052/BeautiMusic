@@ -42,6 +42,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     private final static String TAG_ALBUM = "ALBUM";
     private final static String LIST = "LIST";
     private static final String TAG_DETAIL = "DETAIL";
+    private static final String ALBUM_ARTIST = "Name";
 
     private ItemTouchHelper mItemTouchHelper;
     private List<Song> mSongList;
@@ -159,17 +160,17 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         }
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        String tag, nameAlbum;
+        String tag, nameAlbumArtist;
         tag = bundle.getString(TAG);
         if (tag.equals(TAG_SONG)) {
             mSongList = mSongDatabase.getAllListSong();
         } else if (tag.equals(TAG_DETAIL)) {
-            nameAlbum = bundle.getString("Name");
+            nameAlbumArtist = bundle.getString(ALBUM_ARTIST);
             tagCheck = bundle.getString(TAG_ALBUM);
             if (tagCheck.equals(TAG_ALBUM)) {
-                mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbum);
+                mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbumArtist);
             } else if (tagCheck.equals(TAG_ARTIST)) {
-                mSongList = mSongDatabase.getAlLSongFromArtist(nameAlbum);
+                mSongList = mSongDatabase.getAlLSongFromArtist(nameAlbumArtist);
             }
         }
 

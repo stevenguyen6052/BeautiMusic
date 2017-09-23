@@ -5,15 +5,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,18 +16,10 @@ import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.view.SendDataPosition;
-import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
-import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.example.windows10gamer.beautimusic.view.utilities.SendDataPosition;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-
-import static android.support.v4.app.ActivityCompat.invalidateOptionsMenu;
 
 
 public class SongFragment extends android.support.v4.app.Fragment {
