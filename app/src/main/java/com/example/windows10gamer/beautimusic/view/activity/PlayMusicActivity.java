@@ -1,6 +1,8 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
@@ -28,9 +30,12 @@ import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
+import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
@@ -54,7 +59,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     public static TextView mTvNameSong, mTvNameSinger, mTvTime;
     public static ImageView mImgPlayPause;
 
-    private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat,mQueue;
+    private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat, mQueue;
     private CircularSeekBar mSeekbar1;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
@@ -74,7 +79,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.music_play_frag2);
-        //setUpToolbar();
+        setUpToolbar();
         initView();
         addEvents();
         getData();
@@ -133,6 +138,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
                 mSongList = mSongDatabase.getAllListSong();
                 mPosition = bundle.getInt(POSITION);
+
             }
 
             MainActivity.musicService.mSongList = mSongList;
@@ -274,43 +280,35 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.pImgNext:
-
                 nextSong();
                 break;
 
             case R.id.pImgPrevious:
-
                 previousSong();
                 break;
 
             case R.id.pImgPlayPause:
-
                 doPlayPause();
                 break;
 
             case R.id.pShuffle:
-
                 doShuffle();
                 break;
 
             case R.id.pRepeat:
-
                 doRepeat();
                 break;
-            case R.id.pImgQueue:
 
+            case R.id.pImgQueue:
                 doQueue();
                 break;
-
         }
     }
 
-    //
     private void doQueue() {
         Intent intent = new Intent(this, PlayingQueue.class);
         Bundle bundle = new Bundle();
         if (tag.equals(TAG_SONG)) {
-
             bundle.putString(TAG, TAG_SONG);
 
         } else if (tag.equals(TAG_DETAIL)) {
@@ -321,7 +319,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             } else if (tagCheck.equals(TAG_ARTIST)) {
                 bundle.putString(TAG_ALBUM, TAG_ARTIST);
             }
-
         }
         intent.putExtras(bundle);
         startActivityForResult(intent, REQUEST_LIST);
@@ -334,12 +331,18 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         if (requestCode == REQUEST_LIST) {
             if (resultCode == RESULT_OK) {
                 Bundle getData = data.getExtras();
-                mSongList = (List<Song>) getData.getSerializable(TAG_REQUEST);
-
-                MainActivity.musicService.mSongList = mSongList;
-                mSongAdapter = new SongAdapter(this, mSongList, R.layout.item_song);
-                mListView.setAdapter(mSongAdapter);
+                mSongList.clear();
+                mSongList.addAll((List<Song>) getData.getSerializable(TAG_REQUEST));
                 mSongAdapter.notifyDataSetChanged();
+                String nameSong = null, nameArtist = null;
+
+//                SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+//                if (prefs != null) {
+//                    nameSong = prefs.getString("NameSong", "");
+//                    nameArtist = prefs.getString("NameArtist", "");
+//                    mTvNameSong.setText(nameSong);
+//                    mTvNameSinger.setText(nameArtist);
+//                }
             }
         }
     }
@@ -357,27 +360,27 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-//    private void setUpToolbar() {
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        if (toolbar != null)
-//            setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//    }
+    private void setUpToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null)
+            setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
 
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        onBackPressed();
-//        return true;
-//    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        //return super.onCreateOptionsMenu(menu);
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu_item, menu);
-//        MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-//
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //return super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_item, menu);
+        //MenuItem itemSearch = menu.findItem(R.id.itemSearch);
+
 //        searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
 //        MenuItemCompat.setShowAsAction(itemSearch, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
 //        MenuItemCompat.setActionView(itemSearch, searchView);
@@ -391,25 +394,37 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 //            public boolean onQueryTextChange(String newText) {
 //
 //                mSongAdapter.filter(newText);
+//                mListView.invalidate();
+//                mSongAdapter.notifyDataSetChanged();
 //
 //                return false;
 //            }
 //        });
-//
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.itemSearch:
-//
-//
-//                break;
-//            case R.id.itemArrange:
-//                doQueue();
-//                break;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.itemSearch:
+
+
+                break;
+            case R.id.itemArrange:
+                doQueue();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+//        SharedPreferences prefs = this.getSharedPreferences("myPrefsKey", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.putString("NameSong", MainActivity.musicService.nameSong());
+//        editor.putString("NaneArtist", MainActivity.musicService.nameArtist());
+//        editor.commit();
+    }
 }

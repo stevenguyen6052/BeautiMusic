@@ -22,10 +22,10 @@ public class Song implements Serializable {
 
     }
 
-    public Song(String mNameArtist,String mNameAlbum,String mAlbumId){
-        this.mNameArtist = mNameArtist;
-        this.mNameAlbum = mNameAlbum;
-        this.mAlbumId = mAlbumId;
+    public Song(String na,String nab,String aid){
+        this.mNameArtist = na;
+        this.mNameAlbum = nab;
+        this.mAlbumId = aid;
     }
 
     public Song(String mId,String mNameSong, String mNameArtist, String mNameAlbum, String mFileSong,String mDuaration,String mAlbumId,String mArtistId,String mAlbumKey, int mImage) {

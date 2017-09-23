@@ -20,6 +20,7 @@ import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
 
     private TextView mTvNameSong, mTvNameArtist;
     public static ImageView mControlPlayPause;
+    public View mLayoutControl;
 
     private List<Song> mSongList;
     private String nameAlbumArtist, tag;
@@ -80,7 +82,9 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         Log.d(TAG_CHECK_ERROR, "onResume");
         super.onResume();
 
-        if (MainActivity.musicService.mPlayer != null && MainActivity.musicService.mPlayer != null) {
+        checkPlayMusic();
+
+        if (MainActivity.musicService.mPlayer != null) {
             miniControlPlayMusic();
 
         } else {
@@ -111,6 +115,13 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
             }
         }
 
+    }
+    private void checkPlayMusic() {
+        if (MainActivity.musicService.mSongList != null) {
+            mLayoutControl.setVisibility(View.VISIBLE);
+        }else {
+            mLayoutControl.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -163,6 +174,8 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         mControlPlayPause = (ImageView) findViewById(R.id.albumControlPlayPause);
         imgAlbum = (ImageView) findViewById(R.id.detailAlbumImg);
         mListView = (ListView) findViewById(R.id.detaialbum_listview);
+        mLayoutControl = findViewById(R.id.album_minicontrol);
+        mLayoutControl.setVisibility(View.GONE);
 
         mSongDatabase = new SongDatabase(getApplication());
         mSongList = new ArrayList<>();
@@ -171,6 +184,7 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         } else if (tag.equals(TAG_ARTIST)) {
             mSongList = mSongDatabase.getAlLSongFromArtist(nameAlbumArtist);
         }
+
         mLayout.setOnClickListener(this);
         mControlPlayPause.setOnClickListener(this);
 

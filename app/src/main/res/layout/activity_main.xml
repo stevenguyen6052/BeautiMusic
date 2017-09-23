@@ -37,8 +37,7 @@
             android:layout_gravity="bottom"
             android:id="@+id/mainLayoutControl"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_weight="1.1"
+            android:layout_height="65dp"
             android:background="@color/colorAccent"
             android:orientation="horizontal">
 

@@ -25,9 +25,13 @@ import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.SendDataPosition;
 import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
+import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static android.support.v4.app.ActivityCompat.invalidateOptionsMenu;
@@ -129,6 +133,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
                 mSongDatabase.addNewSong(song);
             }
             mSongList1 = mSongDatabase.getAllListSong();
+
 
         }
         setListForAdapter(mSongList1);

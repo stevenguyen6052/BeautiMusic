@@ -7,10 +7,10 @@ public class Album {
     private String nameArtist;
     private int sumSong;
 
-    public Album(String nameAlbum,String nameArtist, int sumSong) {
-        this.nameAlbum = nameAlbum;
-        this.nameArtist = nameArtist;
-        this.sumSong = sumSong;
+    public Album(String ns,String na, int ss) {
+        this.nameAlbum = ns;
+        this.nameArtist = na;
+        this.sumSong = ss;
     }
     public Album(){
 

@@ -7,10 +7,10 @@ public class Artist {
     private int sumAlbum;
     public Artist(){}
 
-    public Artist(String nameArtist, int sumSong, int sumAlbum) {
-        this.nameArtist = nameArtist;
-        this.sumSong = sumSong;
-        this.sumAlbum = sumAlbum;
+    public Artist(String na, int ss, int sa) {
+        this.nameArtist = na;
+        this.sumSong = ss;
+        this.sumAlbum = sa;
     }
 
     public String getNameArtist() {

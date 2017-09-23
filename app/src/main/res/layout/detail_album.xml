@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="10">
 
-    <include
 
+    <include
         android:id="@+id/toolbar2"
         layout="@layout/custom_toolbar_cosllap"
         />
 
     <LinearLayout
+        android:layout_gravity="bottom"
         android:id="@+id/album_minicontrol"
         android:layout_width="match_parent"
         android:layout_height="65dp"
@@ -82,4 +83,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

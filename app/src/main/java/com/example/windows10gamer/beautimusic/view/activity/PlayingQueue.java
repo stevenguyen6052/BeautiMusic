@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 import com.example.windows10gamer.beautimusic.view.utilities.dragandswipe.ListChangedListener;
 import com.example.windows10gamer.beautimusic.view.utilities.dragandswipe.QueueAdapter;
 import com.example.windows10gamer.beautimusic.view.utilities.dragandswipe.SimpleItemTouchHelperCallback;
@@ -27,6 +28,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnStartDragListener, View.OnClickListener, ListChangedListener {
@@ -106,7 +109,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         sendData.putSerializable(LIST, (Serializable) sendListSong);
         intent.putExtras(sendData);
         setResult(Activity.RESULT_OK, intent);
-        finish();
+
     }
 
     private void setUpAdapter() {
@@ -123,20 +126,17 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     }
 
     private void miniControlPlay() {
-        if (MainActivity.musicService.mPlayer != null) {
-            if (MainActivity.musicService.mPlayer.isPlaying()) {
-                mTvNameSong.setText(MainActivity.musicService.nameSong());
-                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
-                mPlayPause.setImageResource(R.drawable.playing);
-                currentSongPlaying();
-            } else {
-                mTvNameSong.setText(MainActivity.musicService.nameSong());
-                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
-                mPlayPause.setImageResource(R.drawable.pause);
-                currentSongPlaying();
-            }
-        }
+        if (MainActivity.musicService.mPlayer.isPlaying()) {
+            mTvNameSong.setText(MainActivity.musicService.nameSong());
+            mTvNameArtist.setText(MainActivity.musicService.nameArtist());
+            mPlayPause.setImageResource(R.drawable.playing);
+            currentSongPlaying();
+        } else {
+            mTvNameSong.setText(MainActivity.musicService.nameSong());
+            mTvNameArtist.setText(MainActivity.musicService.nameArtist());
+            mPlayPause.setImageResource(R.drawable.pause);
 
+        }
     }
 
     private void currentSongPlaying() {
@@ -172,6 +172,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
                 mSongList = mSongDatabase.getAlLSongFromArtist(nameAlbum);
             }
         }
+
     }
 
     @Override
@@ -196,7 +197,9 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
                 break;
 
             case R.id.queueOpenPlayMusic:
+                dataResult();
                 finish();
+
                 break;
         }
     }

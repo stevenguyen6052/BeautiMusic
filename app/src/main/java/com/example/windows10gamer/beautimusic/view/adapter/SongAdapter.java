@@ -19,21 +19,20 @@ public class SongAdapter extends BaseAdapter {
     private Context mContext;
     private List<Song> mSongList;
     private int mLayout;
-    private List<Song> mSongListChange;
+    private List<Song> mSongListChange = new ArrayList<>();
 
     public SongAdapter(Context mContext, List<Song> mSongList, int mLayout) {
         this.mContext = mContext;
         this.mSongList = mSongList;
         this.mLayout = mLayout;
-        //this.mSongListChange = new ArrayList<>();
-        //this.mSongListChange.addAll(mSongList);
+        this.mSongListChange.addAll(mSongList);
     }
 
     @Override
     public int getCount() {
-        if (mSongList.size()>0) {
+        if (mSongList.size() > 0) {
             return mSongList.size();
-        }else return 0;
+        } else return 0;
     }
 
     @Override
@@ -64,23 +63,31 @@ public class SongAdapter extends BaseAdapter {
         mViewHolder.mTvNameArtist.setText(song.getmNameArtist());
         return convertView;
     }
-//    public void filter(String charText) {
-//        charText = charText.toLowerCase(Locale.getDefault());
-//        mSongList.clear();
-//        if (charText.length() == 0) {
-//            mSongList.addAll(mSongListChange);
-//            MainActivity.musicService.mSongList = mSongList;
-//        } else {
-//
-//            for (Song song : mSongListChange) {
-//                if (song.getmNameSong().toLowerCase(Locale.getDefault()).contains(charText)) {
-//                    mSongList.add(song);
-//                }
-//            }
-//            MainActivity.musicService.mSongList = mSongList;
-//        }
-//        notifyDataSetChanged();
-//    }
+
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        mSongList.clear();
+        if (charText.length() == 0) {
+            mSongList.addAll(mSongListChange);
+            MainActivity.musicService.mSongList = mSongList;
+            //MainActivity.musicService.mPosition = 0;
+        } else {
+
+            for (Song song : mSongListChange) {
+                if (charText.length()!=0 && song.getmNameSong().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    mSongList.add(song);
+                }else if(charText.length()!=0 && song.getmNameAlbum().toLowerCase(Locale.getDefault()).contains(charText)){
+                    mSongList.add(song);
+                }else if(charText.length()!=0 && song.getmNameArtist().toLowerCase(Locale.getDefault()).contains(charText)){
+                    mSongList.add(song);
+                }
+            }
+            //MainActivity.musicService.mPlayer.get
+            MainActivity.musicService.mSongList = mSongList;
+
+            MainActivity.musicService.mPosition = 0;
+        }
+    }
 
     private class ViewHolder {
         TextView mTvNameSong, mTvNameArtist;
