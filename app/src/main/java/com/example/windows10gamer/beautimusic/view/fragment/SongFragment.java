@@ -141,6 +141,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
                 MediaStore.Audio.ArtistColumns.ARTIST, MediaStore.Audio.AudioColumns._ID,
                 MediaStore.Audio.AudioColumns.DURATION, MediaStore.Audio.AudioColumns.ALBUM_ID,
                 MediaStore.Audio.AudioColumns.ARTIST_ID, MediaStore.Audio.AudioColumns.ALBUM_KEY,
+                MediaStore.Audio.AudioColumns.TITLE
         };
         Cursor c = context.getContentResolver().query(uri, projection, null, null, null);
         if (c != null) {
@@ -156,7 +157,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
                 mAlbumId = c.getString(5);
                 mArtistId = c.getString(6);
                 mAlbumKey = c.getString(7);
-                mName = mPath.substring(mPath.lastIndexOf("/") + 1);
+                mName = c.getString(8);
 
                 mSong.setmId(mId);
                 mSong.setmNameSong(mName);

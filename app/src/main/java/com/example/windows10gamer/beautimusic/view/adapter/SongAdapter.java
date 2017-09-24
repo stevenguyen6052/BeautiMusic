@@ -59,8 +59,18 @@ public class SongAdapter extends BaseAdapter {
             mViewHolder = (ViewHolder) convertView.getTag();
         }
         Song song = mSongList.get(position);
-        mViewHolder.mTvNameSong.setText(song.getmNameSong());
-        mViewHolder.mTvNameArtist.setText(song.getmNameArtist());
+        if (song.getmNameSong().length() > 40) {
+            mViewHolder.mTvNameSong.setText(song.getmNameSong().substring(0, 37) + "...");
+        } else {
+            mViewHolder.mTvNameSong.setText(song.getmNameSong());
+        }
+
+        if (song.getmNameArtist().length() > 40) {
+            mViewHolder.mTvNameArtist.setText(song.getmNameArtist().substring(0, 37) + "...");
+        } else {
+            mViewHolder.mTvNameArtist.setText(song.getmNameArtist());
+        }
+
         return convertView;
     }
 
@@ -74,11 +84,11 @@ public class SongAdapter extends BaseAdapter {
         } else {
 
             for (Song song : mSongListChange) {
-                if (charText.length()!=0 && song.getmNameSong().toLowerCase(Locale.getDefault()).contains(charText)) {
+                if (charText.length() != 0 && song.getmNameSong().toLowerCase(Locale.getDefault()).contains(charText)) {
                     mSongList.add(song);
-                }else if(charText.length()!=0 && song.getmNameAlbum().toLowerCase(Locale.getDefault()).contains(charText)){
+                } else if (charText.length() != 0 && song.getmNameAlbum().toLowerCase(Locale.getDefault()).contains(charText)) {
                     mSongList.add(song);
-                }else if(charText.length()!=0 && song.getmNameArtist().toLowerCase(Locale.getDefault()).contains(charText)){
+                } else if (charText.length() != 0 && song.getmNameArtist().toLowerCase(Locale.getDefault()).contains(charText)) {
                     mSongList.add(song);
                 }
             }

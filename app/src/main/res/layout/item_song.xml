@@ -11,7 +11,7 @@
             android:id="@+id/ImgView"
             android:layout_width="@dimen/size_icon_music"
             android:layout_height="@dimen/size_icon_music"
-            android:background="@drawable/notnhacchange"
+            android:background="@drawable/icon_music"
             />
 
         <LinearLayout

@@ -317,6 +317,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         }
         intent.putExtras(bundle);
         startActivityForResult(intent, REQUEST_LIST);
+
     }
 
     // trả về list sau khi sắp xếp
@@ -372,7 +373,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_item, menu);
         MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-
         searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
         MenuItemCompat.setShowAsAction(itemSearch, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         MenuItemCompat.setActionView(itemSearch, searchView);
@@ -384,24 +384,23 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                String name = MainActivity.musicService.nameSong();
+
+                String nameSong = MainActivity.musicService.nameSong();
+                String nameArtist = MainActivity.musicService.nameArtist();
+
                 mSongList.clear();
                 mSongList.addAll(mSongDatabase.getSongFromNameSong(newText));
                 MainActivity.musicService.mSongList = mSongList;
                 MainActivity.musicService.mPosition = 0;
                 mSongAdapter.notifyDataSetChanged();
-                for (int i =0;i<MainActivity.musicService.mSongList.size();i++){
-                    if (name.equals(MainActivity.musicService.mSongList.get(i).getmNameSong())){
-                        MainActivity.musicService.mPosition = i;
-                    }
-                }
-                //mTvNameSong.setText(mSongList.get(MainActivity.musicService.mPosition).getmNameSong());
+
 
                 //mSongAdapter.filter(newText);
                 //mListView.invalidate();
 
                 return false;
             }
+
         });
 
         return true;
