@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,26 +36,14 @@ import java.util.List;
 public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnStartDragListener, View.OnClickListener, ListChangedListener {
     //tag check debug
     private static final String TAG_CHECK_ERROR = "PlayingQueue";
-    // tag to get data
-    private final static String TAG = "TAG";
-    private final static String TAG_SONG = "SONG";
-    private final static String TAG_ARTIST = "ARTIST";
-    private final static String TAG_ALBUM = "ALBUM";
-    private final static String LIST = "LIST";
-    private static final String TAG_DETAIL = "DETAIL";
-    private static final String ALBUM_ARTIST = "Name";
-
     private ItemTouchHelper mItemTouchHelper;
     private List<Song> mSongList;
     private List<Song> sendListSong;
     private SongDatabase mSongDatabase;
-
     private View mLayoutOpenPlayMusic;
-
     private String jsonListSongId, tagCheck;
     private TextView mTvNameSong, mTvNameArtist;
     private ImageView mPlayPause;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +96,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         sendListSong = getDataAfterDragAndSwipe();
         Intent intent = new Intent();
         Bundle sendData = new Bundle();
-        sendData.putSerializable(LIST, (Serializable) sendListSong);
+        sendData.putParcelableArrayList(InitClass.LIST_SONG, (ArrayList<Song>) sendListSong);
         intent.putExtras(sendData);
         setResult(Activity.RESULT_OK, intent);
 
@@ -161,15 +150,15 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         String tag, nameAlbumArtist;
-        tag = bundle.getString(TAG);
-        if (tag.equals(TAG_SONG)) {
+        tag = bundle.getString(InitClass.TAG);
+        if (tag.equals(InitClass.TAG_SONG)) {
             mSongList = mSongDatabase.getAllListSong();
-        } else if (tag.equals(TAG_DETAIL)) {
-            nameAlbumArtist = bundle.getString(ALBUM_ARTIST);
-            tagCheck = bundle.getString(TAG_ALBUM);
-            if (tagCheck.equals(TAG_ALBUM)) {
+        } else if (tag.equals(InitClass.TAG_DETAIL)) {
+            nameAlbumArtist = bundle.getString(InitClass.NAMEALBUM_ARTIST);
+            tagCheck = bundle.getString(InitClass.TAG_ALBUM);
+            if (tagCheck.equals(InitClass.TAG_ALBUM)) {
                 mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbumArtist);
-            } else if (tagCheck.equals(TAG_ARTIST)) {
+            } else if (tagCheck.equals(InitClass.TAG_ARTIST)) {
                 mSongList = mSongDatabase.getAlLSongFromArtist(nameAlbumArtist);
             }
         }

@@ -33,31 +33,25 @@ import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener {
     // request result list after queue
-    private final static String TAG_REQUEST = "LIST";
     private final static int REQUEST_LIST = 1;
-
     private String tag, nameAlbum, tagCheck;
-
     public static TextView mTvNameSong, mTvNameSinger, mTvTime;
     public static ImageView mImgPlayPause;
-
     private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat, mQueue;
     private CircularSeekBar mSeekbar1;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-
     private SongDatabase mSongDatabase;
     public SongAdapter mSongAdapter;
     private ListView mListView;
-
     private int mPosition;
     public static List<Song> mSongList;
-    SearchView searchView;
 
     //activity and playback pause flags
     private boolean paused = false, playbackPaused = false;
@@ -113,8 +107,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 nameAlbum = bundle.getString(InitClass.NAMEALBUM_ARTIST);
                 mPosition = bundle.getInt(InitClass.POSITION);
                 tagCheck = bundle.getString(InitClass.TAG_ALBUM);
-
                 if (tagCheck.equals(InitClass.TAG_ALBUM)) {
+
                     mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbum);
 
                 } else if (tagCheck.equals(InitClass.TAG_ARTIST)) {
@@ -122,7 +116,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
                 }
             } else if (tag.equals(InitClass.TAG_SONG)) {
-
                 mSongList = mSongDatabase.getAllListSong();
                 mPosition = bundle.getInt(InitClass.POSITION);
 
@@ -323,8 +316,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 String name = "";
                 name = MainActivity.musicService.nameSong();
                 Bundle getData = data.getExtras();
+                List<Song> songList = getData.getParcelableArrayList(InitClass.LIST_SONG);
                 mSongList.clear();
-                mSongList.addAll((List<Song>) getData.getSerializable(TAG_REQUEST));
+                mSongList.addAll(songList);
                 mSongAdapter.notifyDataSetChanged();
                 // update position after queue
                 for (int i = 0; i < mSongList.size(); i++) {

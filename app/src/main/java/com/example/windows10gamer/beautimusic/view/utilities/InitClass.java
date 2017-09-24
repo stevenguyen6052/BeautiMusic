@@ -25,6 +25,8 @@ public class InitClass {
     public static final String LIST_SONG = "LISTSONG";
     public static final String SEARCH = "SEARCH";
     public static final String NAMEALBUM_ARTIST = "Name";
+    public static final String NAME_ALBUM = "Name Album";
+    public static final String NAME_ARTIST = "Name Artist";
 
     public static void sortCollection(List<Song> mSongList){
         Collections.sort(mSongList, new Comparator<Song>() {
@@ -50,6 +52,8 @@ public class InitClass {
             }
         });
     }
+
+    //resize bitmap
     public static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
         int height = bm.getHeight();

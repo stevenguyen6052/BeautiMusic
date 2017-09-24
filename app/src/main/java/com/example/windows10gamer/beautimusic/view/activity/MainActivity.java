@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 import com.example.windows10gamer.beautimusic.view.utilities.SendDataPosition;
 import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
 import com.example.windows10gamer.beautimusic.view.utilities.service.MusicService;
@@ -32,13 +33,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements SendDataPosition, View.OnClickListener {
     //tag for check debug
     private static final String TAG_CHECK_DEBUG = "Mainactivity";
-    // tag of current song
-    private static final String POSITION = "POSITION";
     private int mPosition;
-    //tag for send data
-    private static final String TAG = "TAG";
-    private static final String TAG_SONG = "SONG";
-
     private ViewPager mViewPager;
     private AdapterTab adapterTab;
 
@@ -179,10 +174,8 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
                     }
                 }
             }
-
         }
         return mSongListReturn;
-
     }
 
     // update current nameSong,nameArtist of song isplaying
@@ -254,8 +247,8 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
         mPosition = positon;
         Intent intent = new Intent(this, PlayMusicActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(TAG, TAG_SONG);
-        bundle.putInt(POSITION, mPosition);
+        bundle.putString(InitClass.TAG, InitClass.TAG_SONG);
+        bundle.putInt(InitClass.POSITION, mPosition);
         intent.putExtras(bundle);
         startActivity(intent);
     }

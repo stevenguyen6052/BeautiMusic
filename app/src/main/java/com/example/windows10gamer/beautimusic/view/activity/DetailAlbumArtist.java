@@ -27,31 +27,18 @@ import java.util.List;
 
 
 public class DetailAlbumArtist extends AppCompatActivity implements View.OnClickListener {
-    //tag check debug
     private static final String TAG_CHECK_ERROR = "DetailAlbumArtist";
-    // tag for get data
-    private static final String POSITION = "POSITION";
-    private static final String NAME_ALBUM = "Name Album";
-    private static final String TAG = "TAG";
-    private static final String TAG_DETAIL = "DETAIL";
-    private static final String TAG_ARTIST = "ARTIST";
-    private static final String TAG_ALBUM = "ALBUM";
-    private static final String NAME_ARTIST = "Name Artist";
-
     private SongAdapter mSongAdapter;
     private ListView mListView;
     private View mLayout;
     private ImageView imgAlbum;
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
-
     private TextView mTvNameSong, mTvNameArtist;
     public static ImageView mControlPlayPause;
     public View mLayoutControl;
-
     private List<Song> mSongList;
     private String nameAlbumArtist, tag;
-
     private SongDatabase mSongDatabase;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
@@ -152,15 +139,15 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(DetailAlbumArtist.this, PlayMusicActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(TAG, TAG_DETAIL);
+                bundle.putString(InitClass.TAG, InitClass.TAG_DETAIL);
 
-                if (tag.equals(TAG_ALBUM)) {
-                    bundle.putString(TAG_ALBUM, TAG_ALBUM);
-                } else if (tag.equals(TAG_ARTIST)) {
-                    bundle.putString(TAG_ALBUM, TAG_ARTIST);
+                if (tag.equals(InitClass.TAG_ALBUM)) {
+                    bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ALBUM);
+                } else if (tag.equals(InitClass.TAG_ARTIST)) {
+                    bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ARTIST);
                 }
                 bundle.putString("Name", nameAlbumArtist);
-                bundle.putInt(POSITION, position);
+                bundle.putInt(InitClass.POSITION, position);
                 intent.putExtras(bundle);
                 startActivity(intent);
 
@@ -180,9 +167,9 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
 
         mSongDatabase = new SongDatabase(getApplication());
         mSongList = new ArrayList<>();
-        if (tag.equals(TAG_ALBUM)) {
+        if (tag.equals(InitClass.TAG_ALBUM)) {
             mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbumArtist);
-        } else if (tag.equals(TAG_ARTIST)) {
+        } else if (tag.equals(InitClass.TAG_ARTIST)) {
             mSongList = mSongDatabase.getAlLSongFromArtist(nameAlbumArtist);
         }
 
@@ -206,11 +193,11 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
     private void getDataIntent() {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        tag = bundle.getString("TAG");
-        if (tag.equals(TAG_ALBUM)) {
-            nameAlbumArtist = bundle.getString(NAME_ALBUM);
-        } else if (tag.equals(TAG_ARTIST)) {
-            nameAlbumArtist = bundle.getString(NAME_ARTIST);
+        tag = bundle.getString(InitClass.TAG);
+        if (tag.equals(InitClass.TAG_ALBUM)) {
+            nameAlbumArtist = bundle.getString(InitClass.NAME_ALBUM);
+        } else if (tag.equals(InitClass.TAG_ARTIST)) {
+            nameAlbumArtist = bundle.getString(InitClass.NAME_ARTIST);
         }
     }
 

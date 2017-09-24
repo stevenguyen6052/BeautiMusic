@@ -32,8 +32,8 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         setUpToolbar();
-        initView();
         Intent intent = getIntent();
+        mSongList = new ArrayList<>();
         mSongList = intent.getParcelableArrayListExtra(InitClass.LIST_SONG);
         songAdapter = new SongAdapter(this, mSongList, R.layout.item_song);
         lvSongs.setAdapter(songAdapter);
@@ -45,19 +45,14 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                 bundle.putString(InitClass.TAG, InitClass.SEARCH);
                 bundle.putInt(InitClass.POSITION, position);
                 if (filteredModelList.size() != 0) {
-                    bundle.putParcelableArrayList(InitClass.LIST_SONG, (ArrayList<? extends Parcelable>) filteredModelList);
+                    bundle.putParcelableArrayList(InitClass.LIST_SONG, (ArrayList<Song>) filteredModelList);
                 } else {
-                    bundle.putParcelableArrayList(InitClass.LIST_SONG, (ArrayList<? extends Parcelable>) mSongList);
+                    bundle.putParcelableArrayList(InitClass.LIST_SONG, (ArrayList<Song>) mSongList);
                 }
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
-
-    }
-
-    private void initView() {
-        lvSongs = (ListView) findViewById(R.id.lvSongSearch);
     }
 
     private void setUpToolbar() {
@@ -72,7 +67,6 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                 SearchActivity.super.onBackPressed();
             }
         });
-
     }
 
     @Override
@@ -103,6 +97,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         return true;
     }
 
+    // get list after search
     private List<Song> filter(List<Song> mlistSong, String query) {
         String s = InitClass.unAccent(query.toLowerCase());
         List<Song> filteredModelList = new ArrayList<>();
