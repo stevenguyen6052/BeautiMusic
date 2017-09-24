@@ -3,15 +3,39 @@ package com.example.windows10gamer.beautimusic.model;
 
 
 public class Album {
+    private int id;
     private String nameAlbum;
     private String nameArtist;
-    private int sumSong;
+    private String image;
 
-    public Album(String ns,String na, int ss) {
+
+    public Album(int id,String ns,String na, String img) {
+        this.id = id;
         this.nameAlbum = ns;
         this.nameArtist = na;
-        this.sumSong = ss;
+        this.image = img;
+        //this.sumSong = ss;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    //private int sumSong;
+
+
     public Album(){
 
     }
@@ -32,11 +56,11 @@ public class Album {
         this.nameAlbum = nameAlbum;
     }
 
-    public int getSumSong() {
-        return sumSong;
-    }
-
-    public void setSumSong(int sumSong) {
-        this.sumSong = sumSong;
-    }
+//    public int getSumSong() {
+//        return sumSong;
+//    }
+//
+//    public void setSumSong(int sumSong) {
+//        this.sumSong = sumSong;
+//    }
 }

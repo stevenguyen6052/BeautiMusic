@@ -1,10 +1,14 @@
 package com.example.windows10gamer.beautimusic.database;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+import android.provider.BaseColumns;
+import android.provider.MediaStore;
 
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.model.Artist;
@@ -57,15 +61,6 @@ public class SongDatabase extends SQLiteOpenHelper {
         if (mCursor.moveToFirst()) {
             do {
                 mSong1.setmId(mCursor.getString(0));
-                mSong1.setmNameSong(mCursor.getString(1));
-                mSong1.setmNameAlbum(mCursor.getString(2));
-                mSong1.setmNameArtist(mCursor.getString(3));
-                mSong1.setmFileSong(mCursor.getString(4));
-                mSong1.setmDuaration(mCursor.getString(5));
-                mSong1.setmAlbumId(mCursor.getString(6));
-                mSong1.setmArtistId(mCursor.getString(7));
-                mSong1.setmAlbumKey(mCursor.getString(8));
-                mSong1.setmImage(mCursor.getInt(9));
 
             } while (mCursor.moveToNext());
         }
@@ -142,11 +137,50 @@ public class SongDatabase extends SQLiteOpenHelper {
         return mListSong;
     }
 
+    public static List<Album> getAlbumFromDevice(Context context) {
+        List<Album> albumList = new ArrayList<>();
+        Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
+        Cursor mCursor = context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                new String[]{
+                        BaseColumns._ID,
+                        MediaStore.Audio.AlbumColumns.ALBUM,
+                        MediaStore.Audio.AlbumColumns.ARTIST,
+                }, null, null, android.provider.MediaStore.Audio.Albums.DEFAULT_SORT_ORDER);
+        mCursor.moveToFirst();
+        while (mCursor.moveToNext()) {
+            int id = mCursor.getInt(0);
+            String albumName = mCursor.getString(1);
+            String artist = mCursor.getString(2);
+            String image = ContentUris.withAppendedId(ART_CONTENT_URI, id).toString();
+            Album album = new Album(id, albumName, artist, image);
+            albumList.add(album);
+        }
+        mCursor.close();
+        return albumList;
+    }
+    public static List<Artist> getArtistFromDevice(Context context) {
+        List<Artist> atristList = new ArrayList<>();
+        Uri uri = android.provider.MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
+        String[] mdata = new String[]{
+          /* 0 */ BaseColumns._ID,
+          /* 1 */ android.provider.MediaStore.Audio.ArtistColumns.ARTIST,
+          /* 2 */ android.provider.MediaStore.Audio.ArtistColumns.NUMBER_OF_ALBUMS,
+          /* 3 */ android.provider.MediaStore.Audio.ArtistColumns.NUMBER_OF_TRACKS
+        };
+        Cursor cursor = context.getContentResolver().query(uri, mdata, null, null, MediaStore.Audio.Artists.DEFAULT_SORT_ORDER);
+        while (cursor.moveToNext()) {
+            Artist atrist = new Artist(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3));
+            atristList.add(atrist);
+        }
+        return atristList;
+    }
+
+
 
 
     public List<Album> getAllAlbum1() {
         List<Album> mAlbumList = new ArrayList<>();
-        String mSelect = " SELECT " + CL_NAME_ALBUM + ", " + CL_NAME_ARTIST + " ,COUNT(" + CL_ID + ") FROM " + TBL_SONG + " GROUP BY " + CL_NAME_ARTIST + "";
+        String mSelect = " SELECT " + CL_NAME_ALBUM + ", " + CL_NAME_ARTIST + " ,"+CL_FILE_SONG+" FROM " + TBL_SONG + " GROUP BY " + CL_NAME_ARTIST + "";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor mCursor = db.rawQuery(mSelect, null);
         if (mCursor.moveToFirst()) {
@@ -154,7 +188,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 Album mAlbum = new Album();
                 mAlbum.setNameAlbum(mCursor.getString(0));
                 mAlbum.setNameArtist(mCursor.getString(1));
-                mAlbum.setSumSong(mCursor.getInt(2));
+                mAlbum.setImage(mCursor.getString(2));
                 mAlbumList.add(mAlbum);
             } while (mCursor.moveToNext());
         }
@@ -183,6 +217,9 @@ public class SongDatabase extends SQLiteOpenHelper {
         db.close();
         return mArtistList;
     }
+
+
+
 
     public List<Song> getAlLSongFromArtist(String params) {
         List<Song> mListSong = new ArrayList<>();

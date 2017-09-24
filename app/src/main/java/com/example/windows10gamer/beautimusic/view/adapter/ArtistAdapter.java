@@ -19,8 +19,7 @@ import java.util.List;
 
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
     private static final String NAME_ARTIST = "Name Artist";
-    private static final String ALBUM = "Album  ";
-    private static final String SONG = "Song";
+
     private List<Artist> mArtistList;
     private Context mContext;
 
@@ -41,9 +40,10 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Artist mArtist = mArtistList.get(position);
+        String songNumber = mArtistList.get(position).getSumAlbum()+" Album | "+mArtistList.get(position).getSumSong()+" Song";
         holder.mTvNameArtist.setText(mArtist.getNameArtist());
-        holder.mTvSumAlbum.setText(mArtist.getSumAlbum() + ALBUM);
-        holder.mTvSumSong.setText(mArtist.getSumSong() + SONG);
+        holder.mTvSumAlbum.setText(songNumber);
+
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
@@ -68,14 +68,13 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        private TextView mTvNameArtist, mTvSumAlbum, mTvSumSong;
+        private TextView mTvNameArtist, mTvSumAlbum;
         private ItemClickListener itemClickListener;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mTvNameArtist = (TextView) itemView.findViewById(R.id.item_nameartist);
             mTvSumAlbum = (TextView) itemView.findViewById(R.id.item_sumg_album);
-            mTvSumSong = (TextView) itemView.findViewById(R.id.item_sumg_song);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }

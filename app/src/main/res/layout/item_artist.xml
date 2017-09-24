@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="180dp"
+    android:layout_height="180dp"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/paddingtop_left"
-    android:paddingTop="@dimen/paddingtop_left">
+    android:padding="5dp">
 
     <ImageView
         android:id="@+id/itemartist_img"
-        android:layout_width="@dimen/width_height_image_item"
-        android:layout_height="@dimen/width_height_image_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@drawable/imagemusi"
-
         />
 
     <RelativeLayout
@@ -26,6 +24,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
+            android:maxLines="1"
             android:text="Name Artist"
             android:textColor="@color/colorWhite" />
 
@@ -38,14 +37,7 @@
             android:text="Sum Album   "
             android:textColor="@color/colorWhite" />
 
-        <TextView
-            android:id="@+id/item_sumg_song"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/item_nameartist"
-            android:layout_toRightOf="@id/item_sumg_album"
-            android:text="Sumg Song"
-            android:textColor="@color/colorWhite" />
+
     </RelativeLayout>
 
 

@@ -21,6 +21,7 @@ import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,6 +40,8 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
         setHasOptionsMenu(true);
         initView();
         setUpAdapter();
+        mAlbumList.addAll(mSongDatabase.getAllAlbum1());
+        mAlbumAdapter.notifyDataSetChanged();
 
         return mRootView;
     }
@@ -50,7 +53,8 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
 
     private void initView() {
         mSongDatabase = new SongDatabase(getActivity());
-        mAlbumList = mSongDatabase.getAllAlbum1();
+        //mAlbumList = mSongDatabase.getAllAlbum1();
+        mAlbumList = new ArrayList<>();
         mRecycleView = (RecyclerView) mRootView.findViewById(R.id.recycleViewAl);
         mRecycleView.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);

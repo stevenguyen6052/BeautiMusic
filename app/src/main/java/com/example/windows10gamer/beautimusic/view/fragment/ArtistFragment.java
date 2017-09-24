@@ -33,17 +33,19 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
         setHasOptionsMenu(true);
         initView();
         setUpAdapter();
+        mArtistList.addAll(SongDatabase.getArtistFromDevice(getContext()));
+        mArtistAdapter.notifyDataSetChanged();
         return mRootView2;
     }
     private void setUpAdapter(){
-        mArtistList = mSongDatabase.getAllArtist();
+        //mArtistList = mSongDatabase.getAllArtist();
         mArtistAdapter = new ArtistAdapter(mArtistList, getActivity());
         mRecycleView.setAdapter(mArtistAdapter);
     }
 
     private void initView() {
         mArtistList = new ArrayList<>();
-        mSongDatabase = new SongDatabase(getActivity());
+        //mSongDatabase = new SongDatabase(getActivity());
         mRecycleView = (RecyclerView) mRootView2.findViewById(R.id.recycleViewAr);
         mRecycleView.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
