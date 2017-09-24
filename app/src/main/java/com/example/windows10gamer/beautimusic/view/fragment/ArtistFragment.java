@@ -25,7 +25,7 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
     private List<Artist> mArtistList;
     private SongDatabase mSongDatabase;
     private ArtistAdapter mArtistAdapter;
-    private RecyclerView mRecycleView;
+    private RecyclerView lvArtists;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,16 +40,16 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
     private void setUpAdapter(){
         //mArtistList = mSongDatabase.getAllArtist();
         mArtistAdapter = new ArtistAdapter(mArtistList, getActivity());
-        mRecycleView.setAdapter(mArtistAdapter);
+        lvArtists.setAdapter(mArtistAdapter);
     }
 
     private void initView() {
         mArtistList = new ArrayList<>();
         //mSongDatabase = new SongDatabase(getActivity());
-        mRecycleView = (RecyclerView) mRootView2.findViewById(R.id.recycleViewAr);
-        mRecycleView.setHasFixedSize(true);
+        lvArtists = (RecyclerView) mRootView2.findViewById(R.id.recycleViewAr);
+        lvArtists.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        mRecycleView.setLayoutManager(gridLayoutManager);
+        lvArtists.setLayoutManager(gridLayoutManager);
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -73,14 +73,14 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
     private void initListDisplay(){
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecycleView.setLayoutManager(layoutManager);
-        mRecycleView.setAdapter(mArtistAdapter);
+        lvArtists.setLayoutManager(layoutManager);
+        lvArtists.setAdapter(mArtistAdapter);
     }
 
     // Display the Grid
     private void initGridDisplay(){
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         layoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        mRecycleView.setLayoutManager(layoutManager);
+        lvArtists.setLayoutManager(layoutManager);
     }
 }

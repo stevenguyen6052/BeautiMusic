@@ -1,123 +1,136 @@
 package com.example.windows10gamer.beautimusic.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Created by Windows 10 Gamer on 21/08/2017.
  */
 
-public class Song implements Serializable {
-    private String mId;
-    private String mNameSong;
-    private String mNameArtist;
-    private String mNameAlbum;
-    private String mFileSong;
-    private String mDuaration;
-    private String mAlbumId;
-    private String mArtistId;
-    private String mAlbumKey;
-    private int mImage;
+public class Song implements Parcelable {
+    private String id;
+    private String nameSong;
+    private String nameArtist;
+    private String nameAlbum;
+    private String fileSong;
+    private String duaration;
+    private int imageSong;
+
 
     public Song() {
 
     }
 
     public Song(String na,String nab,String aid){
-        this.mNameArtist = na;
-        this.mNameAlbum = nab;
-        this.mAlbumId = aid;
+        this.nameArtist = na;
+        this.nameAlbum = nab;
+
     }
 
-    public Song(String mId,String mNameSong, String mNameArtist, String mNameAlbum, String mFileSong,String mDuaration,String mAlbumId,String mArtistId,String mAlbumKey, int mImage) {
-        this.mId = mId ;
-        this.mNameSong = mNameSong;
-        this.mNameArtist = mNameArtist;
-        this.mNameAlbum = mNameAlbum;
-        this.mFileSong = mFileSong;
-        this.mDuaration = mDuaration;
-        this.mAlbumId = mAlbumId;
-        this.mArtistId = mArtistId;
-        this.mAlbumKey = mAlbumKey;
-        this.mImage = mImage;
+    public Song(String mId,String mNameSong, String mNameArtist, String mNameAlbum, String mFileSong,String mDuaration, int mImage) {
+        this.id = mId ;
+        this.nameSong = mNameSong;
+        this.nameArtist = mNameArtist;
+        this.nameAlbum = mNameAlbum;
+        this.fileSong = mFileSong;
+        this.duaration = mDuaration;
+        this.imageSong = mImage;
+    }
+    public static final Creator<Song> CREATOR = new Creator<Song>() {
+        @Override
+        public Song createFromParcel(Parcel source) {
+            return new Song(source);
+        }
+
+        @Override
+        public Song[] newArray(int size) {
+            return new Song[size];
+        }
+    };
+
+    public Song(Parcel source) {
+        id = source.readString();
+        nameSong = source.readString();
+        nameArtist = source.readString();
+        nameAlbum = source.readString();
+        fileSong = source.readString();
+        duaration = source.readString();
+        imageSong = source.readInt();
     }
 
-    public String getmAlbumKey() {
-        return mAlbumKey;
+
+    public String getId() {
+        return id;
     }
 
-    public void setmAlbumKey(String mAlbumKey) {
-        this.mAlbumKey = mAlbumKey;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getmAlbumId() {
-        return mAlbumId;
+    public String getNameSong() {
+        return nameSong;
     }
 
-    public void setmAlbumId(String mAlbumId) {
-        this.mAlbumId = mAlbumId;
+    public void setNameSong(String nameSong) {
+        this.nameSong = nameSong;
     }
 
-    public String getmArtistId() {
-        return mArtistId;
+    public String getNameArtist() {
+        return nameArtist;
     }
 
-    public void setmArtistId(String mArtistId) {
-        this.mArtistId = mArtistId;
+    public void setNameArtist(String nameArtist) {
+        this.nameArtist = nameArtist;
     }
 
-    public String getmDuaration() {
-        return mDuaration;
+    public String getNameAlbum() {
+        return nameAlbum;
     }
 
-    public void setmDuaration(String mDuaration) {
-        this.mDuaration = mDuaration;
+    public void setNameAlbum(String nameAlbum) {
+        this.nameAlbum = nameAlbum;
     }
 
-    public String getmId() {
-        return mId;
+    public String getFileSong() {
+        return fileSong;
     }
 
-    public void setmId(String mId) {
-        this.mId = mId;
+    public void setFileSong(String fileSong) {
+        this.fileSong = fileSong;
     }
 
-    public String getmNameSong() {
-        return mNameSong;
+    public String getDuaration() {
+        return duaration;
     }
 
-    public void setmNameSong(String mNameSong) {
-        this.mNameSong = mNameSong;
+    public void setDuaration(String duaration) {
+        this.duaration = duaration;
     }
 
-    public String getmNameArtist() {
-        return mNameArtist;
+    public int getImageSong() {
+        return imageSong;
     }
 
-    public void setmNameArtist(String mNameArtist) {
-        this.mNameArtist = mNameArtist;
+    public void setImageSong(int imageSong) {
+        this.imageSong = imageSong;
     }
 
-    public String getmNameAlbum() {
-        return mNameAlbum;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setmNameAlbum(String mNameAlbum) {
-        this.mNameAlbum = mNameAlbum;
-    }
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(nameSong);
+        dest.writeString(nameArtist);
+        dest.writeString(nameAlbum);
+        dest.writeString(fileSong);
+        dest.writeString(duaration);
+        dest.writeInt(imageSong);
 
-    public String getmFileSong() {
-        return mFileSong;
-    }
-
-    public void setmFileSong(String mFileSong) {
-        this.mFileSong = mFileSong;
-    }
-
-    public int getmImage() {
-        return mImage;
-    }
-
-    public void setmImage(int mImage) {
-        this.mImage = mImage;
     }
 }

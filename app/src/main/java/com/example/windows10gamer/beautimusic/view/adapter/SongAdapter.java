@@ -59,16 +59,16 @@ public class SongAdapter extends BaseAdapter {
             mViewHolder = (ViewHolder) convertView.getTag();
         }
         Song song = mSongList.get(position);
-        if (song.getmNameSong().length() > 40) {
-            mViewHolder.mTvNameSong.setText(song.getmNameSong().substring(0, 37) + "...");
+        if (song.getNameSong().length() > 40) {
+            mViewHolder.mTvNameSong.setText(song.getNameSong().substring(0, 37) + "...");
         } else {
-            mViewHolder.mTvNameSong.setText(song.getmNameSong());
+            mViewHolder.mTvNameSong.setText(song.getNameSong());
         }
 
-        if (song.getmNameArtist().length() > 40) {
-            mViewHolder.mTvNameArtist.setText(song.getmNameArtist().substring(0, 37) + "...");
+        if (song.getNameArtist().length() > 40) {
+            mViewHolder.mTvNameArtist.setText(song.getNameArtist().substring(0, 37) + "...");
         } else {
-            mViewHolder.mTvNameArtist.setText(song.getmNameArtist());
+            mViewHolder.mTvNameArtist.setText(song.getNameArtist());
         }
 
         return convertView;
@@ -84,11 +84,11 @@ public class SongAdapter extends BaseAdapter {
         } else {
 
             for (Song song : mSongListChange) {
-                if (charText.length() != 0 && song.getmNameSong().toLowerCase(Locale.getDefault()).contains(charText)) {
+                if (charText.length() != 0 && song.getNameSong().toLowerCase(Locale.getDefault()).contains(charText)) {
                     mSongList.add(song);
-                } else if (charText.length() != 0 && song.getmNameAlbum().toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (charText.length() != 0 && song.getNameAlbum().toLowerCase(Locale.getDefault()).contains(charText)) {
                     mSongList.add(song);
-                } else if (charText.length() != 0 && song.getmNameArtist().toLowerCase(Locale.getDefault()).contains(charText)) {
+                } else if (charText.length() != 0 && song.getNameArtist().toLowerCase(Locale.getDefault()).contains(charText)) {
                     mSongList.add(song);
                 }
             }
@@ -97,6 +97,13 @@ public class SongAdapter extends BaseAdapter {
 
             MainActivity.musicService.mPosition = 0;
         }
+    }
+    public void setFilter (List<Song> mData){
+
+        mSongList = new ArrayList<>();
+        mSongList.addAll(mData);
+
+        notifyDataSetChanged();
     }
 
     private class ViewHolder {

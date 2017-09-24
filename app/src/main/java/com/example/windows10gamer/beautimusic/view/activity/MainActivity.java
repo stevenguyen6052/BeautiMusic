@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
     private void saveLastListSong() {
         List<Long> listSongId = new ArrayList<Long>();
         for (Song song : musicService.mSongList) {
-            listSongId.add(Long.valueOf(song.getmId()));
+            listSongId.add(Long.valueOf(song.getId()));
         }
         //convert the List of Longs to a JSON string
         Gson gson = new Gson();
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
             if (listOfSortedCustomersId != null && listOfSortedCustomersId.size() > 0) {
                 for (Long id : listOfSortedCustomersId) {
                     for (Song mSong : getListSong) {
-                        if (mSong.getmId().equals(id)) {
+                        if (mSong.getId().equals(id)) {
                             mSongListReturn.add(mSong);
                             break;
 

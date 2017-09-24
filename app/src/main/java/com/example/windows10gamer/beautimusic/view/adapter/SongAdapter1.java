@@ -37,8 +37,8 @@ public class SongAdapter1 extends RecyclerView.Adapter<SongAdapter1.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Song mSong = mSongList.get(position);
-        holder.mTvNameSong.setText(mSong.getmNameSong());
-        holder.mTvNameArtist.setText(mSong.getmNameArtist());
+        holder.mTvNameSong.setText(mSong.getNameSong());
+        holder.mTvNameArtist.setText(mSong.getNameArtist());
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.R;
@@ -65,7 +66,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         byte[] dataImageDisc = mmr.getEmbeddedPicture();
         if (dataImageDisc != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
-            holder.imageView.setImageBitmap(bitmap);
+            holder.imageView.setImageBitmap(InitClass.getResizedBitmap(bitmap,180,180));
+
         } else {
             holder.imageView.setImageResource(R.drawable.ic_empty_music2);
         }

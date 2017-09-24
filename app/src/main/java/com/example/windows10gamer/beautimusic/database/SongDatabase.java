@@ -60,22 +60,19 @@ public class SongDatabase extends SQLiteOpenHelper {
         Cursor mCursor = db1.rawQuery(mSelect, null);
         if (mCursor.moveToFirst()) {
             do {
-                mSong1.setmId(mCursor.getString(0));
+                mSong1.setId(mCursor.getString(0));
 
             } while (mCursor.moveToNext());
         }
-        if (mSong1.getmId() != mSong.getmId()) {
+        if (mSong1.getId() != mSong.getId()) {
             ContentValues values = new ContentValues();
-            values.put(CL_ID, mSong.getmId());
-            values.put(CL_NAME_SONG, mSong.getmNameSong());
-            values.put(CL_NAME_ALBUM, mSong.getmNameAlbum());
-            values.put(CL_NAME_ARTIST, mSong.getmNameArtist());
-            values.put(CL_FILE_SONG, mSong.getmFileSong());
-            values.put(CL_DUARATION, mSong.getmDuaration());
-            values.put(CL_ALBUM_ID, mSong.getmAlbumId());
-            values.put(CL_ARTIST_ID, mSong.getmArtistId());
-            values.put(CL_ALBUM_KEY, mSong.getmAlbumKey());
-            values.put(CL_IMAGE, mSong.getmImage());
+            values.put(CL_ID, mSong.getId());
+            values.put(CL_NAME_SONG, mSong.getNameSong());
+            values.put(CL_NAME_ALBUM, mSong.getNameAlbum());
+            values.put(CL_NAME_ARTIST, mSong.getNameArtist());
+            values.put(CL_FILE_SONG, mSong.getFileSong());
+            values.put(CL_DUARATION, mSong.getDuaration());
+            values.put(CL_IMAGE, mSong.getImageSong());
             db.insert(TBL_SONG, null, values);
             db.close();
         }
@@ -90,16 +87,13 @@ public class SongDatabase extends SQLiteOpenHelper {
         if (mCursor.moveToFirst()) {
             do {
                 Song mSong = new Song();
-                mSong.setmId(mCursor.getString(0));
-                mSong.setmNameSong(mCursor.getString(1));
-                mSong.setmNameAlbum(mCursor.getString(2));
-                mSong.setmNameArtist(mCursor.getString(3));
-                mSong.setmFileSong(mCursor.getString(4));
-                mSong.setmDuaration(mCursor.getString(5));
-                mSong.setmAlbumId(mCursor.getString(6));
-                mSong.setmArtistId(mCursor.getString(7));
-                mSong.setmAlbumKey(mCursor.getString(8));
-                mSong.setmImage(mCursor.getInt(9));
+                mSong.setId(mCursor.getString(0));
+                mSong.setNameSong(mCursor.getString(1));
+                mSong.setNameAlbum(mCursor.getString(2));
+                mSong.setNameArtist(mCursor.getString(3));
+                mSong.setFileSong(mCursor.getString(4));
+                mSong.setDuaration(mCursor.getString(5));
+                mSong.setImageSong(mCursor.getInt(6));
                 mListSong.add(mSong);
             } while (mCursor.moveToNext());
         }
@@ -117,16 +111,13 @@ public class SongDatabase extends SQLiteOpenHelper {
         if (mCursor.moveToFirst()) {
             do {
                 Song mSong = new Song();
-                mSong.setmId(mCursor.getString(0));
-                mSong.setmNameSong(mCursor.getString(1));
-                mSong.setmNameAlbum(mCursor.getString(2));
-                mSong.setmNameArtist (mCursor.getString(3));
-                mSong.setmFileSong(mCursor.getString(4));
-                mSong.setmDuaration(mCursor.getString(5));
-                mSong.setmAlbumId(mCursor.getString(6));
-                mSong.setmArtistId(mCursor.getString(7));
-                mSong.setmAlbumKey(mCursor.getString(8));
-                mSong.setmImage(mCursor.getInt(9));
+                mSong.setId(mCursor.getString(0));
+                mSong.setNameSong(mCursor.getString(1));
+                mSong.setNameAlbum(mCursor.getString(2));
+                mSong.setNameArtist(mCursor.getString(3));
+                mSong.setFileSong(mCursor.getString(4));
+                mSong.setDuaration(mCursor.getString(5));
+                mSong.setImageSong(mCursor.getInt(6));
                 mListSong.add(mSong);
             } while (mCursor.moveToNext());
         }
@@ -229,16 +220,13 @@ public class SongDatabase extends SQLiteOpenHelper {
         if (mCursor.moveToFirst()) {
             do {
                 Song mSong = new Song();
-                mSong.setmId(mCursor.getString(0));
-                mSong.setmNameSong(mCursor.getString(1));
-                mSong.setmNameAlbum(mCursor.getString(2));
-                mSong.setmNameArtist(mCursor.getString(3));
-                mSong.setmFileSong(mCursor.getString(4));
-                mSong.setmDuaration(mCursor.getString(5));
-                mSong.setmAlbumId(mCursor.getString(6));
-                mSong.setmArtistId(mCursor.getString(7));
-                mSong.setmAlbumKey(mCursor.getString(8));
-                mSong.setmImage(mCursor.getInt(9));
+                mSong.setId(mCursor.getString(0));
+                mSong.setNameSong(mCursor.getString(1));
+                mSong.setNameAlbum(mCursor.getString(2));
+                mSong.setNameArtist(mCursor.getString(3));
+                mSong.setFileSong(mCursor.getString(4));
+                mSong.setDuaration(mCursor.getString(5));
+                mSong.setImageSong(mCursor.getInt(6));
                 mListSong.add(mSong);
             } while (mCursor.moveToNext());
         }
@@ -256,16 +244,13 @@ public class SongDatabase extends SQLiteOpenHelper {
         if (mCursor.moveToFirst()) {
             do {
                 Song mSong = new Song();
-                mSong.setmId(mCursor.getString(0));
-                mSong.setmNameSong(mCursor.getString(1));
-                mSong.setmNameAlbum(mCursor.getString(2));
-                mSong.setmNameArtist(mCursor.getString(3));
-                mSong.setmFileSong(mCursor.getString(4));
-                mSong.setmDuaration(mCursor.getString(5));
-                mSong.setmAlbumId(mCursor.getString(6));
-                mSong.setmArtistId(mCursor.getString(7));
-                mSong.setmAlbumKey(mCursor.getString(8));
-                mSong.setmImage(mCursor.getInt(9));
+                mSong.setId(mCursor.getString(0));
+                mSong.setNameSong(mCursor.getString(1));
+                mSong.setNameAlbum(mCursor.getString(2));
+                mSong.setNameArtist(mCursor.getString(3));
+                mSong.setFileSong(mCursor.getString(4));
+                mSong.setDuaration(mCursor.getString(5));
+                mSong.setImageSong(mCursor.getInt(6));
                 mListSong.add(mSong);
             } while (mCursor.moveToNext());
         }

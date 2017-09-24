@@ -210,7 +210,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         List<Long> listOfSortedCustomerId = new ArrayList<Long>();
 
         for (Song song : mSongList) {
-            listOfSortedCustomerId.add(Long.valueOf(song.getmId()));
+            listOfSortedCustomerId.add(Long.valueOf(song.getId()));
         }
 
         //convert the List of Longs to a JSON string
@@ -236,7 +236,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
             if (listOfSortedCustomersId != null && listOfSortedCustomersId.size() > 0) {
                 for (Long id : listOfSortedCustomersId) {
                     for (Song mSong : mSongList) {
-                        if (mSong.getmId().equals(id)) {
+                        if (mSong.getId().equals(id)) {
                             mSongListReturn.add(mSong);
                             mSongList.remove(mSong);
                             break;

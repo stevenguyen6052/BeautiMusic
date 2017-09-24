@@ -193,7 +193,7 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
 
     // set image of album
     private void setImageSong() {
-        mmr.setDataSource(mSongList.get(0).getmFileSong());
+        mmr.setDataSource(mSongList.get(0).getFileSong());
         byte[] dataImageDisc = mmr.getEmbeddedPicture();
         if (dataImageDisc != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);

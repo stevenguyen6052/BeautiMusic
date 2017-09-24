@@ -28,7 +28,7 @@ import java.util.List;
 public class AlbumFragment extends android.support.v4.app.Fragment {
     private View mRootView;
     private List<Album> mAlbumList;
-    private RecyclerView mRecycleView;
+    private RecyclerView lvAlbums;
     private SongDatabase mSongDatabase;
     private AlbumAdapter mAlbumAdapter;
     private SearchView searchView;
@@ -48,17 +48,17 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
 
     private void setUpAdapter() {
         mAlbumAdapter = new AlbumAdapter(getContext(), mAlbumList);
-        mRecycleView.setAdapter(mAlbumAdapter);
+        lvAlbums.setAdapter(mAlbumAdapter);
     }
 
     private void initView() {
         mSongDatabase = new SongDatabase(getActivity());
         //mAlbumList = mSongDatabase.getAllAlbum1();
         mAlbumList = new ArrayList<>();
-        mRecycleView = (RecyclerView) mRootView.findViewById(R.id.recycleViewAl);
-        mRecycleView.setHasFixedSize(true);
+        lvAlbums = (RecyclerView) mRootView.findViewById(R.id.recycleViewAl);
+        lvAlbums.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
-        mRecycleView.setLayoutManager(gridLayoutManager);
+        lvAlbums.setLayoutManager(gridLayoutManager);
     }
 
     @Override
@@ -83,14 +83,14 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
     private void initListDisplay(){
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecycleView.setLayoutManager(layoutManager);
-        mRecycleView.setAdapter(mAlbumAdapter);
+        lvAlbums.setLayoutManager(layoutManager);
+        lvAlbums.setAdapter(mAlbumAdapter);
     }
 
     // Display the Grid
     private void initGridDisplay(){
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         layoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        mRecycleView.setLayoutManager(layoutManager);
+        lvAlbums.setLayoutManager(layoutManager);
     }
 }

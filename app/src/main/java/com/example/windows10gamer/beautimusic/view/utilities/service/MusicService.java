@@ -189,7 +189,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
     public int getDuaration() {
-        return Integer.valueOf(mSongList.get(mPosition).getmDuaration());
+        return Integer.valueOf(mSongList.get(mPosition).getDuaration());
     }
 
     public void pausePlayer() {
@@ -228,15 +228,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public String pathSong() {
-        return mSongList.get(mPosition).getmFileSong();
+        return mSongList.get(mPosition).getFileSong();
     }
 
     public String nameArtist() {
-        return mSongList.get(mPosition).getmNameArtist();
+        return mSongList.get(mPosition).getNameArtist();
     }
 
     public String nameSong() {
-        return mSongList.get(mPosition).getmNameSong();
+        return mSongList.get(mPosition).getNameSong();
     }
 
     public void setOnComplete() {
@@ -271,12 +271,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void playSong() {
-        songTitle = mSongList.get(mPosition).getmNameSong();
-        artistTitle = mSongList.get(mPosition).getmNameArtist();
+        songTitle = mSongList.get(mPosition).getNameSong();
+        artistTitle = mSongList.get(mPosition).getNameArtist();
         mPlayer.reset();
 
         try {
-            mPlayer.setDataSource(getApplicationContext(), Uri.parse(mSongList.get(mPosition).getmFileSong()));
+            mPlayer.setDataSource(getApplicationContext(), Uri.parse(mSongList.get(mPosition).getFileSong()));
         } catch (Exception e) {
             Log.d(TAG_CHECK_BUG, "Error setting data source", e);
         }

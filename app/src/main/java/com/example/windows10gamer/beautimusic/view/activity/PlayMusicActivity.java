@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -134,6 +135,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 mSongList = mSongDatabase.getAllListSong();
                 mPosition = bundle.getInt(POSITION);
 
+            }else if (tag.equals("SEARCH")){
+                mPosition = bundle.getInt(POSITION);
+                mSongList = bundle.getParcelableArrayList("LISTSONG");
             }
 
             MainActivity.musicService.mSongList = mSongList;
@@ -334,7 +338,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 mSongAdapter.notifyDataSetChanged();
                 // update position của bài hát sau khi sắp xếp
                 for (int i = 0; i < mSongList.size(); i++) {
-                    if (name.equals(mSongList.get(i).getmNameSong()))
+                    if (name.equals(mSongList.get(i).getNameSong()))
                         MainActivity.musicService.mPosition = i;
                 }
             }
@@ -373,35 +377,35 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_item, menu);
         MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-        searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
-        MenuItemCompat.setShowAsAction(itemSearch, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-        MenuItemCompat.setActionView(itemSearch, searchView);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                String nameSong = MainActivity.musicService.nameSong();
-                String nameArtist = MainActivity.musicService.nameArtist();
-
-                mSongList.clear();
-                mSongList.addAll(mSongDatabase.getSongFromNameSong(newText));
-                MainActivity.musicService.mSongList = mSongList;
-                MainActivity.musicService.mPosition = 0;
-                mSongAdapter.notifyDataSetChanged();
-
-
-                //mSongAdapter.filter(newText);
-                //mListView.invalidate();
-
-                return false;
-            }
-
-        });
+//        searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
+//        MenuItemCompat.setShowAsAction(itemSearch, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+//        MenuItemCompat.setActionView(itemSearch, searchView);
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//
+//                String nameSong = MainActivity.musicService.nameSong();
+//                String nameArtist = MainActivity.musicService.nameArtist();
+//
+//                mSongList.clear();
+//                mSongList.addAll(mSongDatabase.getSongFromNameSong(newText));
+//                MainActivity.musicService.mSongList = mSongList;
+//                MainActivity.musicService.mPosition = 0;
+//                mSongAdapter.notifyDataSetChanged();
+//
+//
+//                //mSongAdapter.filter(newText);
+//                //mListView.invalidate();
+//
+//                return false;
+//            }
+//
+//        });
 
         return true;
     }
@@ -410,7 +414,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.itemSearch:
-
+                doSearch();
 
                 break;
             case R.id.itemArrange:
@@ -418,6 +422,12 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void doSearch() {
+        Intent intent = new Intent(this,SearchActivity.class);
+        intent.putParcelableArrayListExtra("LISTSONG", (ArrayList<Song>) mSongList);
+        startActivity(intent);
     }
 
 }

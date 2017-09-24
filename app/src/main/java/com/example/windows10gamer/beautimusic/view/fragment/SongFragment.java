@@ -28,7 +28,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
     private List<Song> mSongList;
     public static List<Song> mSongList1;
     private SongAdapter mSongAdapter;
-    private ListView mListView;
+    private ListView lvSongs;
     private SendDataPosition mSendDataPosition;
     private Context mContext;
     SearchView searchView;
@@ -65,7 +65,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
 
     private void setListForAdapter(List<Song> mSongList) {
         mSongAdapter = new SongAdapter(getActivity(), mSongList, R.layout.item_song);
-        mListView.setAdapter(mSongAdapter);
+        lvSongs.setAdapter(mSongAdapter);
     }
 
 //    @Override
@@ -108,13 +108,13 @@ public class SongFragment extends android.support.v4.app.Fragment {
         mSongDatabase = new SongDatabase(getActivity());
         mSendDataPosition = (SendDataPosition) getActivity();
 
-        mListView = (ListView) mRootView.findViewById(R.id.mListViewSong);
+        lvSongs = (ListView) mRootView.findViewById(R.id.mListViewSong);
         if (mSongList == null && mSongList1 == null) {
             mSongList = new ArrayList<>();
             mSongList1 = new ArrayList<>();
             mSongList = getAllMp3FromDevice(getContext());
 
-            for (Song song: mSongList){
+            for (Song song : mSongList) {
                 mSongDatabase.addNewSong(song);
             }
             mSongList1 = mSongDatabase.getAllListSong();
@@ -125,7 +125,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
     }
 
     private void onItemClick() {
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mSendDataPosition.SendPosition(position);
@@ -139,14 +139,11 @@ public class SongFragment extends android.support.v4.app.Fragment {
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {MediaStore.Audio.AudioColumns.DATA, MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.ArtistColumns.ARTIST, MediaStore.Audio.AudioColumns._ID,
-                MediaStore.Audio.AudioColumns.DURATION, MediaStore.Audio.AudioColumns.ALBUM_ID,
-                MediaStore.Audio.AudioColumns.ARTIST_ID, MediaStore.Audio.AudioColumns.ALBUM_KEY,
-                MediaStore.Audio.AudioColumns.TITLE
-        };
+                MediaStore.Audio.AudioColumns.DURATION, MediaStore.Audio.AudioColumns.TITLE };
         Cursor c = context.getContentResolver().query(uri, projection, null, null, null);
         if (c != null) {
             while (c.moveToNext()) {
-                String mPath, mAlbum, mArtist, mName, mId, mDuaration, mAlbumId, mArtistId, mAlbumKey;
+                String mPath, mAlbum, mArtist, mName, mId, mDuaration;
 
                 Song mSong = new Song();
                 mPath = c.getString(0);
@@ -154,20 +151,14 @@ public class SongFragment extends android.support.v4.app.Fragment {
                 mArtist = c.getString(2);
                 mId = c.getString(3);
                 mDuaration = c.getString(4);
-                mAlbumId = c.getString(5);
-                mArtistId = c.getString(6);
-                mAlbumKey = c.getString(7);
-                mName = c.getString(8);
+                mName = c.getString(5);
 
-                mSong.setmId(mId);
-                mSong.setmNameSong(mName);
-                mSong.setmNameAlbum(mAlbum);
-                mSong.setmNameArtist(mArtist);
-                mSong.setmFileSong(mPath);
-                mSong.setmDuaration(mDuaration);
-                mSong.setmAlbumId(mAlbumId);
-                mSong.setmArtistId(mArtistId);
-                mSong.setmAlbumKey(mAlbumKey);
+                mSong.setId(mId);
+                mSong.setNameSong(mName);
+                mSong.setNameAlbum(mAlbum);
+                mSong.setNameArtist(mArtist);
+                mSong.setFileSong(mPath);
+                mSong.setDuaration(mDuaration);
                 mSongList.add(mSong);
             }
             c.close();
