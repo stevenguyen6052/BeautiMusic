@@ -29,6 +29,7 @@ import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
+import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,15 +38,6 @@ import java.util.List;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener {
-    // get position item click from fragment song,album,artist
-    private static final String POSITION = "POSITION";
-    // check to get data from fragment song,album,artist
-    private final static String TAG = "TAG";
-    private final static String TAG_SONG = "SONG";
-    private final static String TAG_ARTIST = "ARTIST";
-    private final static String TAG_ALBUM = "ALBUM";
-    private static final String TAG_DETAIL = "DETAIL";
-
     // request result list after queue
     private final static String TAG_REQUEST = "LIST";
     private final static int REQUEST_LIST = 1;
@@ -66,7 +58,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private int mPosition;
     public static List<Song> mSongList;
     SearchView searchView;
-
 
     //activity and playback pause flags
     private boolean paused = false, playbackPaused = false;
@@ -116,36 +107,33 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
 
-            tag = bundle.getString(TAG);
+            tag = bundle.getString(InitClass.TAG);
+            //if tag = detail -> tagcheck = album get song from album or tagcheck = artist get song from artist
+            if (tag.equals(InitClass.TAG_DETAIL)) {
+                nameAlbum = bundle.getString(InitClass.NAMEALBUM_ARTIST);
+                mPosition = bundle.getInt(InitClass.POSITION);
+                tagCheck = bundle.getString(InitClass.TAG_ALBUM);
 
-            if (tag.equals(TAG_DETAIL)) {
-                nameAlbum = bundle.getString("Name");
-                mPosition = bundle.getInt(POSITION);
-                tagCheck = bundle.getString(TAG_ALBUM);
-                if (tagCheck.equals(TAG_ALBUM)) {
-
+                if (tagCheck.equals(InitClass.TAG_ALBUM)) {
                     mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbum);
-                } else if (tagCheck.equals(TAG_ARTIST)) {
 
+                } else if (tagCheck.equals(InitClass.TAG_ARTIST)) {
                     mSongList = mSongDatabase.getAlLSongFromArtist(nameAlbum);
-                }
 
-            } else if (tag.equals(TAG_SONG)) {
+                }
+            } else if (tag.equals(InitClass.TAG_SONG)) {
 
                 mSongList = mSongDatabase.getAllListSong();
-                mPosition = bundle.getInt(POSITION);
+                mPosition = bundle.getInt(InitClass.POSITION);
 
-            }else if (tag.equals("SEARCH")){
-                mPosition = bundle.getInt(POSITION);
-                mSongList = bundle.getParcelableArrayList("LISTSONG");
+            } else if (tag.equals(InitClass.SEARCH)) {
+                mPosition = bundle.getInt(InitClass.POSITION);
+                mSongList = bundle.getParcelableArrayList(InitClass.LIST_SONG);
             }
-
             MainActivity.musicService.mSongList = mSongList;
             MainActivity.musicService.mPosition = mPosition;
-
             playMusic();
         } else {
-
             if (MainActivity.musicService.mPlayer != null) {
                 setDataForView();
                 mSongList = MainActivity.musicService.mSongList;
@@ -307,16 +295,18 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private void doQueue() {
         Intent intent = new Intent(this, PlayingQueue.class);
         Bundle bundle = new Bundle();
-        if (tag.equals(TAG_SONG)) {
-            bundle.putString(TAG, TAG_SONG);
+        if (tag.equals(InitClass.TAG_SONG)) {
+            bundle.putString(InitClass.TAG, InitClass.TAG_SONG);
 
-        } else if (tag.equals(TAG_DETAIL)) {
-            bundle.putString(TAG, TAG_DETAIL);
-            bundle.putString("Name", nameAlbum);
-            if (tagCheck.equals(TAG_ALBUM)) {
-                bundle.putString(TAG_ALBUM, TAG_ALBUM);
-            } else if (tagCheck.equals(TAG_ARTIST)) {
-                bundle.putString(TAG_ALBUM, TAG_ARTIST);
+        } else if (tag.equals(InitClass.TAG_DETAIL)) {
+            bundle.putString(InitClass.TAG, InitClass.TAG_DETAIL);
+            bundle.putString(InitClass.NAMEALBUM_ARTIST, nameAlbum);
+
+            if (tagCheck.equals(InitClass.TAG_ALBUM)) {
+                bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ALBUM);
+
+            } else if (tagCheck.equals(InitClass.TAG_ARTIST)) {
+                bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ARTIST);
             }
         }
         intent.putExtras(bundle);
@@ -336,7 +326,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 mSongList.clear();
                 mSongList.addAll((List<Song>) getData.getSerializable(TAG_REQUEST));
                 mSongAdapter.notifyDataSetChanged();
-                // update position của bài hát sau khi sắp xếp
+                // update position after queue
                 for (int i = 0; i < mSongList.size(); i++) {
                     if (name.equals(mSongList.get(i).getNameSong()))
                         MainActivity.musicService.mPosition = i;
@@ -373,40 +363,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //return super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_item, menu);
-        MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-//        searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
-//        MenuItemCompat.setShowAsAction(itemSearch, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-//        MenuItemCompat.setActionView(itemSearch, searchView);
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//
-//                String nameSong = MainActivity.musicService.nameSong();
-//                String nameArtist = MainActivity.musicService.nameArtist();
-//
-//                mSongList.clear();
-//                mSongList.addAll(mSongDatabase.getSongFromNameSong(newText));
-//                MainActivity.musicService.mSongList = mSongList;
-//                MainActivity.musicService.mPosition = 0;
-//                mSongAdapter.notifyDataSetChanged();
-//
-//
-//                //mSongAdapter.filter(newText);
-//                //mListView.invalidate();
-//
-//                return false;
-//            }
-//
-//        });
-
         return true;
     }
 
@@ -425,9 +383,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void doSearch() {
-        Intent intent = new Intent(this,SearchActivity.class);
-        intent.putParcelableArrayListExtra("LISTSONG", (ArrayList<Song>) mSongList);
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putParcelableArrayListExtra(InitClass.LIST_SONG, (ArrayList<Song>) mSongList);
         startActivity(intent);
     }
-
 }
