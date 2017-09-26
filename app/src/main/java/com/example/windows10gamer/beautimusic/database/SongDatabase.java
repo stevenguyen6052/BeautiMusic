@@ -79,30 +79,6 @@ public class SongDatabase extends SQLiteOpenHelper {
 
     }
 
-    public List<Song> getSongFromNameSong(String params) {
-        List<Song> mListSong = new ArrayList<>();
-        String SELECT_SONGS = "SELECT * FROM " + TBL_SONG + " WHERE " + CL_NAME_ALBUM + " LIKE  '%" + params + "%' ";
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor mCursor = db.rawQuery(SELECT_SONGS, null);
-        if (mCursor.moveToFirst()) {
-            do {
-                Song mSong = new Song();
-                mSong.setId(mCursor.getString(0));
-                mSong.setNameSong(mCursor.getString(1));
-                mSong.setNameAlbum(mCursor.getString(2));
-                mSong.setNameArtist(mCursor.getString(3));
-                mSong.setFileSong(mCursor.getString(4));
-                mSong.setDuaration(mCursor.getString(5));
-                mSong.setImageSong(mCursor.getInt(6));
-                mListSong.add(mSong);
-            } while (mCursor.moveToNext());
-        }
-        InitClass.sortCollection(mListSong);
-        mCursor.close();
-        db.close();
-        return mListSong;
-    }
-
     public List<Song> getAllSongFromAlbum(String params) {
         List<Song> mListSong = new ArrayList<>();
         String SELECT_SONGS = "SELECT * FROM " + TBL_SONG + " WHERE " + CL_NAME_ALBUM + " = '" + params + "' ";
@@ -143,12 +119,135 @@ public class SongDatabase extends SQLiteOpenHelper {
             String albumName = mCursor.getString(1);
             String artist = mCursor.getString(2);
             String image = ContentUris.withAppendedId(ART_CONTENT_URI, id).toString();
-            Album album = new Album(id, albumName, artist, image);
+            Album album = new Album(id, albumName, artist,image);
             albumList.add(album);
         }
         mCursor.close();
         return albumList;
     }
+
+    public static List<Song> getSongFromDevice(Context context) {
+        Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
+        List<Song> mListSong = new ArrayList<>();
+        String[] m_data = {MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.ARTIST_ID,
+        };
+
+        Cursor c = context.getContentResolver().query(uri, m_data, android.provider.MediaStore.Audio.Media.IS_MUSIC + "=1", null, android.provider.MediaStore.Audio.Media.TITLE + " ASC");
+        c.moveToFirst();
+        while (c.moveToNext()) {
+            String name, album, artist, path, id, duration;
+            int albumId,artistId;
+
+            id = c.getString(0);
+            name = c.getString(1);
+            album = c.getString(2);
+            artist = c.getString(3);
+            duration = c.getString(4);
+            path = c.getString(5);
+            albumId = c.getInt(6);
+            artistId = c.getInt(7);
+
+
+            Song song = new Song(id, name, artist, album, path, duration,albumId,artistId);
+            mListSong.add(song);
+        }
+        //InitClass.sortCollection(mListSong);
+        c.close();
+        return mListSong;
+    }
+    public static ArrayList<Song> getAlbumSongs(int albumId, Context context) {
+        Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
+        ArrayList<Song> mSongList = new ArrayList<Song>();
+        final StringBuilder selection = new StringBuilder();
+        Cursor mCursor;
+        selection.append(MediaStore.Audio.AudioColumns.IS_MUSIC + "=1");
+        selection.append(" AND " + MediaStore.Audio.AudioColumns.TITLE + " != ''");
+        selection.append(" AND " + MediaStore.Audio.AudioColumns.ALBUM_ID + "=" + albumId);
+        mCursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Audio.Media._ID,
+                        MediaStore.Audio.Media.TITLE,
+                        MediaStore.Audio.Media.ALBUM,
+                        MediaStore.Audio.Media.ARTIST,
+                        MediaStore.Audio.Media.DURATION,
+                        MediaStore.Audio.Media.DATA,
+                        MediaStore.Audio.Media.ALBUM_ID,
+                        MediaStore.Audio.Media.ARTIST_ID,},
+                selection.toString(), null, android.provider.MediaStore.Audio.Media.TRACK + ", " +
+                        android.provider.MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        if (mCursor != null && mCursor.moveToFirst()) {
+            do {
+                String name, album, artist, path, id, duration;
+                int albumid,artistId;
+
+                id = mCursor.getString(0);
+                name = mCursor.getString(1);
+                album = mCursor.getString(2);
+                artist = mCursor.getString(3);
+                duration = mCursor.getString(4);
+                path = mCursor.getString(5);
+                albumid = mCursor.getInt(6);
+                artistId = mCursor.getInt(7);
+                //String image = ContentUris.withAppendedId(ART_CONTENT_URI, albumId).toString();
+
+                Song song = new Song(id, name, artist, album, path, duration,albumid,artistId);
+                mSongList.add(song);
+            } while (mCursor.moveToNext());
+        }
+
+        return mSongList;
+    }
+    public static List<Song> getArtistSong(int artistId,Context context){
+        Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
+        ArrayList<Song> mSongList = new ArrayList<Song>();
+        Cursor mCursor;
+        final StringBuilder selection = new StringBuilder();
+        selection.append(android.provider.MediaStore.Audio.AudioColumns.IS_MUSIC + "=1");
+        selection.append(" AND " + android.provider.MediaStore.Audio.AudioColumns.TITLE + " != ''");
+        selection.append(" AND " + android.provider.MediaStore.Audio.AudioColumns.ARTIST_ID + "=" + artistId);
+
+        mCursor = context.getContentResolver().query(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Audio.Media._ID,
+                        MediaStore.Audio.Media.TITLE,
+                        MediaStore.Audio.Media.ALBUM,
+                        MediaStore.Audio.Media.ARTIST,
+                        MediaStore.Audio.Media.DURATION,
+                        MediaStore.Audio.Media.DATA,
+                        MediaStore.Audio.Media.ALBUM_ID,
+                        MediaStore.Audio.Media.ARTIST_ID,
+        },
+                selection.toString(), null, android.provider.MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        if (mCursor != null && mCursor.moveToFirst()) {
+            do {
+                String name, album, artist, path, id, duration;
+                int albumid,artistId1;
+
+                id = mCursor.getString(0);
+                name = mCursor.getString(1);
+                album = mCursor.getString(2);
+                artist = mCursor.getString(3);
+                duration = mCursor.getString(4);
+                path = mCursor.getString(5);
+                albumid = mCursor.getInt(6);
+                artistId1 = mCursor.getInt(7);
+                //String image = ContentUris.withAppendedId(ART_CONTENT_URI, albumId).toString();
+
+                Song song = new Song(id, name, artist, album, path, duration,albumid,artistId1);
+                mSongList.add(song);
+            } while (mCursor.moveToNext());
+        }
+
+        return mSongList;
+
+    }
+
     public static List<Artist> getArtistFromDevice(Context context) {
         List<Artist> atristList = new ArrayList<>();
         Uri uri = android.provider.MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
@@ -160,18 +259,16 @@ public class SongDatabase extends SQLiteOpenHelper {
         };
         Cursor cursor = context.getContentResolver().query(uri, mdata, null, null, MediaStore.Audio.Artists.DEFAULT_SORT_ORDER);
         while (cursor.moveToNext()) {
-            Artist atrist = new Artist(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3));
+            Artist atrist = new Artist(cursor.getInt(0), cursor.getString(1), cursor.getInt(2), cursor.getInt(3));
             atristList.add(atrist);
         }
         return atristList;
     }
 
 
-
-
     public List<Album> getAllAlbum1() {
         List<Album> mAlbumList = new ArrayList<>();
-        String mSelect = " SELECT " + CL_NAME_ALBUM + ", " + CL_NAME_ARTIST + " ,"+CL_FILE_SONG+" FROM " + TBL_SONG + " GROUP BY " + CL_NAME_ARTIST + "";
+        String mSelect = " SELECT " + CL_NAME_ALBUM + ", " + CL_NAME_ARTIST + " ," + CL_FILE_SONG + " FROM " + TBL_SONG + " GROUP BY " + CL_NAME_ARTIST + "";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor mCursor = db.rawQuery(mSelect, null);
         if (mCursor.moveToFirst()) {
@@ -208,8 +305,6 @@ public class SongDatabase extends SQLiteOpenHelper {
         db.close();
         return mArtistList;
     }
-
-
 
 
     public List<Song> getAlLSongFromArtist(String params) {

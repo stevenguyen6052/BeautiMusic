@@ -1,13 +1,19 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,9 +22,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
+import com.example.windows10gamer.beautimusic.model.Album;
+import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 import com.example.windows10gamer.beautimusic.view.utilities.SendDataPosition;
@@ -30,12 +39,16 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SendDataPosition, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //tag for check debug
+    public static final int REQUEST_CODE_PERMISSION = 100;
     private static final String TAG_CHECK_DEBUG = "Mainactivity";
     private int mPosition;
     private ViewPager mViewPager;
     private AdapterTab adapterTab;
+    public List<Song> songList;
+    public List<Album> albumList;
+    public List<Artist> artistList;
 
     // layout contain toolbar control play music
     private View mLayoutControl;
@@ -52,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
     public static TextView mTvNameSong;
     public static TextView mTvNameArtist;
     public static ImageView mImgContrlPlay, mOpenMusicPlay;
+    private boolean isCheck = false;
 
     private Intent playIntent;
 
@@ -62,12 +76,13 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG_CHECK_DEBUG, "onCreate ");
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_main);
         if (playIntent == null) {
             playIntent = new Intent(this, MusicService.class);
             startService(playIntent);
             doBindService();
         }
+        initPermission();
 //        preferences = this.getSharedPreferences("LastSong", Context.MODE_PRIVATE);
 //        if (preferences != null) {
 //            mSongList = getLastListSongPlayer();
@@ -76,13 +91,38 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
 //            musicService.mPosition = mPosition;
 //        }
 
-        setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
-
         initView();
 
+    }
+
+    // add permission for android >=6.0
+    private void initPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(MainActivity.this
+                    , Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                addTabFragment();
+            } else {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            }
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            addTabFragment();
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1) {
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                addTabFragment();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @Override
@@ -90,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
         Log.d(TAG_CHECK_DEBUG, "onStart");
         super.onStart();
         // bind service
-
 
     }
 
@@ -110,18 +149,11 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
         Log.d(TAG_CHECK_DEBUG, "onDestroy");
         super.onDestroy();
         if (musicService.mPlayer.isPlaying()) {
-
             Log.d(TAG_CHECK_DEBUG, "Service is running !");
 
         } else {
             Log.d(TAG_CHECK_DEBUG, "Unbind to service and destroy service !");
-            //doUnbindService();
-//            if (musicService.mSongList != null) {
-//                saveLastListSong();
-//            }
-            Intent intent = new Intent(MainActivity.this, MusicService.class);
-            stopService(intent);
-
+            doUnbindService();
         }
 
     }
@@ -150,8 +182,6 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
         List<Song> mSongListReturn = new ArrayList<>();
 
         //get the JSON array of the ordered of sorted song
-
-
         String jsonListSongId = preferences.getString(LAST_LIST, "");
         //check for null
         if (!jsonListSongId.isEmpty()) {
@@ -221,13 +251,6 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
     }
 
     private void initView() {
-
-        adapterTab = new AdapterTab(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.viewPager);
-        mViewPager.setAdapter(adapterTab);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        tabLayout.setupWithViewPager(mViewPager);
-
         mLayoutControl = findViewById(R.id.mainLayoutControl);
         mLayoutControl.setVisibility(View.GONE);
         mTvNameSong = (TextView) findViewById(R.id.mainNameSong);
@@ -235,22 +258,17 @@ public class MainActivity extends AppCompatActivity implements SendDataPosition,
         mImgContrlPlay = (ImageView) findViewById(R.id.mainControlPlay);
         mOpenMusicPlay = (ImageView) findViewById(R.id.mainOpenPlayMusic);
         mMiniControl = findViewById(R.id.mainMiniControl);
-
         mMiniControl.setOnClickListener(this);
         mImgContrlPlay.setOnClickListener(this);
         mOpenMusicPlay.setOnClickListener(this);
     }
 
-    // when click item in list song send index and list to playmusic
-    @Override
-    public void SendPosition(int positon) {
-        mPosition = positon;
-        Intent intent = new Intent(this, PlayMusicActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(InitClass.TAG, InitClass.TAG_SONG);
-        bundle.putInt(InitClass.POSITION, mPosition);
-        intent.putExtras(bundle);
-        startActivity(intent);
+    private void addTabFragment() {
+        adapterTab = new AdapterTab(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mViewPager.setAdapter(adapterTab);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        tabLayout.setupWithViewPager(mViewPager);
     }
 
     // set connection to service

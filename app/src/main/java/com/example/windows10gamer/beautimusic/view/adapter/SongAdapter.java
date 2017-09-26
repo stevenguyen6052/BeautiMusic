@@ -59,14 +59,14 @@ public class SongAdapter extends BaseAdapter {
             mViewHolder = (ViewHolder) convertView.getTag();
         }
         Song song = mSongList.get(position);
-        if (song.getNameSong().length() > 40) {
-            mViewHolder.mTvNameSong.setText(song.getNameSong().substring(0, 37) + "...");
+        if (song.getNameSong().length() > 30) {
+            mViewHolder.mTvNameSong.setText(song.getNameSong().substring(0, 27) + "...");
         } else {
             mViewHolder.mTvNameSong.setText(song.getNameSong());
         }
 
         if (song.getNameArtist().length() > 40) {
-            mViewHolder.mTvNameArtist.setText(song.getNameArtist().substring(0, 37) + "...");
+            mViewHolder.mTvNameArtist.setText(song.getNameArtist().substring(0, 27) + "...");
         } else {
             mViewHolder.mTvNameArtist.setText(song.getNameArtist());
         }

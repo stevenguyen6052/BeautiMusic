@@ -62,15 +62,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 //        mSongList = new ArrayList<>();
 //        mSongList = mSongDatabase.getAllListSong();
 
-        mmr.setDataSource(mAlbum.getImage());
-        byte[] dataImageDisc = mmr.getEmbeddedPicture();
-        if (dataImageDisc != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
-            holder.imageView.setImageBitmap(InitClass.getResizedBitmap(bitmap,180,180));
-
-        } else {
-            holder.imageView.setImageResource(R.drawable.ic_empty_music2);
-        }
+//        mmr.setDataSource(mAlbum.getImage());
+//        byte[] dataImageDisc = mmr.getEmbeddedPicture();
+//        if (dataImageDisc != null) {
+//            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
+//            holder.imageView.setImageBitmap(InitClass.getResizedBitmap(bitmap,180,180));
+//
+//        } else {
+//            holder.imageView.setImageResource(R.drawable.ic_empty_music2);
+//        }
 
 
         holder.setItemClickListener(new ItemClickListener() {
@@ -83,6 +83,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
                     Bundle bundle = new Bundle();
                     bundle.putString("TAG", "ALBUM");
                     bundle.putString(NAME_ALBUM, mAlbumList.get(position).getNameAlbum());
+                    bundle.putInt("ALBUMID",mAlbumList.get(position).getId());
                     intent.putExtras(bundle);
                     view.getContext().startActivity(intent);
                 }

@@ -32,6 +32,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         setUpToolbar();
+        lvSongs = (ListView) findViewById(R.id.lvSongSearch);
         Intent intent = getIntent();
         mSongList = new ArrayList<>();
         mSongList = intent.getParcelableArrayListExtra(InitClass.LIST_SONG);

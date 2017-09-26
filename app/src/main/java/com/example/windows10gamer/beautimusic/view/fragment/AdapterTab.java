@@ -1,8 +1,17 @@
 package com.example.windows10gamer.beautimusic.view.fragment;
 
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.example.windows10gamer.beautimusic.model.Album;
+import com.example.windows10gamer.beautimusic.model.Artist;
+import com.example.windows10gamer.beautimusic.model.Song;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdapterTab extends FragmentStatePagerAdapter {
     private static final String SONG = "Songs";
@@ -20,15 +29,26 @@ public class AdapterTab extends FragmentStatePagerAdapter {
         mSongFragment = new SongFragment();
         mAlbumFragment = new AlbumFragment();
         mArtistFragment = new ArtistFragment();
+
     }
 
     @Override
     public Fragment getItem(int position) {
+
+        //Bundle bundle = new Bundle();
         if (position == 0) {
+//            bundle.putParcelableArrayList("List", (ArrayList<? extends Parcelable>) songList);
+//            mSongFragment.setArguments(bundle);
             return mSongFragment;
+
         } else if (position == 1) {
+            //bundle.putParcelableArrayList("List", (ArrayList<? extends Parcelable>) albumList);
+            //mAlbumFragment.setArguments(bundle);
             return mAlbumFragment;
+
         } else if (position == 2) {
+            //bundle.putParcelableArrayList("List", (ArrayList<? extends Parcelable>) artistList);
+            //mArtistFragment.setArguments(bundle);
             return mArtistFragment;
         } else {
         }

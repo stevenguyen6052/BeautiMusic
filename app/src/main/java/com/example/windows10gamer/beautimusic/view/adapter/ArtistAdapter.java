@@ -54,6 +54,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
                     Bundle bundle = new Bundle();
                     bundle.putString("TAG", "ARTIST");
                     bundle.putString(NAME_ARTIST, mArtistList.get(position).getNameArtist());
+                    bundle.putInt("ARTISTID",mArtistList.get(position).getId());
                     intent.putExtras(bundle);
                     view.getContext().startActivity(intent);
 

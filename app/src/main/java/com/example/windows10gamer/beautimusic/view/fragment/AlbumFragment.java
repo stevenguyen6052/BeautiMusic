@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
 import com.example.windows10gamer.beautimusic.view.adapter.AlbumAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Album;
@@ -26,24 +27,22 @@ import java.util.List;
 
 
 public class AlbumFragment extends android.support.v4.app.Fragment {
-    private View mRootView;
+    private View view;
     private List<Album> mAlbumList;
     private RecyclerView lvAlbums;
     private SongDatabase mSongDatabase;
     private AlbumAdapter mAlbumAdapter;
-    private SearchView searchView;
-    private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.album_fragment, container, false);
+        view = inflater.inflate(R.layout.album_fragment, container, false);
         setHasOptionsMenu(true);
         initView();
         setUpAdapter();
-        mAlbumList.addAll(mSongDatabase.getAllAlbum1());
+        mAlbumList.addAll(SongDatabase.getAlbumFromDevice(getContext()));
         mAlbumAdapter.notifyDataSetChanged();
 
-        return mRootView;
+        return view;
     }
 
     private void setUpAdapter() {
@@ -53,11 +52,10 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
 
     private void initView() {
         mSongDatabase = new SongDatabase(getActivity());
-        //mAlbumList = mSongDatabase.getAllAlbum1();
         mAlbumList = new ArrayList<>();
-        lvAlbums = (RecyclerView) mRootView.findViewById(R.id.recycleViewAl);
+        lvAlbums = (RecyclerView) view.findViewById(R.id.recycleViewAl);
         lvAlbums.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         lvAlbums.setLayoutManager(gridLayoutManager);
     }
 
@@ -70,7 +68,7 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.itemList:
                 initListDisplay();
                 break;
@@ -80,7 +78,8 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-    private void initListDisplay(){
+
+    private void initListDisplay() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         lvAlbums.setLayoutManager(layoutManager);
@@ -88,7 +87,7 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
     }
 
     // Display the Grid
-    private void initGridDisplay(){
+    private void initGridDisplay() {
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         layoutManager.setOrientation(GridLayoutManager.VERTICAL);
         lvAlbums.setLayoutManager(layoutManager);

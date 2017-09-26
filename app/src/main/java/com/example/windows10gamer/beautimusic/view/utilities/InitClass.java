@@ -27,6 +27,8 @@ public class InitClass {
     public static final String NAMEALBUM_ARTIST = "Name";
     public static final String NAME_ALBUM = "Name Album";
     public static final String NAME_ARTIST = "Name Artist";
+    public static final String ALBUM_ID = "ALBUMID";
+    public static final String ARTIST_ID = "ARTISTID";
 
     public static void sortCollection(List<Song> mSongList){
         Collections.sort(mSongList, new Comparator<Song>() {

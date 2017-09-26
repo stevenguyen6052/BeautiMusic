@@ -47,10 +47,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat, mQueue;
     private CircularSeekBar mSeekbar1;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-    private SongDatabase mSongDatabase;
     public SongAdapter mSongAdapter;
     private ListView mListView;
-    private int mPosition;
+    private int mPosition, mIdAlbumArtist;
     public static List<Song> mSongList;
 
     //activity and playback pause flags
@@ -70,7 +69,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 MainActivity.musicService.mPosition = position;
                 playMusic();
             }
@@ -90,13 +88,10 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 MainActivity.musicService.seek((int) mSeekbar1.getProgress());
             }
         });
-
     }
 
     //getdata from fragment song,album,artist
     private void getData() {
-        mSongDatabase = new SongDatabase(this);
-
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
@@ -106,17 +101,23 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             if (tag.equals(InitClass.TAG_DETAIL)) {
                 nameAlbum = bundle.getString(InitClass.NAMEALBUM_ARTIST);
                 mPosition = bundle.getInt(InitClass.POSITION);
+
                 tagCheck = bundle.getString(InitClass.TAG_ALBUM);
                 if (tagCheck.equals(InitClass.TAG_ALBUM)) {
-
-                    mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbum);
+                    mIdAlbumArtist = bundle.getInt(InitClass.ALBUM_ID);
+                    List<Song> getListSong = SongDatabase.getAlbumSongs(mIdAlbumArtist, this);
+                    mSongList.clear();
+                    mSongList.addAll(getListSong);
 
                 } else if (tagCheck.equals(InitClass.TAG_ARTIST)) {
-                    mSongList = mSongDatabase.getAlLSongFromArtist(nameAlbum);
+                    mIdAlbumArtist = bundle.getInt(InitClass.ARTIST_ID);
+                    List<Song> getListSong = SongDatabase.getArtistSong(mIdAlbumArtist, this);
+                    mSongList.clear();
+                    mSongList.addAll(getListSong);
 
                 }
             } else if (tag.equals(InitClass.TAG_SONG)) {
-                mSongList = mSongDatabase.getAllListSong();
+                mSongList = SongDatabase.getSongFromDevice(this);
                 mPosition = bundle.getInt(InitClass.POSITION);
 
             } else if (tag.equals(InitClass.SEARCH)) {
@@ -161,7 +162,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         updateTimeSong();
         MainActivity.musicService.playSong();
     }
-
 
     private void addEvents() {
         mImgNext.setOnClickListener(this);
@@ -219,7 +219,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         if (MainActivity.musicService.isPlaying()) {
             MainActivity.musicService.pausePlayer();
             mImgPlayPause.setImageResource(R.drawable.pause);
-
         } else {
             MainActivity.musicService.startPlayer();
             mImgPlayPause.setImageResource(R.drawable.playing);
@@ -262,23 +261,18 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             case R.id.pImgNext:
                 nextSong();
                 break;
-
             case R.id.pImgPrevious:
                 previousSong();
                 break;
-
             case R.id.pImgPlayPause:
                 doPlayPause();
                 break;
-
             case R.id.pShuffle:
                 doShuffle();
                 break;
-
             case R.id.pRepeat:
                 doRepeat();
                 break;
-
             case R.id.pImgQueue:
                 doQueue();
                 break;
@@ -297,9 +291,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
             if (tagCheck.equals(InitClass.TAG_ALBUM)) {
                 bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ALBUM);
+                bundle.putInt(InitClass.ALBUM_ID, mIdAlbumArtist);
 
             } else if (tagCheck.equals(InitClass.TAG_ARTIST)) {
                 bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ARTIST);
+                bundle.putInt(InitClass.ARTIST_ID, mIdAlbumArtist);
             }
         }
         intent.putExtras(bundle);

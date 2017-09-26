@@ -37,17 +37,17 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
     private TextView mTvNameSong, mTvNameArtist;
     public static ImageView mControlPlayPause;
     public View mLayoutControl;
-    private List<Song> mSongList;
+    private List<Song> mSongList, getListSong;
     private String nameAlbumArtist, tag;
     private SongDatabase mSongDatabase;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+    private int idAlbumArtist;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG_CHECK_ERROR, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_album);
-
         getDataIntent();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -143,10 +143,12 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
 
                 if (tag.equals(InitClass.TAG_ALBUM)) {
                     bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ALBUM);
+                    bundle.putInt(InitClass.ALBUM_ID, idAlbumArtist);
                 } else if (tag.equals(InitClass.TAG_ARTIST)) {
                     bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ARTIST);
+                    bundle.putInt(InitClass.ARTIST_ID, idAlbumArtist);
                 }
-                bundle.putString("Name", nameAlbumArtist);
+                bundle.putString(InitClass.NAMEALBUM_ARTIST, nameAlbumArtist);
                 bundle.putInt(InitClass.POSITION, position);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -164,15 +166,18 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         mListView = (ListView) findViewById(R.id.detaialbum_listview);
         mLayoutControl = findViewById(R.id.album_minicontrol);
         mLayoutControl.setVisibility(View.GONE);
-
         mSongDatabase = new SongDatabase(getApplication());
         mSongList = new ArrayList<>();
         if (tag.equals(InitClass.TAG_ALBUM)) {
-            mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbumArtist);
-        } else if (tag.equals(InitClass.TAG_ARTIST)) {
-            mSongList = mSongDatabase.getAlLSongFromArtist(nameAlbumArtist);
-        }
+            getListSong = SongDatabase.getAlbumSongs(idAlbumArtist, DetailAlbumArtist.this);
+            mSongList.clear();
+            mSongList.addAll(getListSong);
 
+        } else if (tag.equals(InitClass.TAG_ARTIST)) {
+            getListSong = SongDatabase.getArtistSong(idAlbumArtist, DetailAlbumArtist.this);
+            mSongList.clear();
+            mSongList.addAll(getListSong);
+        }
         mLayout.setOnClickListener(this);
         mControlPlayPause.setOnClickListener(this);
 
@@ -196,8 +201,10 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         tag = bundle.getString(InitClass.TAG);
         if (tag.equals(InitClass.TAG_ALBUM)) {
             nameAlbumArtist = bundle.getString(InitClass.NAME_ALBUM);
+            idAlbumArtist = bundle.getInt(InitClass.ALBUM_ID);
         } else if (tag.equals(InitClass.TAG_ARTIST)) {
             nameAlbumArtist = bundle.getString(InitClass.NAME_ARTIST);
+            idAlbumArtist = bundle.getInt(InitClass.ARTIST_ID);
         }
     }
 

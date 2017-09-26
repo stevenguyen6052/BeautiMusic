@@ -17,6 +17,8 @@ public class Song implements Parcelable {
     private String fileSong;
     private String duaration;
     private int imageSong;
+    private int albumId;
+    private int artistId;
 
 
     public Song() {
@@ -28,8 +30,19 @@ public class Song implements Parcelable {
         this.nameAlbum = nab;
 
     }
+    public Song(String mId,String mNameSong, String mNameArtist, String mNameAlbum, String mFileSong,String mDuaration,int albumId,int artistId) {
+        this.id = mId ;
+        this.nameSong = mNameSong;
+        this.nameArtist = mNameArtist;
+        this.nameAlbum = mNameAlbum;
+        this.fileSong = mFileSong;
+        this.duaration = mDuaration;
+        this.albumId = albumId;
+        this.artistId = artistId;
 
-    public Song(String mId,String mNameSong, String mNameArtist, String mNameAlbum, String mFileSong,String mDuaration, int mImage) {
+    }
+
+    public Song(String mId,String mNameSong, String mNameArtist, String mNameAlbum, String mFileSong,String mDuaration, int mImage,int albumId,int artistId) {
         this.id = mId ;
         this.nameSong = mNameSong;
         this.nameArtist = mNameArtist;
@@ -37,6 +50,8 @@ public class Song implements Parcelable {
         this.fileSong = mFileSong;
         this.duaration = mDuaration;
         this.imageSong = mImage;
+        this.albumId = albumId;
+        this.artistId = artistId;
     }
     public static final Creator<Song> CREATOR = new Creator<Song>() {
         @Override
@@ -50,6 +65,22 @@ public class Song implements Parcelable {
         }
     };
 
+    public int getAlbumId() {
+        return albumId;
+    }
+
+    public void setAlbumId(int albumId) {
+        this.albumId = albumId;
+    }
+
+    public int getArtistId() {
+        return artistId;
+    }
+
+    public void setArtistId(int artistId) {
+        this.artistId = artistId;
+    }
+
     public Song(Parcel source) {
         id = source.readString();
         nameSong = source.readString();
@@ -58,6 +89,8 @@ public class Song implements Parcelable {
         fileSong = source.readString();
         duaration = source.readString();
         imageSong = source.readInt();
+        albumId = source.readInt();
+        artistId = source.readInt();
     }
 
 
@@ -131,6 +164,7 @@ public class Song implements Parcelable {
         dest.writeString(fileSong);
         dest.writeString(duaration);
         dest.writeInt(imageSong);
-
+        dest.writeInt(albumId);
+        dest.writeInt(artistId);
     }
 }

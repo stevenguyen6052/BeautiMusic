@@ -152,14 +152,19 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         String tag, nameAlbumArtist;
         tag = bundle.getString(InitClass.TAG);
         if (tag.equals(InitClass.TAG_SONG)) {
-            mSongList = mSongDatabase.getAllListSong();
+            mSongList = SongDatabase.getSongFromDevice(this);
+
         } else if (tag.equals(InitClass.TAG_DETAIL)) {
             nameAlbumArtist = bundle.getString(InitClass.NAMEALBUM_ARTIST);
             tagCheck = bundle.getString(InitClass.TAG_ALBUM);
+
             if (tagCheck.equals(InitClass.TAG_ALBUM)) {
-                mSongList = mSongDatabase.getAllSongFromAlbum(nameAlbumArtist);
+                int id = bundle.getInt(InitClass.ALBUM_ID);
+                mSongList = SongDatabase.getAlbumSongs(id, this);
+
             } else if (tagCheck.equals(InitClass.TAG_ARTIST)) {
-                mSongList = mSongDatabase.getAlLSongFromArtist(nameAlbumArtist);
+                int id = bundle.getInt(InitClass.ARTIST_ID);
+                mSongList = SongDatabase.getArtistSong(id, this);
             }
         }
 

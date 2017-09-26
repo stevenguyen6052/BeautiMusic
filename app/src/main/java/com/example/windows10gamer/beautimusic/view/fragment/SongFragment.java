@@ -1,59 +1,45 @@
 package com.example.windows10gamer.beautimusic.view.fragment;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
+import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 import com.example.windows10gamer.beautimusic.view.utilities.SendDataPosition;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.support.v4.content.ContextCompat.checkSelfPermission;
+
 
 public class SongFragment extends android.support.v4.app.Fragment {
     private View mRootView;
-    private SongDatabase mSongDatabase;
     private List<Song> mSongList;
-    public static List<Song> mSongList1;
     private SongAdapter mSongAdapter;
     private ListView lvSongs;
-    private SendDataPosition mSendDataPosition;
-    private Context mContext;
     SearchView searchView;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //setRetainInstance(true);
-        //setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            mSendDataPosition = (SendDataPosition) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString());
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,13 +48,26 @@ public class SongFragment extends android.support.v4.app.Fragment {
         onItemClick();
         return mRootView;
     }
-
-    private void setListForAdapter(List<Song> mSongList) {
+    private void initView() {
+        lvSongs = (ListView) mRootView.findViewById(R.id.mListViewSong);
+        mSongList = SongDatabase.getSongFromDevice(getContext());
         mSongAdapter = new SongAdapter(getActivity(), mSongList, R.layout.item_song);
         lvSongs.setAdapter(mSongAdapter);
     }
-
-//    @Override
+    private void onItemClick() {
+        lvSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), PlayMusicActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(InitClass.TAG, InitClass.TAG_SONG);
+                bundle.putInt(InitClass.POSITION, position);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+    }
+    //    @Override
 //    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 //        super.onCreateOptionsMenu(menu, inflater);
 //        menu.clear();
@@ -103,67 +102,5 @@ public class SongFragment extends android.support.v4.app.Fragment {
 //        }
 //        return super.onOptionsItemSelected(item);
 //    }
-
-    private void initView() {
-        mSongDatabase = new SongDatabase(getActivity());
-        mSendDataPosition = (SendDataPosition) getActivity();
-
-        lvSongs = (ListView) mRootView.findViewById(R.id.mListViewSong);
-        if (mSongList == null && mSongList1 == null) {
-            mSongList = new ArrayList<>();
-            mSongList1 = new ArrayList<>();
-            mSongList = getAllMp3FromDevice(getContext());
-
-            for (Song song : mSongList) {
-                mSongDatabase.addNewSong(song);
-            }
-            mSongList1 = mSongDatabase.getAllListSong();
-
-
-        }
-        setListForAdapter(mSongList1);
-    }
-
-    private void onItemClick() {
-        lvSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mSendDataPosition.SendPosition(position);
-            }
-        });
-    }
-
-    public List<Song> getAllMp3FromDevice(final Context context) {
-
-        mSongList = new ArrayList<>();
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = {MediaStore.Audio.AudioColumns.DATA, MediaStore.Audio.AudioColumns.ALBUM,
-                MediaStore.Audio.ArtistColumns.ARTIST, MediaStore.Audio.AudioColumns._ID,
-                MediaStore.Audio.AudioColumns.DURATION, MediaStore.Audio.AudioColumns.TITLE };
-        Cursor c = context.getContentResolver().query(uri, projection, null, null, null);
-        if (c != null) {
-            while (c.moveToNext()) {
-                String mPath, mAlbum, mArtist, mName, mId, mDuaration;
-
-                Song mSong = new Song();
-                mPath = c.getString(0);
-                mAlbum = c.getString(1);
-                mArtist = c.getString(2);
-                mId = c.getString(3);
-                mDuaration = c.getString(4);
-                mName = c.getString(5);
-
-                mSong.setId(mId);
-                mSong.setNameSong(mName);
-                mSong.setNameAlbum(mAlbum);
-                mSong.setNameArtist(mArtist);
-                mSong.setFileSong(mPath);
-                mSong.setDuaration(mDuaration);
-                mSongList.add(mSong);
-            }
-            c.close();
-        }
-        return mSongList;
-    }
 }
 
