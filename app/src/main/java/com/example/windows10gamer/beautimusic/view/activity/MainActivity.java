@@ -12,17 +12,18 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
@@ -30,7 +31,6 @@ import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
-import com.example.windows10gamer.beautimusic.view.utilities.SendDataPosition;
 import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
 import com.example.windows10gamer.beautimusic.view.utilities.service.MusicService;
 import com.google.gson.Gson;
@@ -83,17 +83,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             doBindService();
         }
         initPermission();
-//        preferences = this.getSharedPreferences("LastSong", Context.MODE_PRIVATE);
-//        if (preferences != null) {
-//            mSongList = getLastListSongPlayer();
-//            mPosition = preferences.getInt(LAST_POSITION, 0);
-//            musicService.mSongList = mSongList;
-//            musicService.mPosition = mPosition;
-//        }
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
         initView();
 
     }
@@ -124,15 +118,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
-    @Override
-    protected void onStart() {
-        Log.d(TAG_CHECK_DEBUG, "onStart");
-        super.onStart();
-        // bind service
-
-    }
-
 
     @Override
     protected void onResume() {
@@ -316,4 +301,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             musicBound = false;
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_item_search, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.itemSearch:
+                startActivity(new Intent(this, SearchActivity.class)
+                        .putParcelableArrayListExtra(InitClass.LIST_SONG, (ArrayList<Song>) mSongList));
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    //        preferences = this.getSharedPreferences("LastSong", Context.MODE_PRIVATE);
+//        if (preferences != null) {
+//            mSongList = getLastListSongPlayer();
+//            mPosition = preferences.getInt(LAST_POSITION, 0);
+//            musicService.mSongList = mSongList;
+//            musicService.mPosition = mPosition;
+//        }
 }

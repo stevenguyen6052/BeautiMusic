@@ -35,20 +35,13 @@ public class AdapterTab extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-        //Bundle bundle = new Bundle();
         if (position == 0) {
-//            bundle.putParcelableArrayList("List", (ArrayList<? extends Parcelable>) songList);
-//            mSongFragment.setArguments(bundle);
             return mSongFragment;
 
         } else if (position == 1) {
-            //bundle.putParcelableArrayList("List", (ArrayList<? extends Parcelable>) albumList);
-            //mAlbumFragment.setArguments(bundle);
             return mAlbumFragment;
 
         } else if (position == 2) {
-            //bundle.putParcelableArrayList("List", (ArrayList<? extends Parcelable>) artistList);
-            //mArtistFragment.setArguments(bundle);
             return mArtistFragment;
         } else {
         }
@@ -59,7 +52,6 @@ public class AdapterTab extends FragmentStatePagerAdapter {
     public int getCount() {
         return mListTab.length;
     }
-
 
     @Override
     public CharSequence getPageTitle(int position) {

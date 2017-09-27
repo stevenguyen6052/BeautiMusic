@@ -1,21 +1,27 @@
 package com.example.windows10gamer.beautimusic.view.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
+import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class SongAdapter extends BaseAdapter {
+    private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
     private Context mContext;
     private List<Song> mSongList;
     private int mLayout;
@@ -54,6 +60,7 @@ public class SongAdapter extends BaseAdapter {
             mViewHolder = new ViewHolder();
             mViewHolder.mTvNameSong = (TextView) convertView.findViewById(R.id.TvNameSong);
             mViewHolder.mTvNameArtist = (TextView) convertView.findViewById(R.id.TvNameSinger);
+            mViewHolder.mImageView = (ImageView) convertView.findViewById(R.id.ImgView);
             convertView.setTag(mViewHolder);
         } else {
             mViewHolder = (ViewHolder) convertView.getTag();
@@ -98,7 +105,8 @@ public class SongAdapter extends BaseAdapter {
             MainActivity.musicService.mPosition = 0;
         }
     }
-    public void setFilter (List<Song> mData){
+
+    public void setFilter(List<Song> mData) {
 
         mSongList = new ArrayList<>();
         mSongList.addAll(mData);
@@ -108,6 +116,7 @@ public class SongAdapter extends BaseAdapter {
 
     private class ViewHolder {
         TextView mTvNameSong, mTvNameArtist;
+        ImageView mImageView;
     }
 
 }

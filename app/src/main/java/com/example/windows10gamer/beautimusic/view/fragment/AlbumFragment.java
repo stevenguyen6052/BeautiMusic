@@ -41,7 +41,6 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
         setUpAdapter();
         mAlbumList.addAll(SongDatabase.getAlbumFromDevice(getContext()));
         mAlbumAdapter.notifyDataSetChanged();
-
         return view;
     }
 

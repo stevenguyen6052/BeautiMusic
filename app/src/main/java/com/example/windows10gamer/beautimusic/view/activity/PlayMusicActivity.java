@@ -19,10 +19,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
@@ -42,15 +46,17 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     // request result list after queue
     private final static int REQUEST_LIST = 1;
     private String tag, nameAlbum, tagCheck;
-    public static TextView mTvNameSong, mTvNameSinger, mTvTime;
+    public static TextView mTvNameSong, mTvNameSinger, mTvTime, mTvSumTime;
     public static ImageView mImgPlayPause;
     private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat, mQueue;
-    private CircularSeekBar mSeekbar1;
+    private SeekBar mSeekbar;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
     public SongAdapter mSongAdapter;
     private ListView mListView;
     private int mPosition, mIdAlbumArtist;
     public static List<Song> mSongList;
+    SimpleDateFormat mSimPleDateFormat = new SimpleDateFormat("mm:ss");
+    Bundle bundle;
 
     //activity and playback pause flags
     private boolean paused = false, playbackPaused = false;
@@ -58,8 +64,14 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.music_play_frag2);
-        setUpToolbar();
+        setContentView(R.layout.activity_playmusic);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         initView();
         addEvents();
         getData();
@@ -73,27 +85,28 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 playMusic();
             }
         });
-        mSeekbar1.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
 
+        mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                //MainActivity.musicService.seek((int) mSeekbar1.getProgress());
             }
 
             @Override
-            public void onStopTrackingTouch(CircularSeekBar seekBar) {
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                MainActivity.musicService.seek((int) mSeekbar.getProgress());
             }
 
             @Override
-            public void onStartTrackingTouch(CircularSeekBar seekBar) {
-                MainActivity.musicService.seek((int) mSeekbar1.getProgress());
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                MainActivity.musicService.seek((int) mSeekbar.getProgress());
             }
         });
     }
 
     //getdata from fragment song,album,artist
     private void getData() {
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+        bundle = getIntent().getExtras();
         if (bundle != null) {
 
             tag = bundle.getString(InitClass.TAG);
@@ -137,18 +150,19 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
     private void setDataForView() {
         if (MainActivity.musicService.isPlaying()) {
-            mImgPlayPause.setImageResource(R.drawable.playing);
+            mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
             mTvNameSong.setText(MainActivity.musicService.nameSong());
             mTvNameSinger.setText(MainActivity.musicService.nameArtist());
-            mSeekbar1.setMax(MainActivity.musicService.getDuaration());
+            mSeekbar.setMax(MainActivity.musicService.getDuaration());
+            mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
             setImageSong();
             updateTimeSong();
-
         } else {
-            mImgPlayPause.setImageResource(R.drawable.pause);
+            mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
             mTvNameSong.setText(MainActivity.musicService.nameSong());
             mTvNameSinger.setText(MainActivity.musicService.nameArtist());
-            mSeekbar1.setMax(MainActivity.musicService.getDuaration());
+            mSeekbar.setMax(MainActivity.musicService.getDuaration());
+            mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
             setImageSong();
         }
     }
@@ -156,8 +170,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private void playMusic() {
         mTvNameSong.setText(MainActivity.musicService.nameSong());
         mTvNameSinger.setText(MainActivity.musicService.nameArtist());
-        mImgPlayPause.setImageResource(R.drawable.playing);
-        mSeekbar1.setMax(MainActivity.musicService.getDuaration());
+        mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
+        mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+        mSeekbar.setMax(MainActivity.musicService.getDuaration());
         setImageSong();
         updateTimeSong();
         MainActivity.musicService.playSong();
@@ -169,36 +184,22 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         mImgPlayPause.setOnClickListener(this);
         mShffle.setOnClickListener(this);
         mReppeat.setOnClickListener(this);
-        mQueue.setOnClickListener(this);
     }
 
     private void initView() {
         mSongList = new ArrayList<>();
-        mSeekbar1 = (CircularSeekBar) findViewById(R.id.pItmSeekbar);
+        mSeekbar = (SeekBar) findViewById(R.id.pItmSeekbar);
         mListView = (ListView) findViewById(R.id.plistView);
         mTvNameSong = (TextView) findViewById(R.id.itmNameSong);
         mTvNameSinger = (TextView) findViewById(R.id.itmNameSingle);
         mTvTime = (TextView) findViewById(R.id.pTvTime);
+        mTvSumTime = (TextView) findViewById(R.id.pTvSumTime);
         mImgNext = (ImageView) findViewById(R.id.pImgNext);
         mImgPrevious = (ImageView) findViewById(R.id.pImgPrevious);
         mImgPlayPause = (ImageView) findViewById(R.id.pImgPlayPause);
         mShffle = (ImageView) findViewById(R.id.pShuffle);
         mReppeat = (ImageView) findViewById(R.id.pRepeat);
-        mQueue = (ImageView) findViewById(R.id.pImgQueue);
-        mImgBackground = (ImageView) findViewById(R.id.background_playmusic);
-        // set animition for text;
-        Animation animationToLeft = new TranslateAnimation(400, -400, 0, 0);
-        animationToLeft.setDuration(12000);
-        animationToLeft.setRepeatMode(Animation.RESTART);
-        animationToLeft.setRepeatCount(Animation.INFINITE);
-
-        Animation animationToRight = new TranslateAnimation(-400, 400, 0, 0);
-        animationToRight.setDuration(12000);
-        animationToRight.setRepeatMode(Animation.RESTART);
-        animationToRight.setRepeatCount(Animation.INFINITE);
-
-        mTvNameSong.setAnimation(animationToRight);
-
+        mImgBackground = (ImageView) findViewById(R.id.imgSong);
     }
 
     private void nextSong() {
@@ -206,6 +207,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         setImageSong();
         mTvNameSong.setText(MainActivity.musicService.nameSong());
         mTvNameSinger.setText(MainActivity.musicService.nameArtist());
+        mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
+
     }
 
     private void previousSong() {
@@ -213,15 +216,16 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         setImageSong();
         mTvNameSong.setText(MainActivity.musicService.nameSong());
         mTvNameSinger.setText(MainActivity.musicService.nameArtist());
+        mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
     }
 
     private void doPlayPause() {
         if (MainActivity.musicService.isPlaying()) {
             MainActivity.musicService.pausePlayer();
-            mImgPlayPause.setImageResource(R.drawable.pause);
+            mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
         } else {
             MainActivity.musicService.startPlayer();
-            mImgPlayPause.setImageResource(R.drawable.playing);
+            mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
         }
     }
 
@@ -231,13 +235,13 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                SimpleDateFormat mSimPleDateFormat = new SimpleDateFormat("mm:ss");
-                mTvTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getCurrentPosition()));
-                mSeekbar1.setProgress(MainActivity.musicService.getCurrentPosition());
+                mTvTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getCurrentPosition()) + "");
+                mSeekbar.setProgress(MainActivity.musicService.getCurrentPosition());
                 mHandler.postDelayed(this, 500);
                 MainActivity.musicService.setOnComplete();
                 mTvNameSong.setText(MainActivity.musicService.nameSong());
                 mTvNameSinger.setText(MainActivity.musicService.nameArtist());
+                mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
             }
         }, 100);
     }
@@ -255,52 +259,33 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         else mReppeat.setImageResource(R.drawable.ic_repeat_white_48dp);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.pImgNext:
-                nextSong();
-                break;
-            case R.id.pImgPrevious:
-                previousSong();
-                break;
-            case R.id.pImgPlayPause:
-                doPlayPause();
-                break;
-            case R.id.pShuffle:
-                doShuffle();
-                break;
-            case R.id.pRepeat:
-                doRepeat();
-                break;
-            case R.id.pImgQueue:
-                doQueue();
-                break;
-        }
-    }
-
     private void doQueue() {
         Intent intent = new Intent(this, PlayingQueue.class);
-        Bundle bundle = new Bundle();
-        if (tag.equals(InitClass.TAG_SONG)) {
-            bundle.putString(InitClass.TAG, InitClass.TAG_SONG);
+        Bundle mBundle = new Bundle();
+        if (bundle != null) {
+            if (tag.equals(InitClass.TAG_SONG)) {
+                mBundle.putString(InitClass.TAG, InitClass.TAG_SONG);
 
-        } else if (tag.equals(InitClass.TAG_DETAIL)) {
-            bundle.putString(InitClass.TAG, InitClass.TAG_DETAIL);
-            bundle.putString(InitClass.NAMEALBUM_ARTIST, nameAlbum);
+            } else if (tag.equals(InitClass.TAG_DETAIL)) {
+                mBundle.putString(InitClass.TAG, InitClass.TAG_DETAIL);
+                mBundle.putString(InitClass.NAMEALBUM_ARTIST, nameAlbum);
 
-            if (tagCheck.equals(InitClass.TAG_ALBUM)) {
-                bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ALBUM);
-                bundle.putInt(InitClass.ALBUM_ID, mIdAlbumArtist);
+                if (tagCheck.equals(InitClass.TAG_ALBUM)) {
+                    mBundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ALBUM);
+                    mBundle.putInt(InitClass.ALBUM_ID, mIdAlbumArtist);
 
-            } else if (tagCheck.equals(InitClass.TAG_ARTIST)) {
-                bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ARTIST);
-                bundle.putInt(InitClass.ARTIST_ID, mIdAlbumArtist);
+                } else if (tagCheck.equals(InitClass.TAG_ARTIST)) {
+                    mBundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ARTIST);
+                    mBundle.putInt(InitClass.ARTIST_ID, mIdAlbumArtist);
+                }
             }
+        } else {
+            mBundle.putString("TAG", "EMPTY");
+            mBundle.putParcelableArrayList("ListSong", (ArrayList<Song>) mSongList);
         }
-        intent.putExtras(bundle);
-        startActivityForResult(intent, REQUEST_LIST);
 
+        intent.putExtras(mBundle);
+        startActivityForResult(intent, REQUEST_LIST);
     }
 
     // trả về list sau khi sắp xếp
@@ -337,18 +322,34 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void setUpToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null)
-            setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    private void doSearch() {
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putParcelableArrayListExtra(InitClass.LIST_SONG, (ArrayList<Song>) mSongList);
+        startActivity(intent);
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.pImgNext:
+                nextSong();
+                break;
+            case R.id.pImgPrevious:
+                previousSong();
+                break;
+            case R.id.pImgPlayPause:
+                doPlayPause();
+                break;
+            case R.id.pShuffle:
+                doShuffle();
+                break;
+            case R.id.pRepeat:
+                doRepeat();
+                break;
+            case R.id.pImgQueue:
+                doQueue();
+                break;
+        }
     }
 
     @Override
@@ -361,10 +362,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.itemSearch:
-                doSearch();
-
-                break;
             case R.id.itemArrange:
                 doQueue();
                 break;
@@ -372,9 +369,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         return super.onOptionsItemSelected(item);
     }
 
-    private void doSearch() {
-        Intent intent = new Intent(this, SearchActivity.class);
-        intent.putParcelableArrayListExtra(InitClass.LIST_SONG, (ArrayList<Song>) mSongList);
-        startActivity(intent);
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

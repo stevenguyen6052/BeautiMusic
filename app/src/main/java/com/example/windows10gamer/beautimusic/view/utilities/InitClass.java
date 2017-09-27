@@ -2,6 +2,8 @@ package com.example.windows10gamer.beautimusic.view.utilities;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.model.Artist;
@@ -76,5 +78,17 @@ public class InitClass {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(temp).replaceAll("").replaceAll("Đ", "D").replaceAll("đ", "d");
+    }
+
+    public static void setAnimitionTextView(){
+        Animation animationToLeft = new TranslateAnimation(400, -400, 0, 0);
+        animationToLeft.setDuration(12000);
+        animationToLeft.setRepeatMode(Animation.RESTART);
+        animationToLeft.setRepeatCount(Animation.INFINITE);
+
+        Animation animationToRight = new TranslateAnimation(-400, 400, 0, 0);
+        animationToRight.setDuration(12000);
+        animationToRight.setRepeatMode(Animation.RESTART);
+        animationToRight.setRepeatCount(Animation.INFINITE);
     }
 }

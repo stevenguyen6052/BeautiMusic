@@ -48,7 +48,7 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         Log.d(TAG_CHECK_ERROR, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_album);
-        getDataIntent();
+        getData();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(nameAlbumArtist);
@@ -57,8 +57,9 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
         collapsingToolbarLayout.setTitle(nameAlbumArtist);
 
+        mSongAdapter = new SongAdapter(DetailAlbumArtist.this, mSongList, R.layout.item_song);
+        mListView.setAdapter(mSongAdapter);
         initView();
-        setUpAdapter();
         onItemClick();
         setImageSong();
 
@@ -77,11 +78,6 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         } else {
 
         }
-    }
-
-    private void setUpAdapter() {
-        mSongAdapter = new SongAdapter(DetailAlbumArtist.this, mSongList, R.layout.item_song);
-        mListView.setAdapter(mSongAdapter);
     }
 
     // update name song,name artist for mini control play music
@@ -195,9 +191,8 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void getDataIntent() {
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+    private void getData() {
+        Bundle bundle = getIntent().getExtras();
         tag = bundle.getString(InitClass.TAG);
         if (tag.equals(InitClass.TAG_ALBUM)) {
             nameAlbumArtist = bundle.getString(InitClass.NAME_ALBUM);
@@ -212,8 +207,7 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.album_openplaymusic:
-                Intent intent = new Intent(this, PlayMusicActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, PlayMusicActivity.class));
                 break;
             case R.id.albumControlPlayPause:
 

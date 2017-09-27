@@ -59,18 +59,19 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         holder.nameAlbum.setText(mAlbum.getNameAlbum());
         holder.nameArtist.setText(mAlbum.getNameArtist());
 
-//        mSongList = new ArrayList<>();
-//        mSongList = mSongDatabase.getAllListSong();
+        mSongList = new ArrayList<>();
+        mSongList.clear();
+        mSongList.addAll(SongDatabase.getAlbumSongs(mAlbum.getId(),mContext));
 
-//        mmr.setDataSource(mAlbum.getImage());
-//        byte[] dataImageDisc = mmr.getEmbeddedPicture();
-//        if (dataImageDisc != null) {
-//            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
-//            holder.imageView.setImageBitmap(InitClass.getResizedBitmap(bitmap,180,180));
-//
-//        } else {
-//            holder.imageView.setImageResource(R.drawable.ic_empty_music2);
-//        }
+        mmr.setDataSource(mSongList.get(0).getFileSong());
+        byte[] dataImageDisc = mmr.getEmbeddedPicture();
+        if (dataImageDisc != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
+            holder.imageView.setImageBitmap(bitmap);
+
+        } else {
+            holder.imageView.setImageResource(R.drawable.ic_empty_music2);
+        }
 
 
         holder.setItemClickListener(new ItemClickListener() {

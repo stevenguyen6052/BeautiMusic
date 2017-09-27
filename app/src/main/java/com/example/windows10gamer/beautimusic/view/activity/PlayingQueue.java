@@ -29,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -44,6 +45,8 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     private String jsonListSongId, tagCheck;
     private TextView mTvNameSong, mTvNameArtist;
     private ImageView mPlayPause;
+    private String tag;
+    private int idAlbumArtist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,38 +54,33 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing_queue);
 
-        initView();
-        getData();
-        setUpAdapter();
-        setUpToolbar();
-
-    }
-
-    // when create activity or restart will update current song into minicontrol playing
-    @Override
-    protected void onResume() {
-        Log.d(TAG_CHECK_ERROR, "onResume");
-        super.onResume();
-        miniControlPlay();
-
-    }
-
-    private void initView() {
-        mTvNameSong = (TextView) findViewById(R.id.queueNameSong);
-        mTvNameArtist = (TextView) findViewById(R.id.queueNameArtist);
-        mPlayPause = (ImageView) findViewById(R.id.queuePlayPause);
-        mLayoutOpenPlayMusic = findViewById(R.id.queueOpenPlayMusic);
-
-        mPlayPause.setOnClickListener(this);
-        mLayoutOpenPlayMusic.setOnClickListener(this);
-    }
-
-    private void setUpToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null)
             setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        initView();
+        getData();
+        setUpAdapter();
+
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG_CHECK_ERROR, "onResume");
+        super.onResume();
+        miniControlPlay();
+    }
+
+    private void initView() {
+        mSongList = new ArrayList<>();
+        mTvNameSong = (TextView) findViewById(R.id.queueNameSong);
+        mTvNameArtist = (TextView) findViewById(R.id.queueNameArtist);
+        mPlayPause = (ImageView) findViewById(R.id.queuePlayPause);
+        mLayoutOpenPlayMusic = findViewById(R.id.queueOpenPlayMusic);
+        mPlayPause.setOnClickListener(this);
+        mLayoutOpenPlayMusic.setOnClickListener(this);
     }
 
     @Override
@@ -99,7 +97,6 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         sendData.putParcelableArrayList(InitClass.LIST_SONG, (ArrayList<Song>) sendListSong);
         intent.putExtras(sendData);
         setResult(Activity.RESULT_OK, intent);
-
     }
 
     private void setUpAdapter() {
@@ -108,7 +105,6 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
@@ -119,12 +115,12 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         if (MainActivity.musicService.mPlayer.isPlaying()) {
             mTvNameSong.setText(MainActivity.musicService.nameSong());
             mTvNameArtist.setText(MainActivity.musicService.nameArtist());
-            mPlayPause.setImageResource(R.drawable.playing);
+            mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
             currentSongPlaying();
         } else {
             mTvNameSong.setText(MainActivity.musicService.nameSong());
             mTvNameArtist.setText(MainActivity.musicService.nameArtist());
-            mPlayPause.setImageResource(R.drawable.pause);
+            mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
 
         }
     }
@@ -143,31 +139,25 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     }
 
     private void getData() {
-        mSongDatabase = new SongDatabase(this);
-        if (mSongList == null) {
-            mSongList = new ArrayList<>();
-        }
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        String tag, nameAlbumArtist;
+        Bundle bundle = getIntent().getExtras();
         tag = bundle.getString(InitClass.TAG);
+        tagCheck = bundle.getString(InitClass.TAG_ALBUM);
+
         if (tag.equals(InitClass.TAG_SONG)) {
             mSongList = SongDatabase.getSongFromDevice(this);
 
+        } else if (tag.equals("EMPTY")) {
+            mSongList = bundle.getParcelableArrayList("ListSong");
+
         } else if (tag.equals(InitClass.TAG_DETAIL)) {
-            nameAlbumArtist = bundle.getString(InitClass.NAMEALBUM_ARTIST);
-            tagCheck = bundle.getString(InitClass.TAG_ALBUM);
-
             if (tagCheck.equals(InitClass.TAG_ALBUM)) {
-                int id = bundle.getInt(InitClass.ALBUM_ID);
-                mSongList = SongDatabase.getAlbumSongs(id, this);
-
+                idAlbumArtist = bundle.getInt(InitClass.ALBUM_ID);
+                mSongList = SongDatabase.getAlbumSongs(idAlbumArtist, this);
             } else if (tagCheck.equals(InitClass.TAG_ARTIST)) {
-                int id = bundle.getInt(InitClass.ARTIST_ID);
-                mSongList = SongDatabase.getArtistSong(id, this);
+                idAlbumArtist = bundle.getInt(InitClass.ARTIST_ID);
+                mSongList = SongDatabase.getArtistSong(idAlbumArtist, this);
             }
         }
-
     }
 
     @Override
@@ -182,12 +172,12 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
                 if (MainActivity.musicService.isPlaying()) {
                     MainActivity.musicService.pausePlayer();
                     mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.pause);
+                    PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
 
                 } else {
                     MainActivity.musicService.startPlayer();
                     mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.playing);
+                    PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 }
                 break;
 

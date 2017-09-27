@@ -22,14 +22,14 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(NOTIFY_PLAY)) {
             if (MainActivity.musicService.isPlaying()) {
                 MainActivity.musicService.pausePlayer();
-                PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.pause);
-                MainActivity.mImgContrlPlay.setImageResource(R.drawable.pause);
+                PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                 Toast.makeText(context, "PAUSE", Toast.LENGTH_LONG).show();
 
             } else {
                 MainActivity.musicService.startPlayer();
-                PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.playing);
-                MainActivity.mImgContrlPlay.setImageResource(R.drawable.playing);
+                PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
             }
             Toast.makeText(context, "PLAY", Toast.LENGTH_LONG).show();
 

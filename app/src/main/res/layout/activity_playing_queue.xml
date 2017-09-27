@@ -1,90 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:weightSum="10"
     tools:context="com.example.windows10gamer.beautimusic.view.activity.PlayingQueue">
 
-    <include
+    <!--<include-->
+    <!--android:id="@+id/toolbar"-->
+    <!--layout="@layout/custom_toolbar" />-->
+    <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        layout="@layout/custom_toolbar" />
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorAccent"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycleQueue"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
+        android:layout_height="0dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_weight="9">
 
     </android.support.v7.widget.RecyclerView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="65dp"
         android:layout_alignParentBottom="true"
         android:background="@color/colorAccent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="10">
 
-
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/queueOpenPlayMusic"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_weight="8"
+            android:orientation="horizontal"
+            android:weightSum="10">
 
             <ImageView
-                android:id="@+id/queueImg"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
+
+                android:id="@+id/queueImage"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_weight="2.25"
+                android:background="@drawable/dianhac1" />
 
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:background="@drawable/dianhac1"
-                android:paddingTop="5dp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/mainOpenPlayMusic"
+                android:layout_weight="8"
+                android:orientation="vertical"
+                android:weightSum="10">
 
-            <TextView
-                android:id="@+id/queueNameSong"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/queueImg"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingTop="5dp"
-                android:text="Tên bài hát"
-                android:textColor="@color/colorWhite"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/queueNameSong"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_toRightOf="@id/mainOpenPlayMusic"
+                    android:layout_weight="5"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="5dp"
+                    android:scrollHorizontally="true"
+                    android:text="Tên bài hát"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/queueNameArtist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/queueNameSong"
-                android:layout_toRightOf="@id/queueImg"
-                android:ellipsize="end"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingTop="5dp"
-                android:text="Tên ca sĩ"
-                android:textColor="@color/colorWhite"
-                android:textSize="14sp" />
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/queueNameArtist"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_below="@+id/mainNameSong"
+                    android:layout_toRightOf="@id/mainOpenPlayMusic"
+                    android:layout_weight="5"
+                    android:ellipsize="end"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:scrollHorizontally="true"
+                    android:text="Tên ca sĩ"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/queuePlayPause"
-            android:layout_width="48dp"
+            android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1.5" />
 
     </LinearLayout>
 
 
-</RelativeLayout>
+</LinearLayout>

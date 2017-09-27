@@ -4,9 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/custom_toolbar"
-        android:id="@+id/toolbar">
-    </include>
+    <!--<include layout="@layout/custom_toolbar"-->
+        <!--android:id="@+id/toolbar">-->
+    <!--</include>-->
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -32,6 +32,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:textStyle="bold"
                     android:id="@+id/itmNameSong"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -110,11 +111,11 @@
                 android:id="@+id/pImgNext"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_alignParentBottom="true"
                 android:layout_gravity="right|center_vertical"
-                android:layout_toEndOf="@+id/pTvTime"
+                android:background="@drawable/custom_next"
+                android:layout_alignParentBottom="true"
                 android:layout_toRightOf="@+id/pTvTime"
-                android:background="@drawable/custom_next" />
+                android:layout_toEndOf="@+id/pTvTime" />
 
             <ImageView
                 android:id="@+id/pImgPlayPause"

@@ -95,11 +95,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return musicBind;
     }
 
-        @Override
+    @Override
     public boolean onUnbind(Intent intent) {
 
         return super.onUnbind(intent);
     }
+
     public void stopMusic() {
         mPlayer.stop();
         mPlayer.release();
@@ -155,25 +156,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         // create notification in lockscree
 
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void initMediSession() {
-        mediaSession = new MediaSession(getApplicationContext(), "EXAMPLE");
-
-        mediaSession.setCallback(new MediaSession.Callback() {
-            @Override
-            public void onPlay() {
-                super.onPlay();
-                //buildNotification();
-            }
-        });
     }
 
     // create actions listener service from notification
     private void setListeners(RemoteViews expandedView, Context applicationContext) {
-        int playButtonResId = mPlayer.isPlaying()
-                ? R.drawable.playing : R.drawable.pause;
         Intent previous = new Intent(NOTIFY_PREVIOUS);
         Intent next = new Intent(NOTIFY_NEXT);
         Intent play = new Intent(NOTIFY_PLAY);
@@ -181,7 +168,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         expandedView.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
 
         PendingIntent pPlay = PendingIntent.getBroadcast(applicationContext, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
-        expandedView.setOnClickPendingIntent(R.drawable.playing, pPlay);
+        expandedView.setOnClickPendingIntent(R.drawable.ic_play_arrow_white_48dp, pPlay);
 
         PendingIntent pNext = PendingIntent.getBroadcast(applicationContext, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
         expandedView.setOnClickPendingIntent(R.id.notifiNext, pNext);
@@ -285,7 +272,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public boolean setShuffle() {
-
         if (shuffle) {
             shuffle = false;
             return false;
@@ -299,46 +285,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             return false;
         } else repeat = true;
         return true;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void handleIntent(Intent intent) {
-        if (intent == null) {
-            return;
-        }
-        String action = intent.getAction();
-        if (action.equalsIgnoreCase(NOTIFY_PLAY)) {
-            mediaController.getTransportControls().play();
-        } else if (action.equalsIgnoreCase(NOTIFY_PAUSE)) {
-            mediaController.getTransportControls().pause();
-        } else if (action.equalsIgnoreCase(NOTIFY_NEXT)) {
-            mediaController.getTransportControls().skipToNext();
-        } else if (action.equalsIgnoreCase(NOTIFY_PREVIOUS)) {
-            mediaController.getTransportControls().skipToPrevious();
-        } else if (action.equalsIgnoreCase(NOTIFI_STOP)) {
-            mediaController.getTransportControls().stop();
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void buildNotification(Notification.Action action) {
-        Notification.MediaStyle style = new Notification.MediaStyle();
-        Intent intent = new Intent(getApplicationContext(), MusicService.class);
-        intent.setAction(NOTIFI_STOP);
-        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 1, intent, 0);
-        Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.playing)
-                .setContentTitle("Lock screen")
-                .setContentText(" la day")
-                .setDeleteIntent(pendingIntent)
-                .setStyle(style);
-        // builder.addAction((android.R.drawable.ic_media_previous,"Previous",NOTIFY_PREVIOUS );
-        builder.addAction(action);
-        //builder.addAction((android.R.drawable.ic_media_next,"Previous",NOTIFY_NEXT );
-        style.setShowActionsInCompactView(0, 1, 2);
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, builder.build());
-
     }
 
     @Override

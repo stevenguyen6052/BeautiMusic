@@ -18,7 +18,6 @@ import java.util.List;
 
 
 public class SongAdapter1 extends RecyclerView.Adapter<SongAdapter1.ViewHolder> {
-    private static final String POSITION = "POSITION";
     private List<Song> mSongList;
     private Context mContext;
 
@@ -45,6 +44,7 @@ public class SongAdapter1 extends RecyclerView.Adapter<SongAdapter1.ViewHolder> 
                 if (isLongClick) {
 
                 } else {
+
                 }
             }
         });
@@ -69,7 +69,6 @@ public class SongAdapter1 extends RecyclerView.Adapter<SongAdapter1.ViewHolder> 
             mTvNameArtist = (TextView) itemView.findViewById(R.id.TvNameSinger);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
-
         }
 
 

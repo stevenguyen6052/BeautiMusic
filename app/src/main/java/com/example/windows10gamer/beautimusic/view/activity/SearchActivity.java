@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
@@ -31,13 +32,18 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
         setUpToolbar();
         lvSongs = (ListView) findViewById(R.id.lvSongSearch);
-        Intent intent = getIntent();
         mSongList = new ArrayList<>();
-        mSongList = intent.getParcelableArrayListExtra(InitClass.LIST_SONG);
+        mSongList.addAll(SongDatabase.getSongFromDevice(this));
         songAdapter = new SongAdapter(this, mSongList, R.layout.item_song);
         lvSongs.setAdapter(songAdapter);
+        lvSongOnItemClick();
+
+    }
+
+    private void lvSongOnItemClick() {
         lvSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -55,6 +61,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
             }
         });
     }
+
 
     private void setUpToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -75,13 +82,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         getMenuInflater().inflate(R.menu.menu_search, menu);
         MenuItem itemSearch = menu.findItem(R.id.itemSearch);
         searchView = (SearchView) itemSearch.getActionView();
+        searchView.hasFocusable();
         searchView.setOnQueryTextListener(this);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
