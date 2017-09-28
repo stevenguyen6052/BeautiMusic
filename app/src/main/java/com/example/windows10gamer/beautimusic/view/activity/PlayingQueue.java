@@ -1,11 +1,8 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,18 +17,14 @@ import android.widget.TextView;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
+import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.utilities.dragandswipe.ListChangedListener;
 import com.example.windows10gamer.beautimusic.view.utilities.dragandswipe.QueueAdapter;
 import com.example.windows10gamer.beautimusic.view.utilities.dragandswipe.SimpleItemTouchHelperCallback;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnStartDragListener, View.OnClickListener, ListChangedListener {
@@ -40,13 +33,11 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     private ItemTouchHelper mItemTouchHelper;
     private List<Song> mSongList;
     private List<Song> sendListSong;
-    private SongDatabase mSongDatabase;
     private View mLayoutOpenPlayMusic;
-    private String jsonListSongId, tagCheck;
+    private String jsonListSongId;
     private TextView mTvNameSong, mTvNameArtist;
     private ImageView mPlayPause;
-    private String tag;
-    private int idAlbumArtist;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +52,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         initView();
-        getData();
+        mSongList = getIntent().getExtras().getParcelableArrayList(Utils.LIST_SONG);
         setUpAdapter();
 
     }
@@ -92,11 +83,8 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
 
     private void dataResult() {
         sendListSong = getDataAfterDragAndSwipe();
-        Intent intent = new Intent();
-        Bundle sendData = new Bundle();
-        sendData.putParcelableArrayList(InitClass.LIST_SONG, (ArrayList<Song>) sendListSong);
-        intent.putExtras(sendData);
-        setResult(Activity.RESULT_OK, intent);
+        setResult(Activity.RESULT_OK, new Intent()
+                .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) sendListSong));
     }
 
     private void setUpAdapter() {
@@ -108,7 +96,6 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
-
     }
 
     private void miniControlPlay() {
@@ -136,28 +123,6 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
                 mTvNameArtist.setText(MainActivity.musicService.nameArtist());
             }
         }, 100);
-    }
-
-    private void getData() {
-        Bundle bundle = getIntent().getExtras();
-        tag = bundle.getString(InitClass.TAG);
-        tagCheck = bundle.getString(InitClass.TAG_ALBUM);
-
-        if (tag.equals(InitClass.TAG_SONG)) {
-            mSongList = SongDatabase.getSongFromDevice(this);
-
-        } else if (tag.equals("EMPTY")) {
-            mSongList = bundle.getParcelableArrayList("ListSong");
-
-        } else if (tag.equals(InitClass.TAG_DETAIL)) {
-            if (tagCheck.equals(InitClass.TAG_ALBUM)) {
-                idAlbumArtist = bundle.getInt(InitClass.ALBUM_ID);
-                mSongList = SongDatabase.getAlbumSongs(idAlbumArtist, this);
-            } else if (tagCheck.equals(InitClass.TAG_ARTIST)) {
-                idAlbumArtist = bundle.getInt(InitClass.ARTIST_ID);
-                mSongList = SongDatabase.getArtistSong(idAlbumArtist, this);
-            }
-        }
     }
 
     @Override
@@ -196,18 +161,13 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         for (Song song : mSongList) {
             listOfSortedCustomerId.add(Long.valueOf(song.getId()));
         }
-
         //convert the List of Longs to a JSON string
         Gson gson = new Gson();
         jsonListSongId = gson.toJson(listOfSortedCustomerId);
-
     }
 
     private List<Song> getDataAfterDragAndSwipe() {
-
         List<Song> mSongListReturn = new ArrayList<Song>();
-
-
         //check for null
         if (!jsonListSongId.isEmpty()) {
 

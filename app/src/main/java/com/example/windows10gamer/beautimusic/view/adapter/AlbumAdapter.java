@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,12 +15,11 @@ import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
-import com.squareup.picasso.Picasso;
+import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,18 +59,17 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
         mSongList = new ArrayList<>();
         mSongList.clear();
-        mSongList.addAll(SongDatabase.getAlbumSongs(mAlbum.getId(),mContext));
+        mSongList.addAll(SongDatabase.getAlbumSongs(mAlbum.getId(), mContext));
 
         mmr.setDataSource(mSongList.get(0).getFileSong());
         byte[] dataImageDisc = mmr.getEmbeddedPicture();
         if (dataImageDisc != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
-            holder.imageView.setImageBitmap(bitmap);
+            holder.imageView.setImageBitmap(Utils.getResizedBitmap(bitmap, 180, 180));
 
         } else {
             holder.imageView.setImageResource(R.drawable.ic_empty_music2);
         }
-
 
         holder.setItemClickListener(new ItemClickListener() {
             @Override
@@ -81,11 +78,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
                 } else {
                     Intent intent = new Intent(view.getContext(), DetailAlbumArtist.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("TAG", "ALBUM");
-                    bundle.putString(NAME_ALBUM, mAlbumList.get(position).getNameAlbum());
-                    bundle.putInt("ALBUMID",mAlbumList.get(position).getId());
-                    intent.putExtras(bundle);
+                    Bundle b = new Bundle();
+                    b.putString(Utils.TAG, Utils.TAG_ALBUM);
+                    b.putString(NAME_ALBUM, mAlbumList.get(position).getNameAlbum());
+                    b.putInt(Utils.ALBUM_ID, mAlbumList.get(position).getId());
+                    intent.putExtras(b);
                     view.getContext().startActivity(intent);
                 }
             }

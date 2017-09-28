@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 
-public class InitClass {
+public class Utils {
     public static final String POSITION = "POSITION";
     // check to get data from fragment song,album,artist
     public final static String TAG = "TAG";
@@ -31,6 +31,7 @@ public class InitClass {
     public static final String NAME_ARTIST = "Name Artist";
     public static final String ALBUM_ID = "ALBUMID";
     public static final String ARTIST_ID = "ARTISTID";
+    public static final String EMPTY = "EMPTY";
 
     public static void sortCollection(List<Song> mSongList){
         Collections.sort(mSongList, new Comparator<Song>() {

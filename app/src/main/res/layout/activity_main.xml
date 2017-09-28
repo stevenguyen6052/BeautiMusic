@@ -15,9 +15,11 @@
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"
+        android:background="@color/colorPink"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        app:tabTextColor="@color/colorWhite"
         app:tabMode="fixed">
 
     </android.support.design.widget.TabLayout>
@@ -40,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="65dp"
             android:layout_gravity="bottom"
-            android:background="@color/colorAccent"
+            android:background="@color/colorPink"
             android:orientation="horizontal"
             android:weightSum="10">
 

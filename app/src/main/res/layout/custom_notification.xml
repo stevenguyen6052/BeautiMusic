@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="130dp"
-    android:background="@color/colorAccent"
+    android:background="@color/colorPink"
     android:orientation="horizontal"
     android:weightSum="10">
 
@@ -12,7 +12,7 @@
         android:layout_height="130dp"
         android:layout_gravity="center"
         android:layout_weight="3.5"
-        android:background="@drawable/dianhac1" />
+        android:background="@drawable/ic_empty_music" />
 
     <LinearLayout
         android:layout_width="0dp"

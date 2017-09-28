@@ -30,7 +30,7 @@ import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
+import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
 import com.example.windows10gamer.beautimusic.view.utilities.service.MusicService;
 import com.google.gson.Gson;
@@ -41,15 +41,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //tag for check debug
-    public static final int REQUEST_CODE_PERMISSION = 100;
-    private static final String TAG_CHECK_DEBUG = "Mainactivity";
-    private int mPosition;
+    private static final String TAG_CHECK_DEBUG = "MainActivity";
     private ViewPager mViewPager;
     private AdapterTab adapterTab;
-    public List<Song> songList;
-    public List<Album> albumList;
-    public List<Artist> artistList;
-
     // layout contain toolbar control play music
     private View mLayoutControl;
     private View mMiniControl;
@@ -57,18 +51,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String LAST_LIST = "LastList";
     private static final String LAST_POSITION = "LastPosition";
     private String jsongListSongId;
-    private List<Song> mSongList;
-
+    private List<Song> mSongList = new ArrayList<>();
+    private int mPosition;
     // service
     public static MusicService musicService;
-
     public static TextView mTvNameSong;
     public static TextView mTvNameArtist;
     public static ImageView mImgContrlPlay, mOpenMusicPlay;
     private boolean isCheck = false;
-
     private Intent playIntent;
-
     private boolean musicBound = false;
     SharedPreferences preferences;
 
@@ -77,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG_CHECK_DEBUG, "onCreate ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //get last list song
+
         if (playIntent == null) {
             playIntent = new Intent(this, MusicService.class);
             startService(playIntent);
@@ -86,10 +79,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        initView();
 
+        initView();
     }
 
     // add permission for android >=6.0
@@ -106,12 +97,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 1) {
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 addTabFragment();
             }
         } else {
@@ -138,59 +127,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         } else {
             Log.d(TAG_CHECK_DEBUG, "Unbind to service and destroy service !");
+
+            musicService.stopForeground(true);
             doUnbindService();
         }
 
-    }
-
-    //save last list song played
-    private void saveLastListSong() {
-        List<Long> listSongId = new ArrayList<Long>();
-        for (Song song : musicService.mSongList) {
-            listSongId.add(Long.valueOf(song.getId()));
-        }
-        //convert the List of Longs to a JSON string
-        Gson gson = new Gson();
-        jsongListSongId = gson.toJson(listSongId);
-        SharedPreferences sharedPreferences = getSharedPreferences("LastSong", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(LAST_LIST, jsongListSongId);
-        editor.putInt(LAST_POSITION, musicService.mPosition);
-        editor.commit();
-    }
-
-    //get last list song played
-    private List<Song> getLastListSongPlayer() {
-        List<Song> getListSong = new ArrayList<>();
-        SongDatabase db = new SongDatabase(this);
-        getListSong = db.getAllListSong();
-        List<Song> mSongListReturn = new ArrayList<>();
-
-        //get the JSON array of the ordered of sorted song
-        String jsonListSongId = preferences.getString(LAST_LIST, "");
-        //check for null
-        if (!jsonListSongId.isEmpty()) {
-
-            //convert JSON array into a List<Long>
-            Gson gson = new Gson();
-            List<Long> listOfSortedCustomersId = gson.fromJson(jsonListSongId,
-                    new TypeToken<List<Long>>() {
-                    }.getType());
-
-            //build sorted list
-            if (listOfSortedCustomersId != null && listOfSortedCustomersId.size() > 0) {
-                for (Long id : listOfSortedCustomersId) {
-                    for (Song mSong : getListSong) {
-                        if (mSong.getId().equals(id)) {
-                            mSongListReturn.add(mSong);
-                            break;
-
-                        }
-                    }
-                }
-            }
-        }
-        return mSongListReturn;
     }
 
     // update current nameSong,nameArtist of song isplaying
@@ -274,10 +215,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
             case R.id.mainMiniControl:
-                Intent intent = new Intent(this, PlayMusicActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, PlayMusicActivity.class));
                 break;
+
             case R.id.mainControlPlay:
                 if (musicService.isPlaying()) {
                     musicService.pausePlayer();
@@ -314,17 +256,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {
             case R.id.itemSearch:
                 startActivity(new Intent(this, SearchActivity.class)
-                        .putParcelableArrayListExtra(InitClass.LIST_SONG, (ArrayList<Song>) mSongList));
+                        .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) mSongList));
                 break;
-
         }
         return super.onOptionsItemSelected(item);
     }
-    //        preferences = this.getSharedPreferences("LastSong", Context.MODE_PRIVATE);
-//        if (preferences != null) {
-//            mSongList = getLastListSongPlayer();
-//            mPosition = preferences.getInt(LAST_POSITION, 0);
-//            musicService.mSongList = mSongList;
-//            musicService.mPosition = mPosition;
-//        }
+
 }

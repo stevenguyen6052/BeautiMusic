@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +21,7 @@ import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
+import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,9 +57,6 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
         collapsingToolbarLayout.setTitle(nameAlbumArtist);
-
-        mSongAdapter = new SongAdapter(DetailAlbumArtist.this, mSongList, R.layout.item_song);
-        mListView.setAdapter(mSongAdapter);
         initView();
         onItemClick();
         setImageSong();
@@ -134,21 +132,11 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(DetailAlbumArtist.this, PlayMusicActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(InitClass.TAG, InitClass.TAG_DETAIL);
-
-                if (tag.equals(InitClass.TAG_ALBUM)) {
-                    bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ALBUM);
-                    bundle.putInt(InitClass.ALBUM_ID, idAlbumArtist);
-                } else if (tag.equals(InitClass.TAG_ARTIST)) {
-                    bundle.putString(InitClass.TAG_ALBUM, InitClass.TAG_ARTIST);
-                    bundle.putInt(InitClass.ARTIST_ID, idAlbumArtist);
-                }
-                bundle.putString(InitClass.NAMEALBUM_ARTIST, nameAlbumArtist);
-                bundle.putInt(InitClass.POSITION, position);
-                intent.putExtras(bundle);
+                Bundle b = new Bundle();
+                b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) mSongList);
+                b.putInt(Utils.POSITION, position);
+                intent.putExtras(b);
                 startActivity(intent);
-
             }
         });
     }
@@ -162,21 +150,10 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         mListView = (ListView) findViewById(R.id.detaialbum_listview);
         mLayoutControl = findViewById(R.id.album_minicontrol);
         mLayoutControl.setVisibility(View.GONE);
-        mSongDatabase = new SongDatabase(getApplication());
-        mSongList = new ArrayList<>();
-        if (tag.equals(InitClass.TAG_ALBUM)) {
-            getListSong = SongDatabase.getAlbumSongs(idAlbumArtist, DetailAlbumArtist.this);
-            mSongList.clear();
-            mSongList.addAll(getListSong);
-
-        } else if (tag.equals(InitClass.TAG_ARTIST)) {
-            getListSong = SongDatabase.getArtistSong(idAlbumArtist, DetailAlbumArtist.this);
-            mSongList.clear();
-            mSongList.addAll(getListSong);
-        }
+        mSongAdapter = new SongAdapter(DetailAlbumArtist.this, mSongList, R.layout.item_song);
+        mListView.setAdapter(mSongAdapter);
         mLayout.setOnClickListener(this);
         mControlPlayPause.setOnClickListener(this);
-
     }
 
     // set image of album
@@ -192,14 +169,22 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
     }
 
     private void getData() {
-        Bundle bundle = getIntent().getExtras();
-        tag = bundle.getString(InitClass.TAG);
-        if (tag.equals(InitClass.TAG_ALBUM)) {
-            nameAlbumArtist = bundle.getString(InitClass.NAME_ALBUM);
-            idAlbumArtist = bundle.getInt(InitClass.ALBUM_ID);
-        } else if (tag.equals(InitClass.TAG_ARTIST)) {
-            nameAlbumArtist = bundle.getString(InitClass.NAME_ARTIST);
-            idAlbumArtist = bundle.getInt(InitClass.ARTIST_ID);
+        mSongList = new ArrayList<>();
+        Bundle b = getIntent().getExtras();
+        tag = b.getString(Utils.TAG);
+        if (tag.equals(Utils.TAG_ALBUM)) {
+            nameAlbumArtist = b.getString(Utils.NAME_ALBUM);
+            idAlbumArtist = b.getInt(Utils.ALBUM_ID);
+            getListSong = SongDatabase.getAlbumSongs(idAlbumArtist, this);
+            mSongList.clear();
+            mSongList.addAll(getListSong);
+
+        } else if (tag.equals(Utils.TAG_ARTIST)) {
+            nameAlbumArtist = b.getString(Utils.NAME_ARTIST);
+            idAlbumArtist = b.getInt(Utils.ARTIST_ID);
+            getListSong = SongDatabase.getArtistSong(idAlbumArtist, this);
+            mSongList.clear();
+            mSongList.addAll(getListSong);
         }
     }
 

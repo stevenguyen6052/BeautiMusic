@@ -2,6 +2,7 @@ package com.example.windows10gamer.beautimusic.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,42 +14,40 @@ import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
+import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class SongFragment extends android.support.v4.app.Fragment {
-    private View mRootView;
+    private View view;
     private List<Song> mSongList;
     private SongAdapter mSongAdapter;
     private ListView lvSongs;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.songs_fragment, container, false);
-        initView();
-        onItemClick();
-        return mRootView;
-    }
-    private void initView() {
-        lvSongs = (ListView) mRootView.findViewById(R.id.mListViewSong);
+        view = inflater.inflate(R.layout.songs_fragment, container, false);
+
+        lvSongs = (ListView) view.findViewById(R.id.mListViewSong);
         mSongList = SongDatabase.getSongFromDevice(getContext());
         mSongAdapter = new SongAdapter(getActivity(), mSongList, R.layout.item_song);
         lvSongs.setAdapter(mSongAdapter);
-    }
-    private void onItemClick() {
+
         lvSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), PlayMusicActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(InitClass.TAG, InitClass.TAG_SONG);
-                bundle.putInt(InitClass.POSITION, position);
-                intent.putExtras(bundle);
+                Bundle b = new Bundle();
+                b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) mSongList);
+                b.putInt(Utils.POSITION, position);
+                intent.putExtras(b);
                 startActivity(intent);
             }
         });
+        return view;
     }
+
 }
 

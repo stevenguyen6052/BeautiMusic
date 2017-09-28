@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
-import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
+import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.R;
@@ -41,9 +41,9 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Artist mArtist = mArtistList.get(position);
-        String songNumber = mArtistList.get(position).getSumAlbum()+" Album | "+mArtistList.get(position).getSumSong()+" Song";
+        String s = mArtistList.get(position).getSumAlbum()+" Album | "+mArtistList.get(position).getSumSong()+" Song";
         holder.mTvNameArtist.setText(mArtist.getNameArtist());
-        holder.mTvSumAlbum.setText(songNumber);
+        holder.mTvSumAlbum.setText(s);
 
         holder.setItemClickListener(new ItemClickListener() {
             @Override
@@ -52,11 +52,11 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
                 } else {
                     Intent intent = new Intent(view.getContext(), DetailAlbumArtist.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(InitClass.TAG, InitClass.TAG_ARTIST);
-                    bundle.putString(NAME_ARTIST, mArtistList.get(position).getNameArtist());
-                    bundle.putInt(InitClass.ARTIST_ID,mArtistList.get(position).getId());
-                    intent.putExtras(bundle);
+                    Bundle b = new Bundle();
+                    b.putString(Utils.TAG, Utils.TAG_ARTIST);
+                    b.putString(NAME_ARTIST, mArtistList.get(position).getNameArtist());
+                    b.putInt(Utils.ARTIST_ID,mArtistList.get(position).getId());
+                    intent.putExtras(b);
                     view.getContext().startActivity(intent);
 
                 }

@@ -13,7 +13,7 @@ import android.provider.MediaStore;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
+import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,14 +97,14 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mListSong.add(mSong);
             } while (mCursor.moveToNext());
         }
-        InitClass.sortCollection(mListSong);
+        Utils.sortCollection(mListSong);
 
         mCursor.close();
         db.close();
         return mListSong;
     }
 
-    public static List<Album> getAlbumFromDevice(Context context) {
+    public static List<Album>   getAlbumFromDevice(Context context) {
         List<Album> albumList = new ArrayList<>();
         Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
         Cursor mCursor = context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
@@ -159,7 +159,7 @@ public class SongDatabase extends SQLiteOpenHelper {
             Song song = new Song(id, name, artist, album, path, duration,albumId,artistId);
             mListSong.add(song);
         }
-        //InitClass.sortCollection(mListSong);
+        //Utils.sortCollection(mListSong);
         c.close();
         return mListSong;
     }
@@ -280,7 +280,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mAlbumList.add(mAlbum);
             } while (mCursor.moveToNext());
         }
-        InitClass.sortCollectionAlbum(mAlbumList);
+        Utils.sortCollectionAlbum(mAlbumList);
         mCursor.close();
         db.close();
         return mAlbumList;
@@ -300,7 +300,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mArtistList.add(mArtist);
             } while (mCursor.moveToNext());
         }
-        InitClass.sortCollectionArtist(mArtistList);
+        Utils.sortCollectionArtist(mArtistList);
         mCursor.close();
         db.close();
         return mArtistList;
@@ -325,7 +325,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mListSong.add(mSong);
             } while (mCursor.moveToNext());
         }
-        InitClass.sortCollection(mListSong);
+        Utils.sortCollection(mListSong);
         mCursor.close();
         db.close();
         return mListSong;
@@ -349,7 +349,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mListSong.add(mSong);
             } while (mCursor.moveToNext());
         }
-        InitClass.sortCollection(mListSong);
+        Utils.sortCollection(mListSong);
         mCursor.close();
         db.close();
         return mListSong;

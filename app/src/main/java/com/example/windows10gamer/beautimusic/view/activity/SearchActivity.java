@@ -1,10 +1,8 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -17,7 +15,7 @@ import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
-import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
+import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,15 +46,15 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(SearchActivity.this, PlayMusicActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(InitClass.TAG, InitClass.SEARCH);
-                bundle.putInt(InitClass.POSITION, position);
+                Bundle b = new Bundle();
+                b.putString(Utils.TAG, Utils.SEARCH);
+                b.putInt(Utils.POSITION, position);
                 if (filteredModelList.size() != 0) {
-                    bundle.putParcelableArrayList(InitClass.LIST_SONG, (ArrayList<Song>) filteredModelList);
+                    b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) filteredModelList);
                 } else {
-                    bundle.putParcelableArrayList(InitClass.LIST_SONG, (ArrayList<Song>) mSongList);
+                    b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) mSongList);
                 }
-                intent.putExtras(bundle);
+                intent.putExtras(b);
                 startActivity(intent);
             }
         });
@@ -100,14 +98,13 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
         return true;
     }
-
     // get list after search
     private List<Song> filter(List<Song> mlistSong, String query) {
-        String s = InitClass.unAccent(query.toLowerCase());
+        String s = Utils.unAccent(query.toLowerCase());
         List<Song> filteredModelList = new ArrayList<>();
 
         for (Song song : mlistSong) {
-            String text = InitClass.unAccent(song.getNameSong().toLowerCase());
+            String text = Utils.unAccent(song.getNameSong().toLowerCase());
             if (text.contains(s)) {
                 filteredModelList.add(song);
             }

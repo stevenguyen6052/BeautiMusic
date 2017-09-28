@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.session.MediaController;
+import android.media.session.MediaController.Callback;
 import android.media.session.MediaSession;
+import android.media.session.MediaSessionManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
@@ -29,6 +31,11 @@ import java.util.Random;
 
 
 public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+    //lock screen
+    public static RemoteViews remoteView;
+    public static NotificationCompat.Builder nc;
+    public static NotificationManager nm;
+    public static Notification notification;
     // tag check playmusic error
     private static final String TAG_CHECK_BUG = "MainActivity";
     public static String TAG = "";
@@ -38,10 +45,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public static final String NOTIFY_PLAY = "com.example.windows10gamer.beautimusic.play";
     public static final String NOTIFY_NEXT = "com.example.windows10gamer.beautimusic.next";
     public static final String NOTIFI_STOP = "com.example.windows10gamer.beautimusic.stop";
-    // notification lock screen
-    private MediaSession mediaSession;
-    private MediaController mediaController;
-
 
     private static final int NOTIFICATION_ID_OPEN_ACTIVITY = 9;
     private static final int NOTIFICATION_ID_CUSTOM_BIG = 9;
@@ -101,14 +104,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return super.onUnbind(intent);
     }
 
-    public void stopMusic() {
-        mPlayer.stop();
-        mPlayer.release();
-        mPlayer = null;
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         return START_NOT_STICKY;
     }
 
@@ -130,17 +128,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void onPrepared(MediaPlayer mp) {
         mPlayer.start();
         // create notification
-        RemoteViews remoteView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.custom_notification);
+        remoteView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.custom_notification);
         setListeners(remoteView, getApplicationContext());
 
-
-        NotificationCompat.Builder nc = new NotificationCompat.Builder(getApplicationContext());
-        NotificationManager nm = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        nc = new NotificationCompat.Builder(getApplicationContext());
+        nm = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         Intent notifyIntent = new Intent(getApplicationContext(), MainActivity.class);
 
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        nc.setVisibility(Notification.VISIBILITY_PUBLIC);
         nc.setOngoing(true);
         nc.setContentIntent(pendingIntent);
         nc.setSmallIcon(R.drawable.ic_play_arrow_white_48dp);
@@ -150,30 +146,28 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         nc.setContentText(songTitle);
         remoteView.setTextViewText(R.id.notifiNameSong, songTitle);
         remoteView.setTextViewText(R.id.notifiNameArtist, artistTitle);
+        nc.setVisibility(Notification.VISIBILITY_PUBLIC);
 
         Notification notification = nc.build();
         startForeground(NOTIFICATION_ID_CUSTOM_BIG, notification);
-
-        // create notification in lockscree
 
 
     }
 
     // create actions listener service from notification
-    private void setListeners(RemoteViews expandedView, Context applicationContext) {
+    private void setListeners(RemoteViews remoteView, Context context) {
         Intent previous = new Intent(NOTIFY_PREVIOUS);
         Intent next = new Intent(NOTIFY_NEXT);
         Intent play = new Intent(NOTIFY_PLAY);
-        PendingIntent pPrevious = PendingIntent.getBroadcast(applicationContext, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
-        expandedView.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
+        PendingIntent pPrevious = PendingIntent.getBroadcast(context, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
 
-        PendingIntent pPlay = PendingIntent.getBroadcast(applicationContext, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
-        expandedView.setOnClickPendingIntent(R.drawable.ic_play_arrow_white_48dp, pPlay);
+        PendingIntent pPlay = PendingIntent.getBroadcast(context, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.notifiPlay, pPlay);
 
-        PendingIntent pNext = PendingIntent.getBroadcast(applicationContext, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
-        expandedView.setOnClickPendingIntent(R.id.notifiNext, pNext);
+        PendingIntent pNext = PendingIntent.getBroadcast(context, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.notifiNext, pNext);
     }
-
 
     public int getDuaration() {
         return Integer.valueOf(mSongList.get(mPosition).getDuaration());

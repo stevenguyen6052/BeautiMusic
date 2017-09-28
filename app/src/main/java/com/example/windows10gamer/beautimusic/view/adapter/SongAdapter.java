@@ -1,8 +1,6 @@
 package com.example.windows10gamer.beautimusic.view.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +12,6 @@ import android.widget.TextView;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
-import com.example.windows10gamer.beautimusic.view.utilities.InitClass;
 
 import java.util.ArrayList;
 import java.util.List;
