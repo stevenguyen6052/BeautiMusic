@@ -15,11 +15,9 @@
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"
-        android:background="@color/colorPink"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:tabTextColor="@color/colorWhite"
         app:tabMode="fixed">
 
     </android.support.design.widget.TabLayout>
@@ -40,7 +38,7 @@
         <LinearLayout
             android:id="@+id/mainLayoutControl"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="60dp"
             android:layout_gravity="bottom"
             android:background="@color/colorPink"
             android:orientation="horizontal"
@@ -50,7 +48,7 @@
                 android:id="@+id/mainMiniControl"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="8"
+                android:layout_weight="8.25"
                 android:orientation="horizontal"
                 android:weightSum="10">
 
@@ -62,14 +60,14 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:layout_weight="2.25"
+                    android:layout_weight="2.10"
                     android:background="@drawable/dianhac1" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@id/mainOpenPlayMusic"
-                    android:layout_weight="8"
+                    android:layout_weight="7.90"
                     android:orientation="vertical"
                     android:weightSum="10">
 
