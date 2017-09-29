@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
 import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
 import com.example.windows10gamer.beautimusic.view.utilities.service.MusicService;
