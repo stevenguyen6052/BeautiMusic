@@ -74,21 +74,6 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
                     mContext.mPostion = position;
                     mContext.dataResult();
                     mContext.finish();
-//                    Intent intent = new Intent(mContext, PlayMusicActivity.class);
-//                    Bundle b = new Bundle();
-//                    List<Song> songList;
-//                    if (mContext.getDataAfterDragAndSwipe() != null) {
-//                        songList = mContext.getDataAfterDragAndSwipe();
-//                        b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) songList);
-//                    } else {
-//                        songList = mContext.mSongList;
-//                        b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) songList);
-//                    }
-//                    b.putInt(Utils.POSITION, position);
-//                    intent.putExtras(b);
-//                    mContext.startActivity(intent);
-//                    mContext.finish();
-
                 }
             }
         });
