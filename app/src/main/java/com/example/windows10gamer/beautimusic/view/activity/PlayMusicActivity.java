@@ -24,6 +24,7 @@ import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.view.utilities.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,13 +35,14 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private final static int REQUEST_LIST = 1;
     public static TextView mTvNameSong, mTvNameSinger, mTvTime, mTvSumTime;
     public static ImageView mImgPlayPause;
-    private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat, mQueue;
+    private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat;
     private SeekBar mSeekbar;
     private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
     public SongAdapter mSongAdapter;
     private ListView mListView;
     private int mPosition, mIdAlbumArtist;
-    public static List<Song> mSongList;
+    private List<Song> mSongList;
+    private List<Song> songList;
     SimpleDateFormat mSimPleDateFormat = new SimpleDateFormat("mm:ss");
     Bundle bundle;
 
@@ -203,6 +205,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 mTvNameSong.setText(MainActivity.musicService.nameSong());
                 mTvNameSinger.setText(MainActivity.musicService.nameArtist());
                 mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
+                setImageSong();
             }
         }, 100);
     }
@@ -233,12 +236,12 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             if (resultCode == RESULT_OK) {
                 String name = "";
                 name = MainActivity.musicService.nameSong();
-                int postion = intent.getIntExtra(Utils.POSITION, 0);
-                boolean isCheck = intent.getBooleanExtra("True",false);
+                boolean isCheck = intent.getBooleanExtra("True", false);
                 // update khi ấn onclick item từ màn hình playingqueue
-                // check = true thif cho nhac tai vi tri click else update view
+                // check = true thi cho nhac tai vi tri click else update view
                 if (isCheck) {
-                    List<Song> songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
+                    int postion = intent.getIntExtra(Utils.POSITION, 0);
+                    songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
                     mSongList.clear();
                     mSongList.addAll(songList);
                     mSongAdapter.notifyDataSetChanged();
@@ -247,7 +250,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                     playMusic();
                     // update khi ấn back or từ mini control từ màn hình playingqueue
                 } else {
-                    List<Song> songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
+                    songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
                     mSongList.clear();
                     mSongList.addAll(songList);
                     mSongAdapter.notifyDataSetChanged();
@@ -263,14 +266,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
     // set image song
     private void setImageSong() {
-        mmr.setDataSource(MainActivity.musicService.pathSong());
-        byte[] dataImageDisc = mmr.getEmbeddedPicture();
-        if (dataImageDisc != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
-            mImgBackground.setImageBitmap(bitmap);
-        } else {
-            mImgBackground.setImageResource(R.drawable.ic_empty_music2);
-        }
+        Picasso.with(this)
+                .load(MainActivity.musicService.getImageSong())
+                .placeholder(R.drawable.ic_empty_music)
+                .error(R.drawable.ic_empty_music)
+                .into(mImgBackground);
     }
 
     @Override

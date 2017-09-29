@@ -239,6 +239,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public String nameSong() {
         return mSongList.get(mPosition).getNameSong();
     }
+    public String getImageSong(){
+        return mSongList.get(mPosition).getImageSong();
+    }
 
     public void setOnComplete() {
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

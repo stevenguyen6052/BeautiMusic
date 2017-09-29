@@ -37,7 +37,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     private View mLayoutOpenPlayMusic;
     private String jsonListSongId = "";
     private TextView mTvNameSong, mTvNameArtist;
-    private ImageView mPlayPause;
+    public static ImageView mPlayPause;
 
 
     @Override
@@ -93,11 +93,6 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         }
         intent.putExtras(b);
         setResult(Activity.RESULT_OK, intent);
-
-//        setResult(Activity.RESULT_OK, new Intent()
-//                .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) sendListSong)
-//                .putExtra(Utils.POSITION, mPostion)
-//        );
     }
 
     private void setUpAdapter() {
@@ -206,7 +201,8 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
                 mSongListReturn.addAll(mSongList);
             }
             return mSongListReturn;
-        } else return null;
+        } else
+            return null;
 
     }
 

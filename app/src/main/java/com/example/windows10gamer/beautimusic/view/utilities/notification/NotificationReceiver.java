@@ -10,6 +10,7 @@ import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
 import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
+import com.example.windows10gamer.beautimusic.view.activity.PlayingQueue;
 import com.example.windows10gamer.beautimusic.view.utilities.service.MusicService;
 
 import static com.example.windows10gamer.beautimusic.view.utilities.service.MusicService.NOTIFY_NEXT;
@@ -28,12 +29,16 @@ public class NotificationReceiver extends BroadcastReceiver {
                 MainActivity.musicService.pausePlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                 MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                //PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                 MusicService.updateRemoteview();
 
             } else {
                 MainActivity.musicService.startPlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+                DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                //PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 MusicService.updateRemoteview();
 
             }

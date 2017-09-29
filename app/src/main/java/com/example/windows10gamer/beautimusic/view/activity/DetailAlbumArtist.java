@@ -39,10 +39,8 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
     private TextView mTvNameSong, mTvNameArtist;
     public static ImageView mControlPlayPause;
     public View mLayoutControl;
-    private List<Song> mSongList, getListSong;
+    private List<Song> mSongList;
     private String nameAlbumArtist, tag;
-    private SongDatabase mSongDatabase;
-    private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
     private int idAlbumArtist;
 
     @Override
