@@ -22,6 +22,7 @@ import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.utilities.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,14 +159,19 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
 
     // set image of album
     private void setImageSong() {
-        mmr.setDataSource(mSongList.get(0).getFileSong());
-        byte[] dataImageDisc = mmr.getEmbeddedPicture();
-        if (dataImageDisc != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
-            imgAlbum.setImageBitmap(bitmap);
-        } else {
-            imgAlbum.setImageResource(R.drawable.detaialbum);
-        }
+        Picasso.with(this)
+                .load(mSongList.get(0).getImageSong())
+                .placeholder(R.drawable.detaialbum)
+                .error(R.drawable.detaialbum)
+                .into(imgAlbum);
+//        mmr.setDataSource(mSongList.get(0).getFileSong());
+//        byte[] dataImageDisc = mmr.getEmbeddedPicture();
+//        if (dataImageDisc != null) {
+//            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
+//            imgAlbum.setImageBitmap(bitmap);
+//        } else {
+//            imgAlbum.setImageResource(R.drawable.detaialbum);
+//        }
     }
 
     private void getData() {
@@ -175,16 +181,12 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         if (tag.equals(Utils.TAG_ALBUM)) {
             nameAlbumArtist = b.getString(Utils.NAME_ALBUM);
             idAlbumArtist = b.getInt(Utils.ALBUM_ID);
-            getListSong = SongDatabase.getAlbumSongs(idAlbumArtist, this);
-            mSongList.clear();
-            mSongList.addAll(getListSong);
+            mSongList = SongDatabase.getAlbumSongs(idAlbumArtist, this);
 
         } else if (tag.equals(Utils.TAG_ARTIST)) {
             nameAlbumArtist = b.getString(Utils.NAME_ARTIST);
             idAlbumArtist = b.getInt(Utils.ARTIST_ID);
-            getListSong = SongDatabase.getArtistSong(idAlbumArtist, this);
-            mSongList.clear();
-            mSongList.addAll(getListSong);
+            mSongList = SongDatabase.getArtistSong(idAlbumArtist, this);
         }
     }
 

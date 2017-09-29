@@ -16,7 +16,7 @@ public class Song implements Parcelable {
     private String nameAlbum;
     private String fileSong;
     private String duaration;
-    private int imageSong;
+    private String imageSong;
     private int albumId;
     private int artistId;
 
@@ -42,7 +42,7 @@ public class Song implements Parcelable {
 
     }
 
-    public Song(String mId,String mNameSong, String mNameArtist, String mNameAlbum, String mFileSong,String mDuaration, int mImage,int albumId,int artistId) {
+    public Song(String mId,String mNameSong, String mNameArtist, String mNameAlbum, String mFileSong,String mDuaration, String mImage,int albumId,int artistId) {
         this.id = mId ;
         this.nameSong = mNameSong;
         this.nameArtist = mNameArtist;
@@ -88,7 +88,7 @@ public class Song implements Parcelable {
         nameAlbum = source.readString();
         fileSong = source.readString();
         duaration = source.readString();
-        imageSong = source.readInt();
+        imageSong = source.readString();
         albumId = source.readInt();
         artistId = source.readInt();
     }
@@ -142,11 +142,11 @@ public class Song implements Parcelable {
         this.duaration = duaration;
     }
 
-    public int getImageSong() {
+    public String getImageSong() {
         return imageSong;
     }
 
-    public void setImageSong(int imageSong) {
+    public void setImageSong(String imageSong) {
         this.imageSong = imageSong;
     }
 
@@ -163,7 +163,7 @@ public class Song implements Parcelable {
         dest.writeString(nameAlbum);
         dest.writeString(fileSong);
         dest.writeString(duaration);
-        dest.writeInt(imageSong);
+        dest.writeString(imageSong);
         dest.writeInt(albumId);
         dest.writeInt(artistId);
     }

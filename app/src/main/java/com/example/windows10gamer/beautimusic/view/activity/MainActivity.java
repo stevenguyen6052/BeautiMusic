@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startService(playIntent);
             doBindService();
         }
-        initPermission();
+        addPermission();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // add permission for android >=6.0
-    private void initPermission() {
+    private void addPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(MainActivity.this
                     , Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -158,9 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void run() {
                 mHandler.postDelayed(this, 500);
-                if (musicService.mPlayer != null) {
-                    musicService.setOnComplete();
-                }
+                musicService.setOnComplete();
                 mTvNameSong.setText(musicService.nameSong());
                 mTvNameArtist.setText(musicService.nameArtist());
             }

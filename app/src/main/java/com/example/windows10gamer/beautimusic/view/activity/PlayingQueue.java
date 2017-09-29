@@ -34,7 +34,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     private List<Song> mSongList;
     private List<Song> sendListSong;
     private View mLayoutOpenPlayMusic;
-    private String jsonListSongId;
+    private String jsonListSongId = "";
     private TextView mTvNameSong, mTvNameArtist;
     private ImageView mPlayPause;
 
@@ -74,15 +74,12 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         mLayoutOpenPlayMusic.setOnClickListener(this);
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        dataResult();
-        finish();
-        return true;
-    }
-
     private void dataResult() {
-        sendListSong = getDataAfterDragAndSwipe();
+        if (getDataAfterDragAndSwipe() != null) {
+            sendListSong = getDataAfterDragAndSwipe();
+        } else {
+            sendListSong = mSongList;
+        }
         setResult(Activity.RESULT_OK, new Intent()
                 .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) sendListSong));
     }
@@ -149,17 +146,18 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
             case R.id.queueOpenPlayMusic:
                 dataResult();
                 finish();
-
                 break;
         }
     }
 
     @Override
-    public void onNoteListChanged(List<Song> mSong) {
+    public void onNoteListChanged(List<Song> mSongs) {
         List<Long> listOfSortedCustomerId = new ArrayList<Long>();
+        if (mSongs != null) {
+            for (Song song : mSongs) {
+                listOfSortedCustomerId.add(Long.valueOf(song.getId()));
+            }
 
-        for (Song song : mSongList) {
-            listOfSortedCustomerId.add(Long.valueOf(song.getId()));
         }
         //convert the List of Longs to a JSON string
         Gson gson = new Gson();
@@ -168,21 +166,20 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
 
     private List<Song> getDataAfterDragAndSwipe() {
         List<Song> mSongListReturn = new ArrayList<Song>();
-        //check for null
-        if (!jsonListSongId.isEmpty()) {
+        if (!jsonListSongId.equals("")) {
 
             //convert JSON array into a List<Long>
             Gson gson = new Gson();
-            List<Long> listOfSortedCustomersId = gson.fromJson(jsonListSongId, new TypeToken<List<Long>>() {
+            List<Long> listOfSortedSongId = gson.fromJson(jsonListSongId, new TypeToken<List<Long>>() {
             }.getType());
 
             //build sorted list
-            if (listOfSortedCustomersId != null && listOfSortedCustomersId.size() > 0) {
-                for (Long id : listOfSortedCustomersId) {
+            if (listOfSortedSongId != null && listOfSortedSongId.size() > 0) {
+                for (Long id : listOfSortedSongId) {
                     for (Song mSong : mSongList) {
                         if (mSong.getId().equals(id)) {
                             mSongListReturn.add(mSong);
-                            mSongList.remove(mSong);
+                            //mSongList.remove(mSong);
                             break;
                         }
                     }
@@ -192,13 +189,15 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
                 mSongListReturn.addAll(mSongList);
             }
             return mSongListReturn;
+        } else return null;
 
-            //if there are still customers that were not in the sorted list
-            //maybe they were added after the last drag and drop
-            //add them to the sorted list
-        } else {
-            return mSongList;
-        }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        dataResult();
+        finish();
+        return true;
     }
 
 }

@@ -40,9 +40,9 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Artist mArtist = mArtistList.get(position);
-        String s = mArtistList.get(position).getSumAlbum()+" Album | "+mArtistList.get(position).getSumSong()+" Song";
-        holder.mTvNameArtist.setText(mArtist.getNameArtist());
+        final Artist artist = mArtistList.get(position);
+        String s = artist.getSumAlbum() + " Album | " + artist.getSumSong() + " Song";
+        holder.mTvNameArtist.setText(artist.getNameArtist());
         holder.mTvSumAlbum.setText(s);
 
         holder.setItemClickListener(new ItemClickListener() {
@@ -55,7 +55,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
                     Bundle b = new Bundle();
                     b.putString(Utils.TAG, Utils.TAG_ARTIST);
                     b.putString(NAME_ARTIST, mArtistList.get(position).getNameArtist());
-                    b.putInt(Utils.ARTIST_ID,mArtistList.get(position).getId());
+                    b.putInt(Utils.ARTIST_ID, mArtistList.get(position).getId());
                     intent.putExtras(b);
                     view.getContext().startActivity(intent);
 

@@ -20,6 +20,7 @@ import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.view.utilities.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,19 +58,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         holder.nameAlbum.setText(mAlbum.getNameAlbum());
         holder.nameArtist.setText(mAlbum.getNameArtist());
 
-        mSongList = new ArrayList<>();
-        mSongList.clear();
-        mSongList.addAll(SongDatabase.getAlbumSongs(mAlbum.getId(), mContext));
-
-        mmr.setDataSource(mSongList.get(0).getFileSong());
-        byte[] dataImageDisc = mmr.getEmbeddedPicture();
-        if (dataImageDisc != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
-            holder.imageView.setImageBitmap(Utils.getResizedBitmap(bitmap, 180, 180));
-
-        } else {
-            holder.imageView.setImageResource(R.drawable.ic_empty_music2);
-        }
+        Picasso.with(mContext)
+                .load(mAlbumList.get(position).getImage())
+                .placeholder(R.drawable.icon_music)
+                .error(R.drawable.icon_music)
+                .into(holder.imageView);
 
         holder.setItemClickListener(new ItemClickListener() {
             @Override

@@ -93,7 +93,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mSong.setNameArtist(mCursor.getString(3));
                 mSong.setFileSong(mCursor.getString(4));
                 mSong.setDuaration(mCursor.getString(5));
-                mSong.setImageSong(mCursor.getInt(6));
+                mSong.setImageSong(mCursor.getString(6));
                 mListSong.add(mSong);
             } while (mCursor.moveToNext());
         }
@@ -104,7 +104,7 @@ public class SongDatabase extends SQLiteOpenHelper {
         return mListSong;
     }
 
-    public static List<Album>   getAlbumFromDevice(Context context) {
+    public static List<Album> getAlbumFromDevice(Context context) {
         List<Album> albumList = new ArrayList<>();
         Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
         Cursor mCursor = context.getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
@@ -154,9 +154,9 @@ public class SongDatabase extends SQLiteOpenHelper {
             path = c.getString(5);
             albumId = c.getInt(6);
             artistId = c.getInt(7);
+            String image = ContentUris.withAppendedId(ART_CONTENT_URI, albumId).toString();
 
-
-            Song song = new Song(id, name, artist, album, path, duration,albumId,artistId);
+            Song song = new Song(id, name, artist, album, path, duration,image,albumId,artistId);
             mListSong.add(song);
         }
         //Utils.sortCollection(mListSong);
@@ -195,9 +195,9 @@ public class SongDatabase extends SQLiteOpenHelper {
                 path = mCursor.getString(5);
                 albumid = mCursor.getInt(6);
                 artistId = mCursor.getInt(7);
-                //String image = ContentUris.withAppendedId(ART_CONTENT_URI, albumId).toString();
+                String image = ContentUris.withAppendedId(ART_CONTENT_URI, albumId).toString();
 
-                Song song = new Song(id, name, artist, album, path, duration,albumid,artistId);
+                Song song = new Song(id, name, artist, album, path, duration,image,albumid,artistId);
                 mSongList.add(song);
             } while (mCursor.moveToNext());
         }
@@ -237,9 +237,9 @@ public class SongDatabase extends SQLiteOpenHelper {
                 path = mCursor.getString(5);
                 albumid = mCursor.getInt(6);
                 artistId1 = mCursor.getInt(7);
-                //String image = ContentUris.withAppendedId(ART_CONTENT_URI, albumId).toString();
+                String image = ContentUris.withAppendedId(ART_CONTENT_URI, albumid).toString();
 
-                Song song = new Song(id, name, artist, album, path, duration,albumid,artistId1);
+                Song song = new Song(id, name, artist, album, path, duration,image,albumid,artistId1);
                 mSongList.add(song);
             } while (mCursor.moveToNext());
         }
@@ -259,7 +259,7 @@ public class SongDatabase extends SQLiteOpenHelper {
         };
         Cursor cursor = context.getContentResolver().query(uri, mdata, null, null, MediaStore.Audio.Artists.DEFAULT_SORT_ORDER);
         while (cursor.moveToNext()) {
-            Artist atrist = new Artist(cursor.getInt(0), cursor.getString(1), cursor.getInt(2), cursor.getInt(3));
+            Artist atrist = new Artist(cursor.getInt(0), cursor.getString(1), cursor.getInt(3), cursor.getInt(2));
             atristList.add(atrist);
         }
         return atristList;
@@ -321,7 +321,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mSong.setNameArtist(mCursor.getString(3));
                 mSong.setFileSong(mCursor.getString(4));
                 mSong.setDuaration(mCursor.getString(5));
-                mSong.setImageSong(mCursor.getInt(6));
+                mSong.setImageSong(mCursor.getString(6));
                 mListSong.add(mSong);
             } while (mCursor.moveToNext());
         }
@@ -345,7 +345,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 mSong.setNameArtist(mCursor.getString(3));
                 mSong.setFileSong(mCursor.getString(4));
                 mSong.setDuaration(mCursor.getString(5));
-                mSong.setImageSong(mCursor.getInt(6));
+                mSong.setImageSong(mCursor.getString(6));
                 mListSong.add(mSong);
             } while (mCursor.moveToNext());
         }

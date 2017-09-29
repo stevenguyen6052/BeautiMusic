@@ -12,13 +12,14 @@ import android.widget.TextView;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class SongAdapter extends BaseAdapter {
-    private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+
     private Context mContext;
     private List<Song> mSongList;
     private int mLayout;
@@ -49,33 +50,28 @@ public class SongAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder mViewHolder;
-        if (convertView == null) {
+    public View getView(int position, View v, ViewGroup parent) {
+        ViewHolder viewHolder;
+        if (v == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(mLayout, null);
-            mViewHolder = new ViewHolder();
-            mViewHolder.mTvNameSong = (TextView) convertView.findViewById(R.id.TvNameSong);
-            mViewHolder.mTvNameArtist = (TextView) convertView.findViewById(R.id.TvNameSinger);
-            mViewHolder.mImageView = (ImageView) convertView.findViewById(R.id.ImgView);
-            convertView.setTag(mViewHolder);
+            v = inflater.inflate(mLayout, null);
+            viewHolder = new ViewHolder();
+            viewHolder.tvNameSong = (TextView) v.findViewById(R.id.TvNameSong);
+            viewHolder.tvNameArtist = (TextView) v.findViewById(R.id.TvNameSinger);
+            viewHolder.mImageView = (ImageView) v.findViewById(R.id.ImgView);
+            v.setTag(viewHolder);
         } else {
-            mViewHolder = (ViewHolder) convertView.getTag();
+            viewHolder = (ViewHolder) v.getTag();
         }
         Song song = mSongList.get(position);
-        if (song.getNameSong().length() > 30) {
-            mViewHolder.mTvNameSong.setText(song.getNameSong().substring(0, 27) + "...");
-        } else {
-            mViewHolder.mTvNameSong.setText(song.getNameSong());
-        }
-
-        if (song.getNameArtist().length() > 40) {
-            mViewHolder.mTvNameArtist.setText(song.getNameArtist().substring(0, 27) + "...");
-        } else {
-            mViewHolder.mTvNameArtist.setText(song.getNameArtist());
-        }
-
-        return convertView;
+        viewHolder.tvNameSong.setText(song.getNameSong());
+        viewHolder.tvNameArtist.setText(song.getNameArtist());
+        Picasso.with(mContext)
+                .load(song.getImageSong())
+                .placeholder(R.drawable.ic_musicqh)
+                .error(R.drawable.ic_musicqh)
+                .into(viewHolder.mImageView);
+        return v;
     }
 
     public void filter(String charText) {
@@ -112,7 +108,7 @@ public class SongAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        TextView mTvNameSong, mTvNameArtist;
+        TextView tvNameSong, tvNameArtist;
         ImageView mImageView;
     }
 
