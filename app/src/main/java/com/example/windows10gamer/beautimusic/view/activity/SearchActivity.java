@@ -98,6 +98,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
         return true;
     }
+
     // get list after search
     private List<Song> filter(List<Song> mlistSong, String query) {
         String s = Utils.unAccent(query.toLowerCase());

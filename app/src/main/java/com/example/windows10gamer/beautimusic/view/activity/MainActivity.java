@@ -47,18 +47,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // layout contain toolbar control play music
     private View mLayoutControl;
     private View mMiniControl;
-    //string save list id of last song player
-    private static final String LAST_LIST = "LastList";
-    private static final String LAST_POSITION = "LastPosition";
-    private String jsongListSongId;
+
     private List<Song> mSongList = new ArrayList<>();
-    private int mPosition;
-    // service
     public static MusicService musicService;
     public static TextView mTvNameSong;
     public static TextView mTvNameArtist;
     public static ImageView mImgContrlPlay, mOpenMusicPlay;
-    private boolean isCheck = false;
     private Intent playIntent;
     private boolean musicBound = false;
     SharedPreferences preferences;
@@ -68,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG_CHECK_DEBUG, "onCreate ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //get last list song
 
         if (playIntent == null) {
             playIntent = new Intent(this, MusicService.class);

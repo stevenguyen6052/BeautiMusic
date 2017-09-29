@@ -76,7 +76,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     }
 
     public void dataResult() {
-
+        // nếu đã sx thì trả về list sau khi sx còn k thì trả về list ban đầu
         if (getDataAfterDragAndSwipe() != null) {
             sendListSong = getDataAfterDragAndSwipe();
         } else {
@@ -84,7 +84,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         }
         setResult(Activity.RESULT_OK, new Intent()
                 .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) sendListSong)
-                .putExtra(Utils.POSITION,mPostion)
+                .putExtra(Utils.POSITION, mPostion)
         );
     }
 

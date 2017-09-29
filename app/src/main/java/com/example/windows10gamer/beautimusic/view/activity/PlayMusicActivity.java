@@ -32,7 +32,6 @@ import java.util.List;
 public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener {
     // request result list after queue
     private final static int REQUEST_LIST = 1;
-    private String tag, nameAlbum, tagCheck;
     public static TextView mTvNameSong, mTvNameSinger, mTvTime, mTvSumTime;
     public static ImageView mImgPlayPause;
     private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat, mQueue;
@@ -224,7 +223,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) mSongList), REQUEST_LIST);
     }
 
-    // trả về list sau khi sắp xếp
+    // trả kq về sau từ màn hình sắp xếp nhạc
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -242,7 +241,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                     MainActivity.musicService.mSongList = songList;
                     MainActivity.musicService.mPosition = postion;
                     playMusic();
-                // update khi ấn back or từ mini control từ man hình playingqueue
+                    // update khi ấn back or từ mini control từ màn hình playingqueue
                 } else {
                     List<Song> songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
                     mSongList.clear();
@@ -254,7 +253,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                             MainActivity.musicService.mPosition = i;
                     }
                 }
-
             }
         }
     }

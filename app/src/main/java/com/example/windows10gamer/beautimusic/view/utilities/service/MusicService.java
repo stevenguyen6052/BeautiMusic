@@ -151,7 +151,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Notification notification = nc.build();
         startForeground(NOTIFICATION_ID_CUSTOM_BIG, notification);
 
-
     }
 
     // create actions listener service from notification
