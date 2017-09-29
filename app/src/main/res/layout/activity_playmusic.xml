@@ -33,7 +33,6 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="10"
                 android:paddingTop="15dp"
-
                 android:src="@drawable/ic_empty_music" />
 
         </LinearLayout>

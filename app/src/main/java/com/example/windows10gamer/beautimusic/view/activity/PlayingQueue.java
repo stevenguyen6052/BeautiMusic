@@ -31,7 +31,8 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     //tag check debug
     private static final String TAG_CHECK_ERROR = "PlayingQueue";
     private ItemTouchHelper mItemTouchHelper;
-    private List<Song> mSongList;
+    public List<Song> mSongList;
+    public int mPostion;
     private List<Song> sendListSong;
     private View mLayoutOpenPlayMusic;
     private String jsonListSongId = "";
@@ -74,14 +75,17 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         mLayoutOpenPlayMusic.setOnClickListener(this);
     }
 
-    private void dataResult() {
+    public void dataResult() {
+
         if (getDataAfterDragAndSwipe() != null) {
             sendListSong = getDataAfterDragAndSwipe();
         } else {
             sendListSong = mSongList;
         }
         setResult(Activity.RESULT_OK, new Intent()
-                .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) sendListSong));
+                .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) sendListSong)
+                .putExtra(Utils.POSITION,mPostion)
+        );
     }
 
     private void setUpAdapter() {
@@ -164,7 +168,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         jsonListSongId = gson.toJson(listOfSortedCustomerId);
     }
 
-    private List<Song> getDataAfterDragAndSwipe() {
+    public List<Song> getDataAfterDragAndSwipe() {
         List<Song> mSongListReturn = new ArrayList<Song>();
         if (!jsonListSongId.equals("")) {
 

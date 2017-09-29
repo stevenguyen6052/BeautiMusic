@@ -1,7 +1,10 @@
 package com.example.windows10gamer.beautimusic.view.utilities.dragandswipe;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,11 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.example.windows10gamer.beautimusic.R;
 
 
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
+import com.example.windows10gamer.beautimusic.view.activity.PlayingQueue;
 import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
+import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,12 +29,12 @@ import java.util.List;
 
 public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHolder> implements ItemTouchHelperAdapter {
     private List<Song> mSongList = new ArrayList<>();
-    private Context mContext;
+    private PlayingQueue mContext;
     private ListChangedListener mListChangeListener;
 
     private OnStartDragListener mDragStartListener;
 
-    public QueueAdapter(Context context, OnStartDragListener dragStartListener, List<Song> songList,ListChangedListener listChangedListener) {
+    public QueueAdapter(PlayingQueue context, OnStartDragListener dragStartListener, List<Song> songList, ListChangedListener listChangedListener) {
         mDragStartListener = dragStartListener;
         mSongList = songList;
         mContext = context;
@@ -64,6 +71,23 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
                 if (isLongClick) {
 
                 } else {
+                    mContext.mPostion = position;
+                    mContext.dataResult();
+                    mContext.finish();
+//                    Intent intent = new Intent(mContext, PlayMusicActivity.class);
+//                    Bundle b = new Bundle();
+//                    List<Song> songList;
+//                    if (mContext.getDataAfterDragAndSwipe() != null) {
+//                        songList = mContext.getDataAfterDragAndSwipe();
+//                        b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) songList);
+//                    } else {
+//                        songList = mContext.mSongList;
+//                        b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) songList);
+//                    }
+//                    b.putInt(Utils.POSITION, position);
+//                    intent.putExtras(b);
+//                    mContext.startActivity(intent);
+//                    mContext.finish();
 
                 }
             }

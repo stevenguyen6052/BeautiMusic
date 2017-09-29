@@ -220,8 +220,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void doQueue() {
-        startActivityForResult(new Intent(this,PlayingQueue.class)
-                .putParcelableArrayListExtra(Utils.LIST_SONG,(ArrayList<Song>) mSongList), REQUEST_LIST);
+        startActivityForResult(new Intent(this, PlayingQueue.class)
+                .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) mSongList), REQUEST_LIST);
     }
 
     // trả về list sau khi sắp xếp
@@ -232,15 +232,29 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             if (resultCode == RESULT_OK) {
                 String name = "";
                 name = MainActivity.musicService.nameSong();
-                List<Song> songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
-                mSongList.clear();
-                mSongList.addAll(songList);
-                mSongAdapter.notifyDataSetChanged();
-                // update position after queue
-                for (int i = 0; i < mSongList.size(); i++) {
-                    if (name.equals(mSongList.get(i).getNameSong()))
-                        MainActivity.musicService.mPosition = i;
+                int postion = intent.getIntExtra(Utils.POSITION, 0);
+                // update khi ấn onclick item từ màn hình playingqueue
+                if (postion != 0) {
+                    List<Song> songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
+                    mSongList.clear();
+                    mSongList.addAll(songList);
+                    mSongAdapter.notifyDataSetChanged();
+                    MainActivity.musicService.mSongList = songList;
+                    MainActivity.musicService.mPosition = postion;
+                    playMusic();
+                // update khi ấn back or từ mini control từ man hình playingqueue
+                } else {
+                    List<Song> songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
+                    mSongList.clear();
+                    mSongList.addAll(songList);
+                    mSongAdapter.notifyDataSetChanged();
+                    // update position after queue
+                    for (int i = 0; i < mSongList.size(); i++) {
+                        if (name.equals(mSongList.get(i).getNameSong()))
+                            MainActivity.musicService.mPosition = i;
+                    }
                 }
+
             }
         }
     }
