@@ -234,8 +234,10 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 String name = "";
                 name = MainActivity.musicService.nameSong();
                 int postion = intent.getIntExtra(Utils.POSITION, 0);
+                boolean isCheck = intent.getBooleanExtra("True",false);
                 // update khi ấn onclick item từ màn hình playingqueue
-                if (postion != 0) {
+                // check = true thif cho nhac tai vi tri click else update view
+                if (isCheck) {
                     List<Song> songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
                     mSongList.clear();
                     mSongList.addAll(songList);

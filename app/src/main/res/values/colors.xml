@@ -11,4 +11,5 @@
     <color name="background_playsong">#a2000000</color>
     <color name="background_item">#23000000</color>
     <color name="pink">#ce4cc5d3</color>
+    <color name="image_notifi">#0daebc</color>
 </resources>

@@ -76,16 +76,28 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     }
 
     public void dataResult() {
+        Intent intent = new Intent();
+        Bundle b = new Bundle();
+        boolean isCheckChange = false;
         // nếu đã sx thì trả về list sau khi sx còn k thì trả về list ban đầu
         if (getDataAfterDragAndSwipe() != null) {
+            isCheckChange = true;
             sendListSong = getDataAfterDragAndSwipe();
+            b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) sendListSong);
+            b.putInt(Utils.POSITION, mPostion);
+            b.putBoolean("True", isCheckChange);
         } else {
+            b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) sendListSong);
+            b.putBoolean("True", isCheckChange);
             sendListSong = mSongList;
         }
-        setResult(Activity.RESULT_OK, new Intent()
-                .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) sendListSong)
-                .putExtra(Utils.POSITION, mPostion)
-        );
+        intent.putExtras(b);
+        setResult(Activity.RESULT_OK, intent);
+
+//        setResult(Activity.RESULT_OK, new Intent()
+//                .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) sendListSong)
+//                .putExtra(Utils.POSITION, mPostion)
+//        );
     }
 
     private void setUpAdapter() {
@@ -138,11 +150,13 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
                     MainActivity.musicService.pausePlayer();
                     mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                     PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    MainActivity.musicService.updateRemoteview();
 
                 } else {
                     MainActivity.musicService.startPlayer();
                     mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                     PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    MainActivity.musicService.updateRemoteview();
                 }
                 break;
 

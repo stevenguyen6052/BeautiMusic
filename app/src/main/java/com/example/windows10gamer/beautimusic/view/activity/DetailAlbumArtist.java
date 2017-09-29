@@ -194,10 +194,12 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
                     MainActivity.musicService.pausePlayer();
                     mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                     MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    MainActivity.musicService.updateRemoteview();
                 } else {
                     MainActivity.musicService.startPlayer();
                     mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                     MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+                    MainActivity.musicService.updateRemoteview();
                 }
                 break;
         }

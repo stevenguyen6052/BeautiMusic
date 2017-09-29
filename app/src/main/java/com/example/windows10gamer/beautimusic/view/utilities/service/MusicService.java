@@ -33,6 +33,7 @@ import java.util.Random;
 public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
     //lock screen
     public static RemoteViews remoteView;
+    public static RemoteViews remoteViewBig;
     public static NotificationCompat.Builder nc;
     public static NotificationManager nm;
     public static Notification notification;
@@ -123,20 +124,21 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void onPrepared(MediaPlayer mp) {
         mPlayer.start();
         // create notification
-        remoteView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.custom_notification);
-        //setListeners(remoteView, getApplicationContext());
-        Intent previous = new Intent(NOTIFY_PREVIOUS);
-        Intent next = new Intent(NOTIFY_NEXT);
-        Intent play = new Intent(NOTIFY_PLAY);
-        PendingIntent pPrevious = PendingIntent.getBroadcast(getApplicationContext(), 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
+        initNotification();
 
-        PendingIntent pPlay = PendingIntent.getBroadcast(getApplicationContext(), 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.notifiPlay, pPlay);
+    }
 
-        PendingIntent pNext = PendingIntent.getBroadcast(getApplicationContext(), 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.notifiNext, pNext);
-        //
+    private void initNotification() {
+        remoteView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.custom_small_notification);
+        remoteViewBig = new RemoteViews(getApplicationContext().getPackageName(), R.layout.custom_notification);
+        remoteView.setTextViewText(R.id.notifiNameSong, songTitle);
+        remoteView.setTextViewText(R.id.notifiNameArtist, artistTitle);
+        remoteView.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
+        remoteViewBig.setTextViewText(R.id.notifiNameSong, songTitle);
+        remoteViewBig.setTextViewText(R.id.notifiNameArtist, artistTitle);
+        remoteViewBig.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
+
+        setListener();
 
         nc = new NotificationCompat.Builder(getApplicationContext());
         nm = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -147,48 +149,44 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         nc.setOngoing(true);
         nc.setContentIntent(pendingIntent);
         nc.setSmallIcon(R.drawable.ic_play_arrow_white_48dp);
-        nc.setAutoCancel(true);
-        nc.setCustomBigContentView(remoteView);
-        nc.setContentTitle("Playing");
-        nc.setContentText(songTitle);
-        remoteView.setTextViewText(R.id.notifiNameSong, songTitle);
-        remoteView.setTextViewText(R.id.notifiNameArtist, artistTitle);
-        remoteView.setImageViewResource(R.id.notifiPrevious, R.drawable.ic_skip_previous_white_48dp);
-        remoteView.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
-        remoteView.setImageViewResource(R.id.notifiNext, R.drawable.ic_skip_next_white_48dp);
+        nc.setCustomContentView(remoteView);
+        nc.setCustomBigContentView(remoteViewBig);
         nc.setVisibility(Notification.VISIBILITY_PUBLIC);
 
         Notification notification = nc.build();
         startForeground(NOTIFICATION_ID_CUSTOM_BIG, notification);
+    }
 
+    private void setListener() {
+        Intent previous = new Intent(NOTIFY_PREVIOUS);
+        Intent next = new Intent(NOTIFY_NEXT);
+        Intent play = new Intent(NOTIFY_PLAY);
+        PendingIntent pPrevious = PendingIntent.getBroadcast(getApplicationContext(), 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
+        remoteViewBig.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
+
+        PendingIntent pPlay = PendingIntent.getBroadcast(getApplicationContext(), 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.notifiPlay, pPlay);
+        remoteViewBig.setOnClickPendingIntent(R.id.notifiPlay, pPlay);
+
+        PendingIntent pNext = PendingIntent.getBroadcast(getApplicationContext(), 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.notifiNext, pNext);
+        remoteViewBig.setOnClickPendingIntent(R.id.notifiNext, pNext);
     }
 
     public static void updateRemoteview() {
         if (mPlayer.isPlaying()) {
             remoteView.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
+            remoteViewBig.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
             Notification notification = nc.build();
             nm.notify(NOTIFICATION_ID_CUSTOM_BIG, notification);
-        }else {
+        } else {
             remoteView.setImageViewResource(R.id.notifiPlay, R.drawable.ic_play_arrow_white_48dp);
+            remoteViewBig.setImageViewResource(R.id.notifiPlay, R.drawable.ic_play_arrow_white_48dp);
             Notification notification = nc.build();
             nm.notify(NOTIFICATION_ID_CUSTOM_BIG, notification);
         }
 
-    }
-
-    // create actions listener service from notification
-    private void setListeners(RemoteViews remoteView, Context context) {
-        Intent previous = new Intent(NOTIFY_PREVIOUS);
-        Intent next = new Intent(NOTIFY_NEXT);
-        Intent play = new Intent(NOTIFY_PLAY);
-        PendingIntent pPrevious = PendingIntent.getBroadcast(context, 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
-
-        PendingIntent pPlay = PendingIntent.getBroadcast(context, 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.notifiPlay, pPlay);
-
-        PendingIntent pNext = PendingIntent.getBroadcast(context, 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.notifiNext, pNext);
     }
 
     public int getDuaration() {
