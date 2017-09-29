@@ -27,26 +27,22 @@ public class NotificationReceiver extends BroadcastReceiver {
                 MainActivity.musicService.pausePlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                 MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-
-
-                Toast.makeText(context, "PAUSE", Toast.LENGTH_LONG).show();
+                MusicService.updateRemoteview();
 
             } else {
                 MainActivity.musicService.startPlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
-                Toast.makeText(context, "PLAY", Toast.LENGTH_LONG).show();
+                MusicService.updateRemoteview();
+
             }
 
 
         } else if (intent.getAction().equals(NOTIFY_NEXT)) {
             MainActivity.musicService.playNext();
 
-            Toast.makeText(context, "NEXT", Toast.LENGTH_LONG).show();
-
         } else if (intent.getAction().equals(NOTIFY_PREVIOUS)) {
             MainActivity.musicService.playPrev();
-            Toast.makeText(context, "PREVIOUS", Toast.LENGTH_LONG).show();
 
         }
 

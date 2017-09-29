@@ -182,9 +182,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         if (MainActivity.musicService.isPlaying()) {
             MainActivity.musicService.pausePlayer();
             mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+            MainActivity.musicService.updateRemoteview();
         } else {
             MainActivity.musicService.startPlayer();
             mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+            MainActivity.musicService.updateRemoteview();
         }
     }
 

@@ -109,7 +109,6 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
             mTvNameSong.setText(MainActivity.musicService.nameSong());
             mTvNameArtist.setText(MainActivity.musicService.nameArtist());
             mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-
         }
     }
 

@@ -164,14 +164,6 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
                 .placeholder(R.drawable.detaialbum)
                 .error(R.drawable.detaialbum)
                 .into(imgAlbum);
-//        mmr.setDataSource(mSongList.get(0).getFileSong());
-//        byte[] dataImageDisc = mmr.getEmbeddedPicture();
-//        if (dataImageDisc != null) {
-//            Bitmap bitmap = BitmapFactory.decodeByteArray(dataImageDisc, 0, dataImageDisc.length);
-//            imgAlbum.setImageBitmap(bitmap);
-//        } else {
-//            imgAlbum.setImageResource(R.drawable.detaialbum);
-//        }
     }
 
     private void getData() {

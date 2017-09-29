@@ -38,13 +38,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public static Notification notification;
     // tag check playmusic error
     private static final String TAG_CHECK_BUG = "MainActivity";
-    public static String TAG = "";
     // notification
     public static final String NOTIFY_PREVIOUS = "com.example.windows10gamer.beautimusic.previous";
-    public static final String NOTIFY_PAUSE = "com.example.windows10gamer.beautimusic.pause";
     public static final String NOTIFY_PLAY = "com.example.windows10gamer.beautimusic.play";
     public static final String NOTIFY_NEXT = "com.example.windows10gamer.beautimusic.next";
-    public static final String NOTIFI_STOP = "com.example.windows10gamer.beautimusic.stop";
 
     private static final int NOTIFICATION_ID_OPEN_ACTIVITY = 9;
     private static final int NOTIFICATION_ID_CUSTOM_BIG = 9;
@@ -60,8 +57,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private String artistTitle = "";
 
     private final IBinder musicBind = new MusicBinder();
-
-    private static final int NOTIFY_ID = 1;
 
     //shuffle flag and random
     private boolean shuffle = false;
@@ -129,7 +124,19 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mPlayer.start();
         // create notification
         remoteView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.custom_notification);
-        setListeners(remoteView, getApplicationContext());
+        //setListeners(remoteView, getApplicationContext());
+        Intent previous = new Intent(NOTIFY_PREVIOUS);
+        Intent next = new Intent(NOTIFY_NEXT);
+        Intent play = new Intent(NOTIFY_PLAY);
+        PendingIntent pPrevious = PendingIntent.getBroadcast(getApplicationContext(), 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
+
+        PendingIntent pPlay = PendingIntent.getBroadcast(getApplicationContext(), 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.notifiPlay, pPlay);
+
+        PendingIntent pNext = PendingIntent.getBroadcast(getApplicationContext(), 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteView.setOnClickPendingIntent(R.id.notifiNext, pNext);
+        //
 
         nc = new NotificationCompat.Builder(getApplicationContext());
         nm = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -146,10 +153,26 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         nc.setContentText(songTitle);
         remoteView.setTextViewText(R.id.notifiNameSong, songTitle);
         remoteView.setTextViewText(R.id.notifiNameArtist, artistTitle);
+        remoteView.setImageViewResource(R.id.notifiPrevious, R.drawable.ic_skip_previous_white_48dp);
+        remoteView.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
+        remoteView.setImageViewResource(R.id.notifiNext, R.drawable.ic_skip_next_white_48dp);
         nc.setVisibility(Notification.VISIBILITY_PUBLIC);
 
         Notification notification = nc.build();
         startForeground(NOTIFICATION_ID_CUSTOM_BIG, notification);
+
+    }
+
+    public static void updateRemoteview() {
+        if (mPlayer.isPlaying()) {
+            remoteView.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
+            Notification notification = nc.build();
+            nm.notify(NOTIFICATION_ID_CUSTOM_BIG, notification);
+        }else {
+            remoteView.setImageViewResource(R.id.notifiPlay, R.drawable.ic_play_arrow_white_48dp);
+            Notification notification = nc.build();
+            nm.notify(NOTIFICATION_ID_CUSTOM_BIG, notification);
+        }
 
     }
 

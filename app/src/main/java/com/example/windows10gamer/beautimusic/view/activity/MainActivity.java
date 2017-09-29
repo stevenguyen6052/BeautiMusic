@@ -116,11 +116,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG_CHECK_DEBUG, "onDestroy");
         super.onDestroy();
         if (musicService.mPlayer.isPlaying()) {
-            Log.d(TAG_CHECK_DEBUG, "Service is running !");
 
         } else {
-            Log.d(TAG_CHECK_DEBUG, "Unbind to service and destroy service !");
-
             musicService.stopForeground(true);
             doUnbindService();
         }
@@ -215,9 +212,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (musicService.isPlaying()) {
                     musicService.pausePlayer();
                     mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    musicService.updateRemoteview();
                 } else {
                     musicService.startPlayer();
                     mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+                    musicService.updateRemoteview();
                 }
                 break;
         }
