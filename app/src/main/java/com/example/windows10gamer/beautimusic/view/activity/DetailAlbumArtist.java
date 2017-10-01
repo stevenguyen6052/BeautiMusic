@@ -29,7 +29,6 @@ import java.util.List;
 
 
 public class DetailAlbumArtist extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG_CHECK_ERROR = "DetailAlbumArtist";
     private SongAdapter mSongAdapter;
     private ListView mListView;
     private View mLayout;
@@ -45,7 +44,6 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG_CHECK_ERROR, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_album);
         getData();
@@ -64,7 +62,6 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
 
     @Override
     protected void onResume() {
-        Log.d(TAG_CHECK_ERROR, "onResume");
         super.onResume();
 
         checkPlayMusic();

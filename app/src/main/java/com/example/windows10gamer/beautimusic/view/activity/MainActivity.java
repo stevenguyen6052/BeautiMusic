@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static ImageView mImgContrlPlay, mOpenMusicPlay;
     private Intent playIntent;
     private boolean musicBound = false;
-    SharedPreferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

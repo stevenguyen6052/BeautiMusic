@@ -14,7 +14,7 @@ public class Album {
         this.nameAlbum = ns;
         this.nameArtist = na;
         this.image = img;
-        //this.sumSong = ss;
+
     }
 
     public int getId() {
@@ -32,8 +32,6 @@ public class Album {
     public void setImage(String image) {
         this.image = image;
     }
-
-    //private int sumSong;
 
 
     public Album(){
@@ -56,11 +54,5 @@ public class Album {
         this.nameAlbum = nameAlbum;
     }
 
-//    public int getSumSong() {
-//        return sumSong;
-//    }
-//
-//    public void setSumSong(int sumSong) {
-//        this.sumSong = sumSong;
-//    }
+
 }

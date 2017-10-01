@@ -37,10 +37,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     public static ImageView mImgPlayPause;
     private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat;
     private SeekBar mSeekbar;
-    private android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
     public SongAdapter mSongAdapter;
     private ListView mListView;
-    private int mPosition, mIdAlbumArtist;
+    private int mPosition;
     private List<Song> mSongList;
     private List<Song> songList;
     SimpleDateFormat mSimPleDateFormat = new SimpleDateFormat("mm:ss");
