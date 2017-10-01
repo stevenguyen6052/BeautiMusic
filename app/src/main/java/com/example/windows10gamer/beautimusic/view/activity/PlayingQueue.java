@@ -29,7 +29,6 @@ import java.util.List;
 
 public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnStartDragListener, View.OnClickListener, ListChangedListener {
     //tag check debug
-    private static final String TAG_CHECK_ERROR = "PlayingQueue";
     private ItemTouchHelper mItemTouchHelper;
     public List<Song> mSongList;
     public int mPostion;
@@ -42,7 +41,6 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG_CHECK_ERROR, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing_queue);
 
@@ -60,7 +58,6 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
 
     @Override
     protected void onResume() {
-        Log.d(TAG_CHECK_ERROR, "onResume");
         super.onResume();
         miniControlPlay();
     }

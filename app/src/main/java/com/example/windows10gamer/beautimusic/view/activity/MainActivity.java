@@ -40,8 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    //tag for check debug
-    private static final String TAG_CHECK_DEBUG = "MainActivity";
+
     private ViewPager mViewPager;
     private AdapterTab adapterTab;
     // layout contain toolbar control play music
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG_CHECK_DEBUG, "onCreate ");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onResume() {
-        Log.e(TAG_CHECK_DEBUG, "onResume");
+
         super.onResume();
         checkPlayMusic();
         if (musicService.mSongList != null) {
@@ -113,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG_CHECK_DEBUG, "onDestroy");
+
         super.onDestroy();
         if (musicService.mPlayer.isPlaying()) {
 
