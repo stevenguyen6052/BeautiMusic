@@ -29,26 +29,53 @@ public class NotificationReceiver extends BroadcastReceiver {
                 MainActivity.musicService.pausePlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                 MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                //PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
+                    DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                }
+
                 MusicService.updateRemoteview();
 
             } else {
                 MainActivity.musicService.startPlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
-                DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                //PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
+                    DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                }
                 MusicService.updateRemoteview();
 
             }
 
 
         } else if (intent.getAction().equals(NOTIFY_NEXT)) {
+
             MainActivity.musicService.playNext();
+            if (MainActivity.musicService.isPlaying()) {
+
+            } else {
+                PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
+                    DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                }
+            }
 
         } else if (intent.getAction().equals(NOTIFY_PREVIOUS)) {
+
             MainActivity.musicService.playPrev();
+            if (MainActivity.musicService.isPlaying()) {
+
+            } else {
+                PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
+                    DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                }
+            }
 
         }
 
