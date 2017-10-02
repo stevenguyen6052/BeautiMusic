@@ -82,6 +82,13 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         });
 
     }
+    public void setFilter(List<Album> mData) {
+
+        mAlbumList = new ArrayList<>();
+        mAlbumList.addAll(mData);
+
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {

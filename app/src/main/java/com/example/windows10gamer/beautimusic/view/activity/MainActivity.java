@@ -233,22 +233,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_item_search, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.itemSearch:
-                startActivity(new Intent(this, SearchActivity.class)
-                        .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) mSongList));
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 }

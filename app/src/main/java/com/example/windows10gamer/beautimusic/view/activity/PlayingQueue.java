@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnStartDragListener, View.OnClickListener, ListChangedListener {
-    //tag check debug
+
     private ItemTouchHelper mItemTouchHelper;
     public List<Song> mSongList;
     public int mPostion;

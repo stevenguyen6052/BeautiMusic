@@ -9,12 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -62,6 +64,13 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
                 }
             }
         });
+    }
+    public void setFilter(List<Artist> mData) {
+
+        mArtistList = new ArrayList<>();
+        mArtistList.addAll(mData);
+
+        notifyDataSetChanged();
     }
 
     @Override
