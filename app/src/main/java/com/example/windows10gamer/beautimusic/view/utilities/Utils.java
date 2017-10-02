@@ -31,7 +31,10 @@ public class Utils {
     public static final String NAME_ARTIST = "Name Artist";
     public static final String ALBUM_ID = "ALBUMID";
     public static final String ARTIST_ID = "ARTISTID";
+    public static final String CHECK = "Check";
     public static final String EMPTY = "EMPTY";
+    public static final String TRUE = "True";
+    public static final String ITEM_CLICK = "Click";
 
     public static void sortCollection(List<Song> mSongList){
         Collections.sort(mSongList, new Comparator<Song>() {

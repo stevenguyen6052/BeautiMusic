@@ -33,11 +33,10 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     public List<Song> mSongList;
     public int mPostion;
     public String check = "";
-    private List<Song> sendListSong;
     private View mLayoutOpenPlayMusic;
-    private String jsonListSongId = "";
     private TextView mTvNameSong, mTvNameArtist;
     public static ImageView mPlayPause;
+    private List<Song> getListSong;
 
 
     @Override
@@ -78,20 +77,20 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         Bundle b = new Bundle();
         boolean isCheckChange = false;
         // nếu đã sx thì trả về list sau khi sx còn k thì trả về list ban đầu
-        // string check để kiểm tra xem click vào item song hay ấn nut back quay lại playmusicactivity
-        if (getDataAfterDragAndSwipe() != null) {
+        // string check để kiểm tra xem click vào item song or back playmusicactivity
+        if (getListSong != null) {
             isCheckChange = true;
-            sendListSong = getDataAfterDragAndSwipe();
-            b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) sendListSong);
+            //sendListSong = getDataAfterDragAndSwipe();
+            b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) getListSong);
             b.putInt(Utils.POSITION, mPostion);
-            b.putBoolean("True", isCheckChange);
-            b.putString("Check", check);
+            b.putBoolean(Utils.TRUE, isCheckChange);
+            b.putString(Utils.CHECK, check);
         } else {
 
             isCheckChange = false;
-            b.putInt(Utils.POSITION,mPostion);
-            b.putBoolean("True", isCheckChange);
-            b.putString("Check",check);
+            b.putInt(Utils.POSITION, mPostion);
+            b.putBoolean(Utils.TRUE, isCheckChange);
+            b.putString(Utils.CHECK, check);
 
         }
         intent.putExtras(b);
@@ -167,46 +166,9 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
 
     @Override
     public void onNoteListChanged(List<Song> mSongs) {
-        List<Long> listOfSortedCustomerId = new ArrayList<Long>();
         if (mSongs != null) {
-            for (Song song : mSongs) {
-                listOfSortedCustomerId.add(Long.valueOf(song.getId()));
-            }
-
+            getListSong = mSongs;
         }
-        //convert the List of Longs to a JSON string
-        Gson gson = new Gson();
-        jsonListSongId = gson.toJson(listOfSortedCustomerId);
-    }
-
-    public List<Song> getDataAfterDragAndSwipe() {
-        List<Song> mSongListReturn = new ArrayList<Song>();
-        if (!jsonListSongId.equals("")) {
-
-            //convert JSON array into a List<Long>
-            Gson gson = new Gson();
-            List<Long> listOfSortedSongId = gson.fromJson(jsonListSongId, new TypeToken<List<Long>>() {
-            }.getType());
-
-            //build sorted list
-            if (listOfSortedSongId != null && listOfSortedSongId.size() > 0) {
-                for (Long id : listOfSortedSongId) {
-                    for (Song mSong : mSongList) {
-                        if (mSong.getId().equals(id)) {
-                            mSongListReturn.add(mSong);
-                            //mSongList.remove(mSong);
-                            break;
-                        }
-                    }
-                }
-            }
-            if (mSongList.size() > 0) {
-                mSongListReturn.addAll(mSongList);
-            }
-            return mSongListReturn;
-        } else
-            return null;
-
     }
 
     @Override

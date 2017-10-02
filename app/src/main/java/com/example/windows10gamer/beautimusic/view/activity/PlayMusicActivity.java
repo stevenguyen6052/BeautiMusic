@@ -237,12 +237,12 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             if (resultCode == RESULT_OK) {
                 String name = "";
                 name = MainActivity.musicService.nameSong();
-                boolean isCheck = intent.getBooleanExtra("True", false);
-                String check = intent.getExtras().getString("Check");
+                boolean isCheck = intent.getBooleanExtra(Utils.TRUE, false);
+                String check = intent.getExtras().getString(Utils.CHECK);
                 // update khi ấn onclick item từ màn hình playingqueue
                 // check = true thi cho nhac tai vi tri click else update view
                 if (isCheck) {
-                    if (check.equals("Click")) {
+                    if (check.equals(Utils.ITEM_CLICK)) {
                         //get data khi click item song
                         int postion = intent.getIntExtra(Utils.POSITION, 0);
                         songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
@@ -265,7 +265,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
                 } else {
                     //khi không sắp xếp
-                    if (check.equals("Click")) {
+                    if (check.equals(Utils.ITEM_CLICK)) {
                         int postion = intent.getIntExtra(Utils.POSITION, 0);
                         MainActivity.musicService.mPosition = postion;
                         playMusic();
