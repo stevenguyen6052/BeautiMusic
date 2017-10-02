@@ -32,6 +32,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     private ItemTouchHelper mItemTouchHelper;
     public List<Song> mSongList;
     public int mPostion;
+    public String check = "";
     private List<Song> sendListSong;
     private View mLayoutOpenPlayMusic;
     private String jsonListSongId = "";
@@ -77,16 +78,21 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         Bundle b = new Bundle();
         boolean isCheckChange = false;
         // nếu đã sx thì trả về list sau khi sx còn k thì trả về list ban đầu
+        // string check để kiểm tra xem click vào item song hay ấn nut back quay lại playmusicactivity
         if (getDataAfterDragAndSwipe() != null) {
             isCheckChange = true;
             sendListSong = getDataAfterDragAndSwipe();
             b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) sendListSong);
             b.putInt(Utils.POSITION, mPostion);
             b.putBoolean("True", isCheckChange);
+            b.putString("Check", check);
         } else {
-            b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) sendListSong);
+
+            isCheckChange = false;
+            b.putInt(Utils.POSITION,mPostion);
             b.putBoolean("True", isCheckChange);
-            sendListSong = mSongList;
+            b.putString("Check",check);
+
         }
         intent.putExtras(b);
         setResult(Activity.RESULT_OK, intent);

@@ -236,27 +236,39 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 String name = "";
                 name = MainActivity.musicService.nameSong();
                 boolean isCheck = intent.getBooleanExtra("True", false);
+                String check = intent.getExtras().getString("Check");
                 // update khi ấn onclick item từ màn hình playingqueue
                 // check = true thi cho nhac tai vi tri click else update view
                 if (isCheck) {
-                    int postion = intent.getIntExtra(Utils.POSITION, 0);
-                    songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
-                    mSongList.clear();
-                    mSongList.addAll(songList);
-                    mSongAdapter.notifyDataSetChanged();
-                    MainActivity.musicService.mSongList = songList;
-                    MainActivity.musicService.mPosition = postion;
-                    playMusic();
-                    // update khi ấn back or từ mini control từ màn hình playingqueue
+                    if (check.equals("Click")) {
+                        //get data khi click item song
+                        int postion = intent.getIntExtra(Utils.POSITION, 0);
+                        songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
+                        mSongList.clear();
+                        mSongList.addAll(songList);
+                        mSongAdapter.notifyDataSetChanged();
+                        //MainActivity.musicService.mSongList = songList;
+                        //MainActivity.musicService.mPosition = postion;
+                        playMusic();
+                    } else if (check.equals("")) {
+                        //get data sau khi sắp xếp nhạc và ấn back
+                        songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
+                        mSongList.clear();
+                        mSongList.addAll(songList);
+                        mSongAdapter.notifyDataSetChanged();
+                        //MainActivity.musicService.mSongList = songList;
+                        for (int i = 0; i < mSongList.size(); i++) {
+                            if (name.equals(mSongList.get(i).getNameSong()))
+                                MainActivity.musicService.mPosition = i;
+                        }
+                    }
+
                 } else {
-                    songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
-                    mSongList.clear();
-                    mSongList.addAll(songList);
-                    mSongAdapter.notifyDataSetChanged();
-                    // update position after queue
-                    for (int i = 0; i < mSongList.size(); i++) {
-                        if (name.equals(mSongList.get(i).getNameSong()))
-                            MainActivity.musicService.mPosition = i;
+                    //khi không sắp xếp
+                    if (check.equals("Click")) {
+                        int postion = intent.getIntExtra(Utils.POSITION, 0);
+                        MainActivity.musicService.mPosition = postion;
+                        playMusic();
                     }
                 }
             }
