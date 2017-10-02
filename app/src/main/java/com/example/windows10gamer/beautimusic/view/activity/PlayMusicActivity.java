@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -230,6 +231,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     // trả kq về sau từ màn hình sắp xếp nhạc
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        Log.d("Main","Activity for result!");
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_LIST) {
             if (resultCode == RESULT_OK) {
@@ -247,8 +249,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                         mSongList.clear();
                         mSongList.addAll(songList);
                         mSongAdapter.notifyDataSetChanged();
-                        //MainActivity.musicService.mSongList = songList;
-                        //MainActivity.musicService.mPosition = postion;
+                        MainActivity.musicService.mPosition = postion;
                         playMusic();
                     } else if (check.equals("")) {
                         //get data sau khi sắp xếp nhạc và ấn back
@@ -256,7 +257,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                         mSongList.clear();
                         mSongList.addAll(songList);
                         mSongAdapter.notifyDataSetChanged();
-                        //MainActivity.musicService.mSongList = songList;
                         for (int i = 0; i < mSongList.size(); i++) {
                             if (name.equals(mSongList.get(i).getNameSong()))
                                 MainActivity.musicService.mPosition = i;
