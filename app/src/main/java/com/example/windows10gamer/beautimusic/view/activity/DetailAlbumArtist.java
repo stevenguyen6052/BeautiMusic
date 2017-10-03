@@ -1,12 +1,8 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -38,14 +34,15 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
     private TextView mTvNameSong, mTvNameArtist;
     public static ImageView mControlPlayPause;
     public View mLayoutControl;
-    private List<Song> mSongList;
+    private List<Song> mSongList,list;
     private String nameAlbumArtist, tag;
     private int idAlbumArtist;
+    private SongDatabase s = new SongDatabase(this) ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.detail_album);
+        setContentView(R.layout.activity_detail);
         getData();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -57,6 +54,9 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         initView();
         onItemClick();
         setImageSong();
+        list = new ArrayList<>();
+        list.addAll(s.getAllListSong());
+        Log.d("Main", String.valueOf(list.size()));
 
     }
 
@@ -156,8 +156,8 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
     private void setImageSong() {
         Picasso.with(this)
                 .load(mSongList.get(0).getImageSong())
-                .placeholder(R.drawable.detaialbum)
-                .error(R.drawable.detaialbum)
+                .placeholder(R.drawable.ic_empty_music)
+                .error(R.drawable.ic_empty_music)
                 .into(imgAlbum);
     }
 

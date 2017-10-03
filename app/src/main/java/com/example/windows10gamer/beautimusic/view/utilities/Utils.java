@@ -10,6 +10,7 @@ import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.model.Song;
 
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -94,5 +95,17 @@ public class Utils {
         animationToRight.setDuration(12000);
         animationToRight.setRepeatMode(Animation.RESTART);
         animationToRight.setRepeatCount(Animation.INFINITE);
+    }
+    public static List<Song> filter(List<Song> mlistSong, String query) {
+        String s = Utils.unAccent(query.toLowerCase());
+        List<Song> filteredModelList = new ArrayList<>();
+
+        for (Song song : mlistSong) {
+            String text = Utils.unAccent(song.getNameSong().toLowerCase());
+            if (text.contains(s)) {
+                filteredModelList.add(song);
+            }
+        }
+        return filteredModelList;
     }
 }

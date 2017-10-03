@@ -5,7 +5,6 @@
     android:orientation="vertical"
 
     >
-
     <LinearLayout
         android:id="@+id/abc"
         android:layout_width="match_parent"
@@ -53,6 +52,7 @@
                 android:textColor="@color/colorWhite" />
 
             <SeekBar
+
                 android:id="@+id/pItmSeekbar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -167,7 +167,7 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar_overlay">
+        layout="@layout/custom_toolbar_overlay">
 
     </include>
 
@@ -181,6 +181,7 @@
         android:background="@color/colorWhite">
 
         <ListView
+            android:divider="@null"
             android:id="@+id/plistView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

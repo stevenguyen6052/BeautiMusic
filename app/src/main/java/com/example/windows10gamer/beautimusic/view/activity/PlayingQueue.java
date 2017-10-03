@@ -80,18 +80,16 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         // string check để kiểm tra xem click vào item song or back playmusicactivity
         if (getListSong != null) {
             isCheckChange = true;
-            //sendListSong = getDataAfterDragAndSwipe();
             b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) getListSong);
             b.putInt(Utils.POSITION, mPostion);
             b.putBoolean(Utils.TRUE, isCheckChange);
             b.putString(Utils.CHECK, check);
-        } else {
 
+        } else {
             isCheckChange = false;
             b.putInt(Utils.POSITION, mPostion);
             b.putBoolean(Utils.TRUE, isCheckChange);
             b.putString(Utils.CHECK, check);
-
         }
         intent.putExtras(b);
         setResult(Activity.RESULT_OK, intent);

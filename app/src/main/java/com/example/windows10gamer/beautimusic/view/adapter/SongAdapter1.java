@@ -1,14 +1,18 @@
 package com.example.windows10gamer.beautimusic.view.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
 import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
@@ -39,38 +43,28 @@ public class SongAdapter1 extends RecyclerView.Adapter<SongAdapter1.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-        Song mSong = mSongList.get(position);
+    public void onBindViewHolder(ViewHolder holder, int i) {
+        Song mSong = mSongList.get(i);
         holder.mTvNameSong.setText(mSong.getNameSong());
         holder.mTvNameArtist.setText(mSong.getNameArtist());
         Picasso.with(mContext)
-                .load(mSong.getImageSong())
+                .load(mSongList.get(i).getImageSong())
                 .placeholder(R.drawable.ic_musicqh)
                 .error(R.drawable.ic_musicqh)
                 .into(holder.mImgView);
 
-        final int i = position;
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, PlayMusicActivity.class);
-                Bundle b = new Bundle();
-                b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) mSongList);
-                b.putInt(Utils.POSITION, i);
-                intent.putExtras(b);
-                mContext.startActivity(intent);
-
-            }
-        });
         holder.setItemClickListener(new ItemClickListener() {
             @Override
-            public void onClick(View view, int position, boolean isLongClick) {
+            public void onClick(View view, int i, boolean isLongClick) {
                 if (isLongClick) {
 
                 } else {
-
-
+                    Intent intent = new Intent(mContext, PlayMusicActivity.class);
+                    Bundle b = new Bundle();
+                    b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) mSongList);
+                    b.putInt(Utils.POSITION, i);
+                    intent.putExtras(b);
+                    mContext.startActivity(intent);
                 }
             }
         });

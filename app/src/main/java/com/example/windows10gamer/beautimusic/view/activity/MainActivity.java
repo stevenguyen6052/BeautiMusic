@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
@@ -17,24 +16,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.database.SongDatabase;
-import com.example.windows10gamer.beautimusic.model.Album;
-import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
 import com.example.windows10gamer.beautimusic.view.utilities.service.MusicService;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
 
         if (playIntent == null) {
             playIntent = new Intent(this, MusicService.class);
@@ -112,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
         if (musicService.mPlayer.isPlaying()) {
 
@@ -120,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             musicService.stopForeground(true);
             doUnbindService();
         }
-
     }
 
     // update current nameSong,nameArtist of song isplaying

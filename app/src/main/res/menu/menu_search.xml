@@ -8,5 +8,10 @@
         android:icon="@drawable/ic_search_white_48dp"
         app:actionViewClass="android.support.v7.widget.SearchView"
         />
+    <item
+        android:id="@+id/itemList"
+        android:orderInCategory="100"
+        android:title="Hiên thị list or grid"
+        app:showAsAction="never" />
 
 </menu>

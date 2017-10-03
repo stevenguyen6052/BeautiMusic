@@ -7,4 +7,10 @@
         app:showAsAction="ifRoom|collapseActionView"
         android:icon="@drawable/ic_search_white_36dp"
         />
+    <item
+        android:id="@+id/itemList"
+        android:orderInCategory="100"
+        android:title="Sắp xếp"
+        app:showAsAction="never" />
+
 </menu>

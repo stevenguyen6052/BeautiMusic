@@ -3,6 +3,7 @@ package com.example.windows10gamer.beautimusic.view.fragment;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -12,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.view.adapter.ArtistAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Artist;
@@ -32,7 +32,7 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.artists_fragment, container, false);
+        view = inflater.inflate(R.layout.fragment_artist, container, false);
         setHasOptionsMenu(true);
         mArtistList = new ArrayList<>();
         mArtistList = SongDatabase.getArtistFromDevice(getContext());
@@ -67,6 +67,20 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.itemList:
+
+                boolean isSwitched = mArtistAdapter.toggleItemViewType();
+                lvArtist.setLayoutManager(isSwitched ?  new GridLayoutManager(getContext(), 2) : new LinearLayoutManager(getContext()));
+                mArtistAdapter.notifyDataSetChanged();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private List<Artist> filter(List<Artist> mArtistList, String query) {
         String s = Utils.unAccent(query.toLowerCase());
         List<Artist> filteredModelList = new ArrayList<>();

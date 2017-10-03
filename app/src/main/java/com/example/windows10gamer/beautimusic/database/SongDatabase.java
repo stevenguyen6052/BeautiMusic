@@ -34,49 +34,43 @@ public class SongDatabase extends SQLiteOpenHelper {
     private static final String CL_DUARATION = "Duaration";
     private static final String CL_ALBUM_ID = "AlbumId";
     private static final String CL_ARTIST_ID = "ArtistId";
-    private static final String CL_ALBUM_KEY = "AlbumKey";
     private static final String CREATE_TBL_SOMG = "CREATE TABLE " + TBL_SONG + "("
             + CL_ID + " TEXT PRIMARY KEY , "
             + CL_NAME_SONG + " TEXT NOT NULL, "
             + CL_NAME_ALBUM + " TEXT NOT NULL, "
             + CL_NAME_ARTIST + " TEXT NOT NULL, "
             + CL_FILE_SONG + " TEXT NOT NULL, "
-            + CL_DUARATION + " INTEGER NOT NULL, "
-            + CL_ALBUM_ID + " TEXT NOT NULL, "
-            + CL_ARTIST_ID + " TEXT NOT NULL, "
-            + CL_ALBUM_KEY + " TEXT NOT NULL, "
-            + CL_IMAGE + " INTEGER NOT NULL "
+            + CL_DUARATION + " TEXT NOT NULL, "
+            + CL_IMAGE + " TEXT NOT NULL, "
+            + CL_ALBUM_ID + " INTEGER NOT NULL, "
+            + CL_ARTIST_ID + " INTEGER NOT NULL "
             + ")";
+
 
     public SongDatabase(Context context) {
         super(context, NAME_DATABASE, null, VERSION);
     }
 
     public void addNewSong(Song mSong) {
-        Song mSong1 = new Song();
         SQLiteDatabase db = this.getWritableDatabase();
-        SQLiteDatabase db1 = this.getReadableDatabase();
-        String mSelect = "Select * from " + TBL_SONG + "";
-        Cursor mCursor = db1.rawQuery(mSelect, null);
-        if (mCursor.moveToFirst()) {
-            do {
-                mSong1.setId(mCursor.getString(0));
+        ContentValues values = new ContentValues();
 
-            } while (mCursor.moveToNext());
-        }
-        if (mSong1.getId() != mSong.getId()) {
-            ContentValues values = new ContentValues();
-            values.put(CL_ID, mSong.getId());
-            values.put(CL_NAME_SONG, mSong.getNameSong());
-            values.put(CL_NAME_ALBUM, mSong.getNameAlbum());
-            values.put(CL_NAME_ARTIST, mSong.getNameArtist());
-            values.put(CL_FILE_SONG, mSong.getFileSong());
-            values.put(CL_DUARATION, mSong.getDuaration());
-            values.put(CL_IMAGE, mSong.getImageSong());
-            db.insert(TBL_SONG, null, values);
-            db.close();
-        }
+        values.put(CL_ID, mSong.getId());
+        values.put(CL_NAME_SONG, mSong.getNameSong());
+        values.put(CL_NAME_ARTIST, mSong.getNameArtist());
+        values.put(CL_NAME_ALBUM, mSong.getNameAlbum());
+        values.put(CL_FILE_SONG, mSong.getFileSong());
+        values.put(CL_DUARATION, mSong.getDuaration());
+        values.put(CL_IMAGE, mSong.getImageSong());
+        values.put(CL_ALBUM_ID, mSong.getAlbumId());
+        values.put(CL_ARTIST_ID, mSong.getArtistId());
+        db.insert(TBL_SONG, null, values);
+        db.close();
+    }
 
+    public void deleteSong(Song mSong) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TBL_SONG, CL_ID + " = ?", new String[]{String.valueOf(mSong.getId())});
     }
 
     public List<Song> getAllSongFromAlbum(String params) {
@@ -119,7 +113,7 @@ public class SongDatabase extends SQLiteOpenHelper {
             String albumName = mCursor.getString(1);
             String artist = mCursor.getString(2);
             String image = ContentUris.withAppendedId(ART_CONTENT_URI, id).toString();
-            Album album = new Album(id, albumName, artist,image);
+            Album album = new Album(id, albumName, artist, image);
             albumList.add(album);
         }
         mCursor.close();
@@ -144,7 +138,7 @@ public class SongDatabase extends SQLiteOpenHelper {
         c.moveToFirst();
         while (c.moveToNext()) {
             String name, album, artist, path, id, duration;
-            int albumId,artistId;
+            int albumId, artistId;
 
             id = c.getString(0);
             name = c.getString(1);
@@ -156,13 +150,14 @@ public class SongDatabase extends SQLiteOpenHelper {
             artistId = c.getInt(7);
             String image = ContentUris.withAppendedId(ART_CONTENT_URI, albumId).toString();
 
-            Song song = new Song(id, name, artist, album, path, duration,image,albumId,artistId);
+            Song song = new Song(id, name, artist, album, path, duration, image, albumId, artistId);
             mListSong.add(song);
         }
         //Utils.sortCollection(mListSong);
         c.close();
         return mListSong;
     }
+
     public static ArrayList<Song> getAlbumSongs(int albumId, Context context) {
         Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
         ArrayList<Song> mSongList = new ArrayList<Song>();
@@ -185,7 +180,7 @@ public class SongDatabase extends SQLiteOpenHelper {
         if (mCursor != null && mCursor.moveToFirst()) {
             do {
                 String name, album, artist, path, id, duration;
-                int albumid,artistId;
+                int albumid, artistId;
 
                 id = mCursor.getString(0);
                 name = mCursor.getString(1);
@@ -197,14 +192,15 @@ public class SongDatabase extends SQLiteOpenHelper {
                 artistId = mCursor.getInt(7);
                 String image = ContentUris.withAppendedId(ART_CONTENT_URI, albumId).toString();
 
-                Song song = new Song(id, name, artist, album, path, duration,image,albumid,artistId);
+                Song song = new Song(id, name, artist, album, path, duration, image, albumid, artistId);
                 mSongList.add(song);
             } while (mCursor.moveToNext());
         }
 
         return mSongList;
     }
-    public static List<Song> getArtistSong(int artistId,Context context){
+
+    public static List<Song> getArtistSong(int artistId, Context context) {
         Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
         ArrayList<Song> mSongList = new ArrayList<Song>();
         Cursor mCursor;
@@ -222,12 +218,12 @@ public class SongDatabase extends SQLiteOpenHelper {
                         MediaStore.Audio.Media.DATA,
                         MediaStore.Audio.Media.ALBUM_ID,
                         MediaStore.Audio.Media.ARTIST_ID,
-        },
+                },
                 selection.toString(), null, android.provider.MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         if (mCursor != null && mCursor.moveToFirst()) {
             do {
                 String name, album, artist, path, id, duration;
-                int albumid,artistId1;
+                int albumid, artistId1;
 
                 id = mCursor.getString(0);
                 name = mCursor.getString(1);
@@ -239,7 +235,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                 artistId1 = mCursor.getInt(7);
                 String image = ContentUris.withAppendedId(ART_CONTENT_URI, albumid).toString();
 
-                Song song = new Song(id, name, artist, album, path, duration,image,albumid,artistId1);
+                Song song = new Song(id, name, artist, album, path, duration, image, albumid, artistId1);
                 mSongList.add(song);
             } while (mCursor.moveToNext());
         }
@@ -332,8 +328,8 @@ public class SongDatabase extends SQLiteOpenHelper {
     }
 
     public List<Song> getAllListSong() {
-        List<Song> mListSong = new ArrayList<>();
-        String mSelect = "Select * from " + TBL_SONG + "";
+        List<Song> mSongList = new ArrayList<>();
+        String mSelect = "SELECT * FROM " + TBL_SONG;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor mCursor = db.rawQuery(mSelect, null);
         if (mCursor.moveToFirst()) {
@@ -341,18 +337,20 @@ public class SongDatabase extends SQLiteOpenHelper {
                 Song mSong = new Song();
                 mSong.setId(mCursor.getString(0));
                 mSong.setNameSong(mCursor.getString(1));
-                mSong.setNameAlbum(mCursor.getString(2));
-                mSong.setNameArtist(mCursor.getString(3));
+                mSong.setNameArtist(mCursor.getString(2));
+                mSong.setNameAlbum(mCursor.getString(3));
                 mSong.setFileSong(mCursor.getString(4));
                 mSong.setDuaration(mCursor.getString(5));
                 mSong.setImageSong(mCursor.getString(6));
-                mListSong.add(mSong);
+                mSong.setAlbumId(mCursor.getInt(7));
+                mSong.setArtistId(mCursor.getInt(8));
+                mSongList.add(mSong);
             } while (mCursor.moveToNext());
         }
-        Utils.sortCollection(mListSong);
+        Utils.sortCollection(mSongList);
         mCursor.close();
         db.close();
-        return mListSong;
+        return mSongList;
     }
 
     @Override

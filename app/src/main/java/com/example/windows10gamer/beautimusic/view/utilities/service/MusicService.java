@@ -303,6 +303,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         } else repeat = true;
         return true;
     }
+    public boolean getRepeat(){
+        return repeat;
+    }
+    public boolean getShuffle(){
+        return shuffle;
+    }
 
     @Override
     public void onDestroy() {

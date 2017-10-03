@@ -50,7 +50,7 @@ public class SongAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View v, ViewGroup parent) {
+    public View getView(int i, View v, ViewGroup parent) {
         ViewHolder viewHolder;
         if (v == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -63,9 +63,18 @@ public class SongAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) v.getTag();
         }
-        Song song = mSongList.get(position);
-        viewHolder.tvNameSong.setText(song.getNameSong());
-        viewHolder.tvNameArtist.setText(song.getNameArtist());
+        Song song = mSongList.get(i);
+        if (mSongList.get(i).getNameSong().length() > 40) {
+            viewHolder.tvNameSong.setText(mSongList.get(i).getNameSong().substring(0, 37) + "...");
+        } else {
+            viewHolder.tvNameSong.setText(mSongList.get(i).getNameSong());
+        }
+
+        if (mSongList.get(i).getNameArtist().length() > 40) {
+            viewHolder.tvNameArtist.setText(mSongList.get(i).getNameArtist().substring(0, 37) + "...");
+        } else {
+            viewHolder.tvNameArtist.setText(mSongList.get(i).getNameArtist());
+        }
         Picasso.with(mContext)
                 .load(song.getImageSong())
                 .placeholder(R.drawable.ic_musicqh)
@@ -74,37 +83,11 @@ public class SongAdapter extends BaseAdapter {
         return v;
     }
 
-    public void filter(String charText) {
-        charText = charText.toLowerCase(Locale.getDefault());
-        mSongList.clear();
-        if (charText.length() == 0) {
-            mSongList.addAll(mSongListChange);
-            MainActivity.musicService.mSongList = mSongList;
-            //MainActivity.musicService.mPosition = 0;
-        } else {
-
-            for (Song song : mSongListChange) {
-                if (charText.length() != 0 && song.getNameSong().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    mSongList.add(song);
-                } else if (charText.length() != 0 && song.getNameAlbum().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    mSongList.add(song);
-                } else if (charText.length() != 0 && song.getNameArtist().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    mSongList.add(song);
-                }
-            }
-            //MainActivity.musicService.mPlayer.get
-            MainActivity.musicService.mSongList = mSongList;
-
-            MainActivity.musicService.mPosition = 0;
-        }
-    }
-
     public void setFilter(List<Song> mData) {
-
         mSongList = new ArrayList<>();
         mSongList.addAll(mData);
-
         notifyDataSetChanged();
+
     }
 
     private class ViewHolder {

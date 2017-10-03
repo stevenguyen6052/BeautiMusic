@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="180dp"
+    android:layout_height="230dp"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+
+    <ImageView
+        android:id="@+id/alImgViewAlbum"
+        android:layout_width="180dp"
+        android:layout_height="170dp"
+        android:src="@drawable/ic_empty_music" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/alImgViewAlbum"
+        android:background="#3b000000"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/alTvNameAlbum"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:text="Name Album"
+            android:textColor="@color/colorWhite" />
+
+        <TextView
+            android:id="@+id/alTvNameArtist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/alTvNameAlbum"
+            android:maxLines="1"
+            android:paddingLeft="8dp"
+            android:text="Name Artist"
+            android:textColor="@color/colorWhite" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
+
+

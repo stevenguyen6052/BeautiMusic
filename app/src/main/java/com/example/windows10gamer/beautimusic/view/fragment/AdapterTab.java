@@ -17,18 +17,21 @@ public class AdapterTab extends FragmentStatePagerAdapter {
     private static final String SONG = "Songs";
     private static final String ALBUM = "Albums";
     private static final String ARTIST = "Artists";
+    private static final String PLAYLIST = "Play list";
 
-    private String mListTab[] = {SONG, ALBUM, ARTIST};
+    private String mListTab[] = {SONG, ALBUM, ARTIST,PLAYLIST};
 
     private SongFragment mSongFragment;
     private AlbumFragment mAlbumFragment;
     private ArtistFragment mArtistFragment;
+    private PlayListFragment mPlayListFragment;
 
     public AdapterTab(FragmentManager fm) {
         super(fm);
         mSongFragment = new SongFragment();
         mAlbumFragment = new AlbumFragment();
         mArtistFragment = new ArtistFragment();
+        mPlayListFragment = new PlayListFragment();
 
     }
 
@@ -43,7 +46,11 @@ public class AdapterTab extends FragmentStatePagerAdapter {
 
         } else if (position == 2) {
             return mArtistFragment;
-        } else {
+        }else if (position == 3) {
+
+            return mPlayListFragment;
+        }
+        else {
         }
         return null;
     }
@@ -62,6 +69,8 @@ public class AdapterTab extends FragmentStatePagerAdapter {
                 return ALBUM;
             case 2:
                 return ARTIST;
+            case 3:
+                return PLAYLIST;
         }
         return null;
     }

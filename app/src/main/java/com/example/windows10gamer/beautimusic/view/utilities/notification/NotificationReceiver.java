@@ -64,7 +64,6 @@ public class NotificationReceiver extends BroadcastReceiver {
             }
 
         } else if (intent.getAction().equals(NOTIFY_PREVIOUS)) {
-
             MainActivity.musicService.playPrev();
             if (MainActivity.musicService.isPlaying()) {
 
@@ -77,6 +76,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                 }
             }
 
+        }else {
+            Toast.makeText(context,"Tai nghe đã được cắm!",Toast.LENGTH_LONG).show();
         }
 
     }

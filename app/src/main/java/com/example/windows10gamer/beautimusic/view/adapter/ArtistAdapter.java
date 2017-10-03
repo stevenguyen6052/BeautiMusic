@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
@@ -23,6 +22,10 @@ import java.util.List;
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
     private static final String NAME_ARTIST = "Name Artist";
 
+    private static final int LIST_ITEM = 0;
+    private static final int GRID_ITEM = 1;
+    boolean isSwitchView = true;
+
     private List<Artist> mArtistList;
     private Context mContext;
 
@@ -31,12 +34,20 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         this.mContext = mContext;
     }
 
+    public boolean toggleItemViewType() {
+        isSwitchView = !isSwitchView;
+        return isSwitchView;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        itemView = inflater.inflate(R.layout.item_artist, parent, false);
 
+        if (viewType == LIST_ITEM) {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_artist_list, null);
+        } else {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_artist_grid, null);
+        }
         return new ViewHolder(itemView);
     }
 
@@ -65,6 +76,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
             }
         });
     }
+
     public void setFilter(List<Artist> mData) {
 
         mArtistList = new ArrayList<>();
@@ -76,6 +88,15 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return mArtistList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isSwitchView) {
+            return GRID_ITEM;
+        } else {
+            return LIST_ITEM;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
