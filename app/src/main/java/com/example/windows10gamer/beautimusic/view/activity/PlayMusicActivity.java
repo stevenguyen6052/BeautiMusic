@@ -1,59 +1,57 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.view.adapter.RecyclerItemClickListener;
+import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
-import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener {
-    String nameSong, nameSingle;
-    // request result list after queue
-    private final static int REQUEST_LIST = 1;
-    public static TextView mTvNameSong, mTvNameSinger, mTvTime, mTvSumTime;
+public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     public static ImageView mImgPlayPause;
+    private final static int REQUEST_LIST = 1;
+    private TextView mTvNameSong, mTvNameSinger, mTvTime, mTvSumTime;
     private ImageView mImgBackground, mImgNext, mImgPrevious, mShffle, mReppeat;
     private SeekBar mSeekbar;
-    public SongAdapter mSongAdapter;
-    private ListView mListView;
     private int mPosition;
     private List<Song> mSongList;
     private List<Song> songList, filteredModelList;
-    SimpleDateFormat mSimPleDateFormat = new SimpleDateFormat("mm:ss");
-    Bundle bundle;
-    SearchView searchView;
-
-    //activity and playback pause flags
-    private boolean paused = false, playbackPaused = false;
+    private SimpleDateFormat mSimPleDateFormat = new SimpleDateFormat("mm:ss");
+    private Bundle bundle;
+    private SearchView searchView;
+    private String check, name = "";
+    private Boolean isCheck;
+    private RecyclerView lvSongs;
+    private SongAdapter songAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,100 +65,88 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         initView();
-        addEvents();
         getData();
-        mSongAdapter = new SongAdapter(this, mSongList, R.layout.item_song);
-        mListView.setAdapter(mSongAdapter);
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (filteredModelList != null && filteredModelList.size() != 0) {
-                    MainActivity.musicService.mSongList = filteredModelList;
-                }
-                MainActivity.musicService.mPosition = position;
-                playMusic();
-            }
-        });
+        lvSongs.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        lvSongs.setLayoutManager(linearLayoutManager);
+        songAdapter = new SongAdapter(mSongList, this);
+        lvSongs.setAdapter(songAdapter);
 
-        mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                //MainActivity.musicService.seek((int) mSeekbar1.getProgress());
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                //MainActivity.musicService.seek((int) mSeekbar.getProgress());
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                MainActivity.musicService.seek((int) mSeekbar.getProgress());
-            }
-        });
+        addItemClick();
         loadStatusShuffleRepeat();
     }
 
-    //getdata from fragment song,album,artist
+    private void addItemClick() {
+        lvSongs.addOnItemTouchListener(new RecyclerItemClickListener(this, lvSongs,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int i) {
+                        if (filteredModelList != null && filteredModelList.size() != 0) {
+                            HomeActivity.musicService.setSongList(filteredModelList);
+                        }
+                        HomeActivity.musicService.setIndexPlay(i);
+                        playMusic();
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, final int i) {
+
+                    }
+                }));
+    }
+
     private void getData() {
         bundle = getIntent().getExtras();
         if (bundle != null) {
             mSongList = bundle.getParcelableArrayList(Utils.LIST_SONG);
             mPosition = bundle.getInt(Utils.POSITION);
-            MainActivity.musicService.mSongList = mSongList;
-            MainActivity.musicService.mPosition = mPosition;
+            HomeActivity.musicService.setSongList(mSongList);
+            HomeActivity.musicService.setIndexPlay(mPosition);
             playMusic();
         } else {
-            if (MainActivity.musicService.mPlayer != null) {
+            if (HomeActivity.musicService.mPlayer != null) {
                 setDataForView();
-                mSongList = MainActivity.musicService.mSongList;
+                mSongList = HomeActivity.musicService.getSongList();
             }
         }
     }
 
     private void setDataForView() {
-        if (MainActivity.musicService.isPlaying()) {
+        if (HomeActivity.musicService.isPlaying()) {
             mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-            mTvNameSong.setText(MainActivity.musicService.nameSong());
-            mTvNameSinger.setText(MainActivity.musicService.nameArtist());
-            mSeekbar.setMax(MainActivity.musicService.getDuaration());
-            mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
+            mTvNameSong.setText(HomeActivity.musicService.nameSong());
+            mTvNameSinger.setText(HomeActivity.musicService.nameArtist());
+            mSeekbar.setMax(HomeActivity.musicService.getDuaration());
+            mTvSumTime.setText(mSimPleDateFormat.format(HomeActivity.musicService.getDuaration()) + "");
             setImageSong();
             updateTimeSong();
         } else {
             mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-            mTvNameSong.setText(MainActivity.musicService.nameSong());
-            mTvNameSinger.setText(MainActivity.musicService.nameArtist());
-            mSeekbar.setMax(MainActivity.musicService.getDuaration());
-            mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
+            mTvNameSong.setText(HomeActivity.musicService.nameSong());
+            mTvNameSinger.setText(HomeActivity.musicService.nameArtist());
+            mSeekbar.setMax(HomeActivity.musicService.getDuaration());
+            mTvSumTime.setText(mSimPleDateFormat.format(HomeActivity.musicService.getDuaration()) + "");
             setImageSong();
         }
     }
 
     private void playMusic() {
-        mTvNameSong.setText(MainActivity.musicService.nameSong());
-        mTvNameSinger.setText(MainActivity.musicService.nameArtist());
-        mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
+        mTvNameSong.setText(HomeActivity.musicService.nameSong());
+        mTvNameSinger.setText(HomeActivity.musicService.nameArtist());
+        mTvSumTime.setText(mSimPleDateFormat.format(HomeActivity.musicService.getDuaration()) + "");
         mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-        mSeekbar.setMax(MainActivity.musicService.getDuaration());
+        mSeekbar.setMax(HomeActivity.musicService.getDuaration());
         setImageSong();
         updateTimeSong();
-        MainActivity.musicService.playSong();
-    }
-
-    private void addEvents() {
-        mImgNext.setOnClickListener(this);
-        mImgPrevious.setOnClickListener(this);
-        mImgPlayPause.setOnClickListener(this);
-        mShffle.setOnClickListener(this);
-        mReppeat.setOnClickListener(this);
+        HomeActivity.musicService.playSong();
     }
 
     private void initView() {
         mSongList = new ArrayList<>();
         mSeekbar = (SeekBar) findViewById(R.id.pItmSeekbar);
-        mListView = (ListView) findViewById(R.id.plistView);
+        mSeekbar.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        mSeekbar.getThumb().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
         mTvNameSong = (TextView) findViewById(R.id.itmNameSong);
         mTvNameSinger = (TextView) findViewById(R.id.itmNameSingle);
         mTvTime = (TextView) findViewById(R.id.pTvTime);
@@ -171,34 +157,42 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         mShffle = (ImageView) findViewById(R.id.pShuffle);
         mReppeat = (ImageView) findViewById(R.id.pRepeat);
         mImgBackground = (ImageView) findViewById(R.id.imgSong);
+        lvSongs = (RecyclerView) findViewById(R.id.plistView);
+
+        mImgNext.setOnClickListener(this);
+        mImgPrevious.setOnClickListener(this);
+        mImgPlayPause.setOnClickListener(this);
+        mShffle.setOnClickListener(this);
+        mReppeat.setOnClickListener(this);
+        mSeekbar.setOnSeekBarChangeListener(this);
     }
 
     private void nextSong() {
-        MainActivity.musicService.playNext();
+        HomeActivity.musicService.playNext();
         setImageSong();
-        mTvNameSong.setText(MainActivity.musicService.nameSong());
-        mTvNameSinger.setText(MainActivity.musicService.nameArtist());
-        mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
+        mTvNameSong.setText(HomeActivity.musicService.nameSong());
+        mTvNameSinger.setText(HomeActivity.musicService.nameArtist());
+        mTvSumTime.setText(mSimPleDateFormat.format(HomeActivity.musicService.getDuaration()) + "");
 
     }
 
     private void previousSong() {
-        MainActivity.musicService.playPrev();
+        HomeActivity.musicService.playPrev();
         setImageSong();
-        mTvNameSong.setText(MainActivity.musicService.nameSong());
-        mTvNameSinger.setText(MainActivity.musicService.nameArtist());
-        mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
+        mTvNameSong.setText(HomeActivity.musicService.nameSong());
+        mTvNameSinger.setText(HomeActivity.musicService.nameArtist());
+        mTvSumTime.setText(mSimPleDateFormat.format(HomeActivity.musicService.getDuaration()) + "");
     }
 
     private void doPlayPause() {
-        if (MainActivity.musicService.isPlaying()) {
-            MainActivity.musicService.pausePlayer();
+        if (HomeActivity.musicService.isPlaying()) {
+            HomeActivity.musicService.pausePlayer();
             mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-            MainActivity.musicService.updateRemoteview();
+            HomeActivity.musicService.updateRemoteview();
         } else {
-            MainActivity.musicService.startPlayer();
+            HomeActivity.musicService.startPlayer();
             mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-            MainActivity.musicService.updateRemoteview();
+            HomeActivity.musicService.updateRemoteview();
         }
     }
 
@@ -208,34 +202,34 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mTvTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getCurrentPosition()) + "");
-                mSeekbar.setProgress(MainActivity.musicService.getCurrentPosition());
+                mTvTime.setText(mSimPleDateFormat.format(HomeActivity.musicService.getCurrentPosition()));
+                mSeekbar.setProgress(HomeActivity.musicService.getCurrentPosition());
                 mHandler.postDelayed(this, 500);
-                MainActivity.musicService.setOnComplete();
-                mTvNameSong.setText(MainActivity.musicService.nameSong());
-                mTvNameSinger.setText(MainActivity.musicService.nameArtist());
-                mTvSumTime.setText(mSimPleDateFormat.format(MainActivity.musicService.getDuaration()) + "");
+                HomeActivity.musicService.setOnComplete();
+                mTvNameSong.setText(HomeActivity.musicService.nameSong());
+                mTvNameSinger.setText(HomeActivity.musicService.nameArtist());
+                mTvSumTime.setText(mSimPleDateFormat.format(HomeActivity.musicService.getDuaration()));
                 setImageSong();
             }
         }, 100);
     }
 
     private void doShuffle() {
-        if (MainActivity.musicService.setShuffle() == true)
+        if (HomeActivity.musicService.isShuffle())
             mShffle.setImageResource(R.drawable.ic_shuffle_black_48dp);
         else mShffle.setImageResource(R.drawable.ic_shuffle_white_48dp);
 
     }
 
     private void doRepeat() {
-        if (MainActivity.musicService.setRepeat() == true)
+        if (HomeActivity.musicService.isRepeat())
             mReppeat.setImageResource(R.drawable.ic_repeat_black_48dp);
         else mReppeat.setImageResource(R.drawable.ic_repeat_white_48dp);
     }
 
     private void doQueue() {
         Intent intent = new Intent(this, PlayingQueue.class);
-        if (filteredModelList!=null && filteredModelList.size() != 0) {
+        if (filteredModelList != null && filteredModelList.size() != 0) {
             intent.putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) filteredModelList);
         } else {
             intent.putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) mSongList);
@@ -243,68 +237,65 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         startActivityForResult(intent, REQUEST_LIST);
     }
 
-    // trả kq về sau từ màn hình sắp xếp nhạc
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        Log.d("Main", "Activity for result!");
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_LIST) {
             if (resultCode == RESULT_OK) {
-                String name = "";
-                name = MainActivity.musicService.nameSong();
-                boolean isCheck = intent.getBooleanExtra(Utils.TRUE, false);
-                String check = intent.getExtras().getString(Utils.CHECK);
-                // update khi ấn onclick item từ màn hình playingqueue
-                // check = true thi cho nhac tai vi tri click else update view
+                name = HomeActivity.musicService.nameSong();
+                isCheck = intent.getBooleanExtra(Utils.TRUE, false);
+                check = intent.getExtras().getString(Utils.CHECK);
                 if (isCheck) {
-                    //get data khi click item song
+                    //check.euqual("click") thì chơi nhạc tại postion
                     if (check.equals(Utils.ITEM_CLICK)) {
                         //th sắp xếp list bài hát đang search
-                        if (filteredModelList.size() != 0) {
+                        if (filteredModelList != null && filteredModelList.size() != 0) {
                             int postion = intent.getIntExtra(Utils.POSITION, 0);
                             songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
                             filteredModelList.clear();
                             filteredModelList.addAll(songList);
-                            mSongAdapter.setFilter(filteredModelList);
-                            MainActivity.musicService.mPosition = postion;
+                            songAdapter.setFilter(filteredModelList);
+                            HomeActivity.musicService.setSongList(filteredModelList);
+                            HomeActivity.musicService.setIndexPlay(postion);
                             playMusic();
                         } else {
+                            // th  sắp xếp list nhạc màn hình playmusic
                             int postion = intent.getIntExtra(Utils.POSITION, 0);
                             songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
                             mSongList.clear();
                             mSongList.addAll(songList);
-                            mSongAdapter.notifyDataSetChanged();
-                            MainActivity.musicService.mPosition = postion;
+                            songAdapter.notifyDataSetChanged();
+                            HomeActivity.musicService.setIndexPlay(postion);
                             playMusic();
                         }
 
+                        // if check.equals("")-> trường hợp ấn back or ấn vào màn mini control
                     } else if (check.equals("")) {
-                        //get data sau khi sắp xếp nhạc và ấn back
-                        if (filteredModelList!=null && filteredModelList.size() != 0) {
+
+                        if (filteredModelList != null && filteredModelList.size() != 0) {
                             songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
                             filteredModelList.clear();
                             filteredModelList.addAll(songList);
-                            mSongAdapter.setFilter(filteredModelList);
+                            songAdapter.setFilter(filteredModelList);
                             for (int i = 0; i < filteredModelList.size(); i++) {
                                 if (name.equals(filteredModelList.get(i).getNameSong()))
-                                    MainActivity.musicService.mPosition = i;
+                                    HomeActivity.musicService.setIndexPlay(i);
                             }
                         } else {
                             songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
                             mSongList.clear();
                             mSongList.addAll(songList);
-                            mSongAdapter.notifyDataSetChanged();
+                            songAdapter.notifyDataSetChanged();
                             for (int i = 0; i < mSongList.size(); i++) {
                                 if (name.equals(mSongList.get(i).getNameSong()))
-                                    MainActivity.musicService.mPosition = i;
+                                    HomeActivity.musicService.setIndexPlay(i);
                             }
                         }
                     }
                 } else {
-                    //khi không sắp xếp
                     if (check.equals(Utils.ITEM_CLICK)) {
-                        int postion = intent.getIntExtra(Utils.POSITION, 0);
-                        MainActivity.musicService.mPosition = postion;
+                        int i = intent.getIntExtra(Utils.POSITION, 0);
+                        HomeActivity.musicService.setIndexPlay(i);
                         playMusic();
                     }
                 }
@@ -315,7 +306,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     // set image song
     private void setImageSong() {
         Picasso.with(this)
-                .load(MainActivity.musicService.getImageSong())
+                .load(HomeActivity.musicService.getImageSong())
                 .placeholder(R.drawable.ic_empty_music)
                 .error(R.drawable.ic_empty_music)
                 .into(mImgBackground);
@@ -347,8 +338,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_item, menu);
         MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-        nameSong = MainActivity.musicService.nameSong();
-        nameSingle = MainActivity.musicService.nameArtist();
         searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
 
         return true;
@@ -370,14 +359,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
-
                         filteredModelList = Utils.filter(mSongList, newText.trim());
-                        mSongAdapter.setFilter(filteredModelList);
-
+                        songAdapter.setFilter(filteredModelList);
                         return true;
                     }
                 });
-
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -395,8 +381,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         //save status shuffle or repeat
         SharedPreferences sharedPreferences = getSharedPreferences("ShuffleRepeat", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("ShuffleOn", MainActivity.musicService.getShuffle());
-        editor.putBoolean("RepeatOn", MainActivity.musicService.getRepeat());
+        editor.putBoolean("ShuffleOn", HomeActivity.musicService.getShuffle());
+        editor.putBoolean("RepeatOn", HomeActivity.musicService.getRepeat());
         editor.apply();
     }
 
@@ -406,12 +392,27 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         if (sharedPreferences != null) {
             shuffle = sharedPreferences.getBoolean("ShuffleOn", false);
             repeat = sharedPreferences.getBoolean("RepeatOn", false);
-            if (shuffle == true) {
+            if (shuffle) {
                 mShffle.setImageResource(R.drawable.ic_shuffle_black_48dp);
             }
-            if (repeat == true) {
+            if (repeat) {
                 mReppeat.setImageResource(R.drawable.ic_repeat_black_48dp);
             }
         }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        HomeActivity.musicService.seek((int) mSeekbar.getProgress());
     }
 }

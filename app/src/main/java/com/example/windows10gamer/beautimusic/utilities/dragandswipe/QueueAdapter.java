@@ -1,10 +1,6 @@
-package com.example.windows10gamer.beautimusic.view.utilities.dragandswipe;
+package com.example.windows10gamer.beautimusic.utilities.dragandswipe;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,10 +14,9 @@ import com.example.windows10gamer.beautimusic.R;
 
 
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
+import com.example.windows10gamer.beautimusic.utilities.ItemClickListener;
 import com.example.windows10gamer.beautimusic.view.activity.PlayingQueue;
-import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
-import com.example.windows10gamer.beautimusic.view.utilities.Utils;
+import com.example.windows10gamer.beautimusic.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;

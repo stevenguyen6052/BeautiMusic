@@ -1,7 +1,11 @@
-package com.example.windows10gamer.beautimusic.view.utilities;
+package com.example.windows10gamer.beautimusic.utilities;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Point;
+import android.view.Display;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 
@@ -36,8 +40,13 @@ public class Utils {
     public static final String EMPTY = "EMPTY";
     public static final String TRUE = "True";
     public static final String ITEM_CLICK = "Click";
+    public static final String HDPI = "hdpi";
+    public static final String XHDPI = "xhdpi";
+    public static final String XXHDPI = "xxhdpi";
+    public static final String XXXHDPI = "xxxhdpi";
+    public static final String SHUFFLE_REPEAT = "ShuffleRepeat";
 
-    public static void sortCollection(List<Song> mSongList){
+    public static void sortCollection(List<Song> mSongList) {
         Collections.sort(mSongList, new Comparator<Song>() {
             @Override
             public int compare(Song o1, Song o2) {
@@ -45,7 +54,8 @@ public class Utils {
             }
         });
     }
-    public static void sortCollectionAlbum(List<Album> mSongAlbum){
+
+    public static void sortCollectionAlbum(List<Album> mSongAlbum) {
         Collections.sort(mSongAlbum, new Comparator<Album>() {
             @Override
             public int compare(Album o1, Album o2) {
@@ -53,7 +63,8 @@ public class Utils {
             }
         });
     }
-    public static void sortCollectionArtist(List<Artist> mArtist){
+
+    public static void sortCollectionArtist(List<Artist> mArtist) {
         Collections.sort(mArtist, new Comparator<Artist>() {
             @Override
             public int compare(Artist o1, Artist o2) {
@@ -79,13 +90,14 @@ public class Utils {
         bm.recycle();
         return resizedBitmap;
     }
+
     public static String unAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(temp).replaceAll("").replaceAll("Đ", "D").replaceAll("đ", "d");
     }
 
-    public static void setAnimitionTextView(){
+    public static void setAnimitionTextView() {
         Animation animationToLeft = new TranslateAnimation(400, -400, 0, 0);
         animationToLeft.setDuration(12000);
         animationToLeft.setRepeatMode(Animation.RESTART);
@@ -96,6 +108,7 @@ public class Utils {
         animationToRight.setRepeatMode(Animation.RESTART);
         animationToRight.setRepeatCount(Animation.INFINITE);
     }
+
     public static List<Song> filter(List<Song> mlistSong, String query) {
         String s = Utils.unAccent(query.toLowerCase());
         List<Song> filteredModelList = new ArrayList<>();
@@ -107,5 +120,53 @@ public class Utils {
             }
         }
         return filteredModelList;
+    }
+
+    public static List<Album> filterAlbum(List<Album> mAlbumList, String query) {
+        String s = Utils.unAccent(query.toLowerCase());
+        List<Album> filteredModelList = new ArrayList<>();
+
+        for (Album album : mAlbumList) {
+            String text = Utils.unAccent(album.getNameAlbum().toLowerCase());
+            if (text.contains(s)) {
+                filteredModelList.add(album);
+            }
+        }
+        return filteredModelList;
+    }
+
+    public static List<Artist> filterArtist(List<Artist> mArtistList, String query) {
+        String s = Utils.unAccent(query.toLowerCase());
+        List<Artist> filteredModelList = new ArrayList<>();
+
+        for (Artist artist : mArtistList) {
+            String text = Utils.unAccent(artist.getNameArtist().toLowerCase());
+            if (text.contains(s)) {
+                filteredModelList.add(artist);
+            }
+        }
+        return filteredModelList;
+    }
+
+    public static String getCurrentScreen(Context context) {
+        String checkScreen = "";
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        if (width == 480  || width == 540 ) {
+            checkScreen = HDPI;
+        } else if (width == 720 || width == 768 ) {
+            checkScreen = XHDPI;
+        } else if (width == 1080 ) {
+            checkScreen = XXHDPI;
+        } else if (width == 1440 ) {
+            checkScreen = XXXHDPI;
+        }
+        return checkScreen;
+
     }
 }

@@ -1,4 +1,4 @@
-package com.example.windows10gamer.beautimusic.view.utilities.dragandswipe;
+package com.example.windows10gamer.beautimusic.utilities.dragandswipe;
 
 import android.graphics.Canvas;
 import android.support.v7.widget.GridLayoutManager;

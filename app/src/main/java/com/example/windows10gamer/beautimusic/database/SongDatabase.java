@@ -12,8 +12,9 @@ import android.provider.MediaStore;
 
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.model.Artist;
+import com.example.windows10gamer.beautimusic.model.Playlist;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.utilities.Utils;
+import com.example.windows10gamer.beautimusic.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,11 @@ public class SongDatabase extends SQLiteOpenHelper {
     private static final int VERSION = 1;
 
     private static final String TBL_SONG = "DetailSong";
+    private static final String TBL_PLAYLIST = "Playlist";
+
+    private static final String PL_ID="Id";
+    private static final String PL_LIST="ListIdSong";
+    private static final String PL_NAME_LIST="NameList";
 
     private static final String CL_ID = "Id";
     private static final String CL_NAME_SONG = "Namesong";
@@ -45,10 +51,41 @@ public class SongDatabase extends SQLiteOpenHelper {
             + CL_ALBUM_ID + " INTEGER NOT NULL, "
             + CL_ARTIST_ID + " INTEGER NOT NULL "
             + ")";
+    private static final String CREATE_TBL_PLAYLIST = "CREATE TABLE " + TBL_PLAYLIST + "("
+            + PL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT , "
+            + PL_LIST + " TEXT , "
+            + PL_NAME_LIST + " TEXT "
+            + ")";
 
 
     public SongDatabase(Context context) {
         super(context, NAME_DATABASE, null, VERSION);
+    }
+    public void addPlayList(Playlist playList){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(PL_ID, playList.getIdPlaylist());
+        values.put(PL_LIST, playList.getListIdSong());
+        values.put(PL_NAME_LIST, playList.getName());
+
+        db.insert(TBL_PLAYLIST, null, values);
+        db.close();
+    }
+    public List<Playlist> getPlaylist(){
+        List<Playlist> playlists = new ArrayList<>();
+        String mSelect = "SELECT * FROM " + TBL_PLAYLIST;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor mCursor = db.rawQuery(mSelect, null);
+        if (mCursor.moveToFirst()) {
+            do {
+                playlists.add(new Playlist(mCursor.getInt(0),mCursor.getString(1),mCursor.getString(2)));
+
+            } while (mCursor.moveToNext());
+        }
+        mCursor.close();
+        db.close();
+        return playlists;
     }
 
     public void addNewSong(Song mSong) {
@@ -106,6 +143,7 @@ public class SongDatabase extends SQLiteOpenHelper {
                         BaseColumns._ID,
                         MediaStore.Audio.AlbumColumns.ALBUM,
                         MediaStore.Audio.AlbumColumns.ARTIST,
+
                 }, null, null, android.provider.MediaStore.Audio.Albums.DEFAULT_SORT_ORDER);
         mCursor.moveToFirst();
         while (mCursor.moveToNext()) {
@@ -356,6 +394,7 @@ public class SongDatabase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TBL_SOMG);
+        db.execSQL(CREATE_TBL_PLAYLIST);
     }
 
     @Override

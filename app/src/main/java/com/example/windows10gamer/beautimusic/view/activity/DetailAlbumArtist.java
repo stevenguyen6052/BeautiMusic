@@ -5,39 +5,44 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.utilities.Utils;
+import com.example.windows10gamer.beautimusic.utilities.Utils;
+import com.example.windows10gamer.beautimusic.view.adapter.RecyclerItemClickListener;
+import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class DetailAlbumArtist extends AppCompatActivity implements View.OnClickListener {
-    private SongAdapter mSongAdapter;
-    private ListView mListView;
     private View mLayout;
     private ImageView imgAlbum;
+    private CircleImageView imgSong;
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView mTvNameSong, mTvNameArtist;
     public static ImageView mControlPlayPause;
     public View mLayoutControl;
-    private List<Song> mSongList,list;
+    private List<Song> mSongList;
     private String nameAlbumArtist, tag;
     private int idAlbumArtist;
-    private SongDatabase s = new SongDatabase(this) ;
+    private RecyclerView lvSongs;
+    private SongAdapter songAdapter;
+    private LinearLayoutManager linearLayoutManager;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,11 +57,7 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
         collapsingToolbarLayout.setTitle(nameAlbumArtist);
         initView();
-        onItemClick();
-        setImageSong();
-        list = new ArrayList<>();
-        list.addAll(s.getAllListSong());
-        Log.d("Main", String.valueOf(list.size()));
+        setImageAlbum();
 
     }
 
@@ -66,7 +67,8 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
 
         checkPlayMusic();
 
-        if (MainActivity.musicService.mPlayer != null) {
+        if (HomeActivity.musicService.mPlayer != null) {
+            changeLayout();
             miniControlPlayMusic();
 
         } else {
@@ -76,26 +78,27 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
 
     // update name song,name artist for mini control play music
     private void miniControlPlayMusic() {
-        if (MainActivity.musicService.mSongList != null) {
+        if (HomeActivity.musicService.getSongList() != null) {
 
-            if (MainActivity.musicService.mPlayer.isPlaying()) {
-                mTvNameSong.setText(MainActivity.musicService.nameSong());
-                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
+            if (HomeActivity.musicService.isPlaying()) {
                 mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                currentSongPlaying();
-
             } else {
-                mTvNameSong.setText(MainActivity.musicService.nameSong());
-                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
                 mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                currentSongPlaying();
             }
+            mTvNameSong.setText(HomeActivity.musicService.nameSong());
+            mTvNameArtist.setText(HomeActivity.musicService.nameArtist());
+            Picasso.with(this)
+                    .load(HomeActivity.musicService.getImageSong())
+                    .placeholder(R.drawable.icon_music)
+                    .error(R.drawable.icon_music)
+                    .into(imgSong);
+            currentSongPlaying();
         }
 
     }
 
     private void checkPlayMusic() {
-        if (MainActivity.musicService.mSongList != null) {
+        if (HomeActivity.musicService.getSongList() != null) {
             mLayoutControl.setVisibility(View.VISIBLE);
         } else {
             mLayoutControl.setVisibility(View.INVISIBLE);
@@ -115,26 +118,11 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
             @Override
             public void run() {
                 mHandler.postDelayed(this, 500);
-                MainActivity.musicService.setOnComplete();
-                mTvNameSong.setText(MainActivity.musicService.nameSong());
-                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
+                HomeActivity.musicService.setOnComplete();
+                mTvNameSong.setText(HomeActivity.musicService.nameSong());
+                mTvNameArtist.setText(HomeActivity.musicService.nameArtist());
             }
         }, 100);
-    }
-
-    // list song item click
-    private void onItemClick() {
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(DetailAlbumArtist.this, PlayMusicActivity.class);
-                Bundle b = new Bundle();
-                b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) mSongList);
-                b.putInt(Utils.POSITION, position);
-                intent.putExtras(b);
-                startActivity(intent);
-            }
-        });
     }
 
     private void initView() {
@@ -143,17 +131,39 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         mTvNameArtist = (TextView) findViewById(R.id.albumNameArtist);
         mControlPlayPause = (ImageView) findViewById(R.id.albumControlPlayPause);
         imgAlbum = (ImageView) findViewById(R.id.detailAlbumImg);
-        mListView = (ListView) findViewById(R.id.detaialbum_listview);
+        imgSong = (CircleImageView) findViewById(R.id.imgSong);
         mLayoutControl = findViewById(R.id.album_minicontrol);
         mLayoutControl.setVisibility(View.GONE);
-        mSongAdapter = new SongAdapter(DetailAlbumArtist.this, mSongList, R.layout.item_song);
-        mListView.setAdapter(mSongAdapter);
+        lvSongs = (RecyclerView) findViewById(R.id.detaialbum_listview);
+
+        lvSongs.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(this);
+        lvSongs.setLayoutManager(linearLayoutManager);
+        songAdapter = new SongAdapter(mSongList, this);
+        lvSongs.setAdapter(songAdapter);
+
         mLayout.setOnClickListener(this);
         mControlPlayPause.setOnClickListener(this);
+        addItemClick();
     }
 
-    // set image of album
-    private void setImageSong() {
+    private void addItemClick() {
+        lvSongs.addOnItemTouchListener(new RecyclerItemClickListener(this, lvSongs,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        startActivity(new Intent(DetailAlbumArtist.this, PlayMusicActivity.class)
+                                .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) mSongList)
+                                .putExtra(Utils.POSITION, position));
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, final int position) {
+                    }
+                }));
+    }
+
+    private void setImageAlbum() {
         Picasso.with(this)
                 .load(mSongList.get(0).getImageSong())
                 .placeholder(R.drawable.ic_empty_music)
@@ -185,18 +195,31 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.albumControlPlayPause:
 
-                if (MainActivity.musicService.isPlaying()) {
-                    MainActivity.musicService.pausePlayer();
+                if (HomeActivity.musicService.isPlaying()) {
+                    HomeActivity.musicService.pausePlayer();
                     mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    MainActivity.musicService.updateRemoteview();
+                    HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    HomeActivity.musicService.updateRemoteview();
                 } else {
-                    MainActivity.musicService.startPlayer();
+                    HomeActivity.musicService.startPlayer();
                     mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
-                    MainActivity.musicService.updateRemoteview();
+                    HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    HomeActivity.musicService.updateRemoteview();
                 }
                 break;
+        }
+    }
+
+    private void changeLayout() {
+        if (Utils.getCurrentScreen(this).equals(Utils.HDPI)) {
+            mLayoutControl.getLayoutParams().height = 90;
+            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+        } else if (Utils.getCurrentScreen(this).equals(Utils.XHDPI)) {
+            mLayoutControl.getLayoutParams().height = 120;
+            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+        } else if (Utils.getCurrentScreen(this).equals(Utils.XXHDPI)) {
+            mLayoutControl.getLayoutParams().height = 180;
+            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
         }
     }
 }

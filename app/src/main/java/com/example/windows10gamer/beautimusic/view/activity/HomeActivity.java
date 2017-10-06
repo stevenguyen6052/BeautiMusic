@@ -17,30 +17,33 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
-import com.example.windows10gamer.beautimusic.view.utilities.service.MusicService;
+import com.example.windows10gamer.beautimusic.utilities.Utils;
+import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ViewPager mViewPager;
     private AdapterTab adapterTab;
-    // layout contain toolbar control play music
     private View mLayoutControl;
     private View mMiniControl;
-
-    private List<Song> mSongList = new ArrayList<>();
     public static MusicService musicService;
-    public static TextView mTvNameSong;
-    public static TextView mTvNameArtist;
-    public static ImageView mImgContrlPlay, mOpenMusicPlay;
+    private TextView mTvNameSong;
+    private TextView mTvNameArtist;
+    public static ImageView mImgPlayPause;
+    private CircleImageView mImgSong;
     private Intent playIntent;
     private boolean musicBound = false;
 
@@ -60,14 +63,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
-
         initView();
     }
 
-    // add permission for android >=6.0
     private void addPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(MainActivity.this
+            if (ContextCompat.checkSelfPermission(HomeActivity.this
                     , Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 addTabFragment();
             } else {
@@ -93,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
 
         super.onResume();
-        checkPlayMusic();
         if (musicService.mSongList != null) {
+            changeLayout();
             miniControlPlayMusic();
         }
     }
@@ -117,13 +118,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (musicService.mPlayer.isPlaying()) {
                 mTvNameSong.setText(musicService.nameSong());
                 mTvNameArtist.setText(musicService.nameArtist());
-                mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+                mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 currentSongPlaying();
             } else {
                 mTvNameSong.setText(musicService.nameSong());
                 mTvNameArtist.setText(musicService.nameArtist());
-                mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
             }
+            Picasso.with(this)
+                    .load(musicService.getImageSong())
+                    .placeholder(R.drawable.dianhac)
+                    .error(R.drawable.dianhac)
+                    .into(mImgSong);
         }
     }
 
@@ -141,34 +147,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }, 100);
     }
 
-    // check if music is playing display mini control music
-    private void checkPlayMusic() {
-        if (musicService.mSongList != null) {
-            mLayoutControl.setVisibility(View.VISIBLE);
-        } else {
-            mLayoutControl.setVisibility(View.INVISIBLE);
-        }
-    }
-
     private void initView() {
         mLayoutControl = findViewById(R.id.mainLayoutControl);
-        mLayoutControl.setVisibility(View.GONE);
         mTvNameSong = (TextView) findViewById(R.id.mainNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.mainNameSingle);
-        mImgContrlPlay = (ImageView) findViewById(R.id.mainControlPlay);
-        mOpenMusicPlay = (ImageView) findViewById(R.id.mainOpenPlayMusic);
+        mImgPlayPause = (ImageView) findViewById(R.id.mainControlPlay);
+        mImgSong = (CircleImageView) findViewById(R.id.mainImgSong);
         mMiniControl = findViewById(R.id.mainMiniControl);
         mMiniControl.setOnClickListener(this);
-        mImgContrlPlay.setOnClickListener(this);
-        mOpenMusicPlay.setOnClickListener(this);
+        mImgPlayPause.setOnClickListener(this);
+
     }
 
     private void addTabFragment() {
         adapterTab = new AdapterTab(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mViewPager.setAdapter(adapterTab);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_music_note_white_48dp);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_album_white_48dp1);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_person_white_48dp1);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_favorite_white_48dp);
     }
 
     // set connection to service
@@ -197,11 +198,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mainControlPlay:
                 if (musicService.isPlaying()) {
                     musicService.pausePlayer();
-                    mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                     musicService.updateRemoteview();
                 } else {
                     musicService.startPlayer();
-                    mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+                    mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                     musicService.updateRemoteview();
                 }
                 break;
@@ -220,4 +221,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void changeLayout() {
+        if (Utils.getCurrentScreen(this).equals(Utils.HDPI)) {
+            mLayoutControl.getLayoutParams().height = 90;
+            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+        } else if (Utils.getCurrentScreen(this).equals(Utils.XHDPI)) {
+            mLayoutControl.getLayoutParams().height = 120;
+            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+        } else if (Utils.getCurrentScreen(this).equals(Utils.XXHDPI)) {
+            mLayoutControl.getLayoutParams().height = 180;
+            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+    }
 }

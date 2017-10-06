@@ -17,7 +17,7 @@ import com.example.windows10gamer.beautimusic.view.adapter.ArtistAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.view.utilities.Utils;
+import com.example.windows10gamer.beautimusic.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +60,7 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filteredModelList = filter(mArtistList, newText.trim());
-
+                filteredModelList = Utils.filterArtist(mArtistList, newText.trim());
                 mArtistAdapter.setFilter(filteredModelList);
                 return true;
             }
@@ -72,7 +71,6 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.itemList:
-
                 boolean isSwitched = mArtistAdapter.toggleItemViewType();
                 lvArtist.setLayoutManager(isSwitched ?  new GridLayoutManager(getContext(), 2) : new LinearLayoutManager(getContext()));
                 mArtistAdapter.notifyDataSetChanged();
@@ -81,17 +79,6 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private List<Artist> filter(List<Artist> mArtistList, String query) {
-        String s = Utils.unAccent(query.toLowerCase());
-        List<Artist> filteredModelList = new ArrayList<>();
 
-        for (Artist artist : mArtistList) {
-            String text = Utils.unAccent(artist.getNameArtist().toLowerCase());
-            if (text.contains(s)) {
-                filteredModelList.add(artist);
-            }
-        }
-        return filteredModelList;
-    }
 
 }

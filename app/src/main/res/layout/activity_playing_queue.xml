@@ -44,22 +44,20 @@
             android:orientation="horizontal"
             android:weightSum="10">
 
-            <ImageView
-
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/queueImage"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_weight="2.10"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:background="@drawable/dianhac" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_toRightOf="@id/mainOpenPlayMusic"
-                android:layout_weight="7.90"
+                android:layout_toRightOf="@id/queueImage"
+                android:layout_weight="10"
                 android:orientation="vertical"
                 android:weightSum="10">
 
@@ -67,7 +65,7 @@
                     android:id="@+id/queueNameSong"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_toRightOf="@id/mainOpenPlayMusic"
+                    android:layout_toRightOf="@id/queueImage"
                     android:layout_weight="5"
                     android:ellipsize="end"
                     android:maxLines="1"
@@ -84,7 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_below="@+id/mainNameSong"
-                    android:layout_toRightOf="@id/mainOpenPlayMusic"
+                    android:layout_toRightOf="@id/queueImage"
                     android:layout_weight="5"
                     android:ellipsize="end"
                     android:marqueeRepeatLimit="marquee_forever"

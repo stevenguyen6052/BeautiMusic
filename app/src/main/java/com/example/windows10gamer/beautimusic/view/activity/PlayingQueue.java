@@ -9,33 +9,33 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.utilities.Utils;
-import com.example.windows10gamer.beautimusic.view.utilities.dragandswipe.ListChangedListener;
-import com.example.windows10gamer.beautimusic.view.utilities.dragandswipe.QueueAdapter;
-import com.example.windows10gamer.beautimusic.view.utilities.dragandswipe.SimpleItemTouchHelperCallback;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.example.windows10gamer.beautimusic.utilities.Utils;
+import com.example.windows10gamer.beautimusic.utilities.dragandswipe.ListChangedListener;
+import com.example.windows10gamer.beautimusic.utilities.dragandswipe.QueueAdapter;
+import com.example.windows10gamer.beautimusic.utilities.dragandswipe.SimpleItemTouchHelperCallback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnStartDragListener, View.OnClickListener, ListChangedListener {
 
     private ItemTouchHelper mItemTouchHelper;
-    public List<Song> mSongList;
+    private List<Song> mSongList;
     public int mPostion;
     public String check = "";
     private View mLayoutOpenPlayMusic;
     private TextView mTvNameSong, mTvNameArtist;
     public static ImageView mPlayPause;
+    private CircleImageView mImgSong;
     private List<Song> getListSong;
 
 
@@ -67,6 +67,7 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         mTvNameSong = (TextView) findViewById(R.id.queueNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.queueNameArtist);
         mPlayPause = (ImageView) findViewById(R.id.queuePlayPause);
+        mImgSong = (CircleImageView) findViewById(R.id.queueImage);
         mLayoutOpenPlayMusic = findViewById(R.id.queueOpenPlayMusic);
         mPlayPause.setOnClickListener(this);
         mLayoutOpenPlayMusic.setOnClickListener(this);
@@ -76,9 +77,10 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
         Intent intent = new Intent();
         Bundle b = new Bundle();
         boolean isCheckChange = false;
-        // nếu đã sx thì trả về list sau khi sx còn k thì trả về list ban đầu
-        // string check để kiểm tra xem click vào item song or back playmusicactivity
+
         if (getListSong != null) {
+            //isCheckchange check xem đã sắp xếp list hay chưa
+            // string check để kiểm tra là ấn back hay là click vào item trong list song
             isCheckChange = true;
             b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) getListSong);
             b.putInt(Utils.POSITION, mPostion);
@@ -107,16 +109,21 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     }
 
     private void miniControlPlay() {
-        if (MainActivity.musicService.mPlayer.isPlaying()) {
-            mTvNameSong.setText(MainActivity.musicService.nameSong());
-            mTvNameArtist.setText(MainActivity.musicService.nameArtist());
+        if (HomeActivity.musicService.isPlaying()) {
             mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
             currentSongPlaying();
         } else {
-            mTvNameSong.setText(MainActivity.musicService.nameSong());
-            mTvNameArtist.setText(MainActivity.musicService.nameArtist());
             mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
         }
+
+        mTvNameSong.setText(HomeActivity.musicService.nameSong());
+        mTvNameArtist.setText(HomeActivity.musicService.nameArtist());
+        Picasso.with(this)
+                .load(HomeActivity.musicService.getImageSong())
+                .placeholder(R.drawable.icon_music)
+                .error(R.drawable.icon_music)
+                .into(mImgSong);
+        currentSongPlaying();
     }
 
     private void currentSongPlaying() {
@@ -125,9 +132,9 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
             @Override
             public void run() {
                 mHandler.postDelayed(this, 500);
-                MainActivity.musicService.setOnComplete();
-                mTvNameSong.setText(MainActivity.musicService.nameSong());
-                mTvNameArtist.setText(MainActivity.musicService.nameArtist());
+                HomeActivity.musicService.setOnComplete();
+                mTvNameSong.setText(HomeActivity.musicService.nameSong());
+                mTvNameArtist.setText(HomeActivity.musicService.nameArtist());
             }
         }, 100);
     }
@@ -141,17 +148,17 @@ public class PlayingQueue extends AppCompatActivity implements QueueAdapter.OnSt
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.queuePlayPause:
-                if (MainActivity.musicService.isPlaying()) {
-                    MainActivity.musicService.pausePlayer();
+                if (HomeActivity.musicService.isPlaying()) {
+                    HomeActivity.musicService.pausePlayer();
                     mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                     PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    MainActivity.musicService.updateRemoteview();
+                    HomeActivity.musicService.updateRemoteview();
 
                 } else {
-                    MainActivity.musicService.startPlayer();
+                    HomeActivity.musicService.startPlayer();
                     mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                     PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    MainActivity.musicService.updateRemoteview();
+                    HomeActivity.musicService.updateRemoteview();
                 }
                 break;
 

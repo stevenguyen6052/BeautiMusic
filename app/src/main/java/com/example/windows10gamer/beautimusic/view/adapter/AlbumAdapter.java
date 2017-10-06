@@ -1,8 +1,6 @@
 package com.example.windows10gamer.beautimusic.view.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.windows10gamer.beautimusic.view.utilities.ItemClickListener;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
-import com.example.windows10gamer.beautimusic.view.utilities.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -72,22 +67,22 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
                 .error(R.drawable.icon_music)
                 .into(holder.imageView);
 
-        holder.setItemClickListener(new ItemClickListener() {
-            @Override
-            public void onClick(View view, int position, boolean isLongClick) {
-                if (isLongClick) {
-
-                } else {
-                    Intent intent = new Intent(view.getContext(), DetailAlbumArtist.class);
-                    Bundle b = new Bundle();
-                    b.putString(Utils.TAG, Utils.TAG_ALBUM);
-                    b.putString(NAME_ALBUM, mAlbumList.get(position).getNameAlbum());
-                    b.putInt(Utils.ALBUM_ID, mAlbumList.get(position).getId());
-                    intent.putExtras(b);
-                    view.getContext().startActivity(intent);
-                }
-            }
-        });
+//        holder.setItemClickListener(new ItemClickListener() {
+//            @Override
+//            public void onClick(View view, int position, boolean isLongClick) {
+//                if (isLongClick) {
+//
+//                } else {
+//                    Intent intent = new Intent(view.getContext(), DetailAlbumArtist.class);
+//                    Bundle b = new Bundle();
+//                    b.putString(Utils.TAG, Utils.TAG_ALBUM);
+//                    b.putString(NAME_ALBUM, mAlbumList.get(position).getNameAlbum());
+//                    b.putInt(Utils.ALBUM_ID, mAlbumList.get(position).getId());
+//                    intent.putExtras(b);
+//                    view.getContext().startActivity(intent);
+//                }
+//            }
+//        });
 
     }
 
@@ -114,8 +109,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        private ItemClickListener itemClickListener;
+    public class ViewHolder extends RecyclerView.ViewHolder  {
+
         TextView nameAlbum, nameArtist;
         ImageView imageView;
 
@@ -125,23 +120,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
             nameAlbum = (TextView) itemView.findViewById(R.id.alTvNameAlbum);
             nameArtist = (TextView) itemView.findViewById(R.id.alTvNameArtist);
             imageView = (ImageView) itemView.findViewById(R.id.alImgViewAlbum);
-            itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
-        }
-
-        public void setItemClickListener(ItemClickListener itemClickListener) {
-            this.itemClickListener = itemClickListener;
-        }
-
-        @Override
-        public void onClick(View v) {
-            itemClickListener.onClick(v, getAdapterPosition(), false);
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            itemClickListener.onClick(v, getAdapterPosition(), false);
-            return true;
         }
     }
 }

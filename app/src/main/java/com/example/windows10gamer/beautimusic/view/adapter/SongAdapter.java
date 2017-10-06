@@ -1,86 +1,80 @@
 package com.example.windows10gamer.beautimusic.view.adapter;
 
 import android.content.Context;
-import android.media.MediaMetadataRetriever;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+//import com.example.windows10gamer.beautimusic.view.activity.PlayMusic;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-public class SongAdapter extends BaseAdapter {
 
-    private Context mContext;
+public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     private List<Song> mSongList;
-    private int mLayout;
-    private List<Song> mSongListChange = new ArrayList<>();
+    private Context mContext;
 
-    public SongAdapter(Context mContext, List<Song> mSongList, int mLayout) {
-        this.mContext = mContext;
+    public SongAdapter(List<Song> mSongList, Context mContext) {
         this.mSongList = mSongList;
-        this.mLayout = mLayout;
-        this.mSongListChange.addAll(mSongList);
+        this.mContext = mContext;
     }
 
     @Override
-    public int getCount() {
-        if (mSongList.size() > 0) {
-            return mSongList.size();
-        } else return 0;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View itemView = inflater.inflate(R.layout.item_song, parent, false);
+        return new ViewHolder(itemView);
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
-    }
+    public void onBindViewHolder(ViewHolder holder, int i) {
+        Song mSong = mSongList.get(i);
 
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int i, View v, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (v == null) {
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(mLayout, null);
-            viewHolder = new ViewHolder();
-            viewHolder.tvNameSong = (TextView) v.findViewById(R.id.TvNameSong);
-            viewHolder.tvNameArtist = (TextView) v.findViewById(R.id.TvNameSinger);
-            viewHolder.mImageView = (ImageView) v.findViewById(R.id.ImgView);
-            v.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) v.getTag();
-        }
-        Song song = mSongList.get(i);
         if (mSongList.get(i).getNameSong().length() > 40) {
-            viewHolder.tvNameSong.setText(mSongList.get(i).getNameSong().substring(0, 37) + "...");
+            holder.mTvNameSong.setText(mSong.getNameSong().substring(0, 37) + "...");
         } else {
-            viewHolder.tvNameSong.setText(mSongList.get(i).getNameSong());
+            holder.mTvNameSong.setText(mSong.getNameSong());
         }
 
         if (mSongList.get(i).getNameArtist().length() > 40) {
-            viewHolder.tvNameArtist.setText(mSongList.get(i).getNameArtist().substring(0, 37) + "...");
+            holder.mTvNameArtist.setText(mSong.getNameArtist().substring(0, 37) + "...");
         } else {
-            viewHolder.tvNameArtist.setText(mSongList.get(i).getNameArtist());
+            holder.mTvNameArtist.setText(mSong.getNameArtist());
         }
         Picasso.with(mContext)
-                .load(song.getImageSong())
+                .load(mSong.getImageSong())
                 .placeholder(R.drawable.ic_musicqh)
                 .error(R.drawable.ic_musicqh)
-                .into(viewHolder.mImageView);
-        return v;
+                .into(holder.mImgView);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mSongList.size();
+    }
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        TextView mTvNameSong, mTvNameArtist;
+        ImageView mImgView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            mContext = itemView.getContext();
+            mTvNameSong = (TextView) itemView.findViewById(R.id.TvNameSong);
+            mTvNameArtist = (TextView) itemView.findViewById(R.id.TvNameSinger);
+            mImgView = (ImageView) itemView.findViewById(R.id.ImgView);
+
+        }
+
     }
 
     public void setFilter(List<Song> mData) {
@@ -88,11 +82,6 @@ public class SongAdapter extends BaseAdapter {
         mSongList.addAll(mData);
         notifyDataSetChanged();
 
-    }
-
-    private class ViewHolder {
-        TextView tvNameSong, tvNameArtist;
-        ImageView mImageView;
     }
 
 }

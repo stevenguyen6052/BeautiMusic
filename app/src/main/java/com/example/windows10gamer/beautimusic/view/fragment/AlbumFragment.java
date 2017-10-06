@@ -1,6 +1,7 @@
 package com.example.windows10gamer.beautimusic.view.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,14 +15,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.view.adapter.AlbumAdapter;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.view.utilities.Utils;
+import com.example.windows10gamer.beautimusic.view.adapter.RecyclerItemClickListener;
+import com.example.windows10gamer.beautimusic.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.windows10gamer.beautimusic.utilities.Utils.NAME_ALBUM;
 
 
 public class AlbumFragment extends android.support.v4.app.Fragment {
@@ -29,7 +34,8 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
     private List<Album> mAlbumList, filteredModelList;
     private RecyclerView lvAlbums;
     private AlbumAdapter mAlbumAdapter;
-    SearchView searchView;
+    private GridLayoutManager gridLayoutManager;
+    private SearchView searchView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,12 +44,30 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
         mAlbumList = new ArrayList<>();
         lvAlbums = (RecyclerView) view.findViewById(R.id.recycleViewAl);
         lvAlbums.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        gridLayoutManager = new GridLayoutManager(getContext(), 2);
         lvAlbums.setLayoutManager(gridLayoutManager);
 
         mAlbumList = SongDatabase.getAlbumFromDevice(getContext());
         mAlbumAdapter = new AlbumAdapter(getContext(), mAlbumList);
         lvAlbums.setAdapter(mAlbumAdapter);
+        lvAlbums.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), lvAlbums,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Intent intent = new Intent(view.getContext(), DetailAlbumArtist.class);
+                        Bundle b = new Bundle();
+                        b.putString(Utils.TAG, Utils.TAG_ALBUM);
+                        b.putString(NAME_ALBUM, mAlbumList.get(position).getNameAlbum());
+                        b.putInt(Utils.ALBUM_ID, mAlbumList.get(position).getId());
+                        intent.putExtras(b);
+                        view.getContext().startActivity(intent);
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+
+                    }
+                }));
 
         return view;
     }
@@ -53,8 +77,8 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
         menu.clear();
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-
         searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
+
 
     }
 
@@ -63,7 +87,8 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
         switch (item.getItemId()) {
             case R.id.itemList:
                 boolean isSwitched = mAlbumAdapter.toggleItemViewType();
-                lvAlbums.setLayoutManager(isSwitched ? new GridLayoutManager(getContext(), 2) : new LinearLayoutManager(getContext()));
+                lvAlbums.setLayoutManager(isSwitched ? new GridLayoutManager(getContext(), 2)
+                        : new LinearLayoutManager(getContext()));
                 mAlbumAdapter.notifyDataSetChanged();
                 break;
 
@@ -76,7 +101,7 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
-                        filteredModelList = filter(mAlbumList, newText.trim());
+                        filteredModelList = Utils.filterAlbum(mAlbumList, newText.trim());
 
                         mAlbumAdapter.setFilter(filteredModelList);
                         return true;
@@ -85,18 +110,5 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private List<Album> filter(List<Album> mAlbumList, String query) {
-        String s = Utils.unAccent(query.toLowerCase());
-        List<Album> filteredModelList = new ArrayList<>();
-
-        for (Album album : mAlbumList) {
-            String text = Utils.unAccent(album.getNameAlbum().toLowerCase());
-            if (text.contains(s)) {
-                filteredModelList.add(album);
-            }
-        }
-        return filteredModelList;
     }
 }

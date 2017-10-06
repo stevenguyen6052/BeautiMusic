@@ -62,12 +62,12 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <ListView
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/detaialbum_listview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     >
-                </ListView>
+                </android.support.v7.widget.RecyclerView>
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>

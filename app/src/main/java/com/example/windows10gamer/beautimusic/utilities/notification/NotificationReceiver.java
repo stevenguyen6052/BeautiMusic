@@ -1,4 +1,4 @@
-package com.example.windows10gamer.beautimusic.view.utilities.notification;
+package com.example.windows10gamer.beautimusic.utilities.notification;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,15 +8,14 @@ import android.widget.Toast;
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
-import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
+import com.example.windows10gamer.beautimusic.view.activity.HomeActivity;
 import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
 import com.example.windows10gamer.beautimusic.view.activity.PlayingQueue;
-import com.example.windows10gamer.beautimusic.view.utilities.service.MusicService;
+import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 
-import static com.example.windows10gamer.beautimusic.view.utilities.service.MusicService.NOTIFY_NEXT;
-import static com.example.windows10gamer.beautimusic.view.utilities.service.MusicService.NOTIFY_PLAY;
-import static com.example.windows10gamer.beautimusic.view.utilities.service.MusicService.NOTIFY_PREVIOUS;
-import static com.example.windows10gamer.beautimusic.view.utilities.service.MusicService.notification;
+import static com.example.windows10gamer.beautimusic.utilities.service.MusicService.NOTIFY_NEXT;
+import static com.example.windows10gamer.beautimusic.utilities.service.MusicService.NOTIFY_PLAY;
+import static com.example.windows10gamer.beautimusic.utilities.service.MusicService.NOTIFY_PREVIOUS;
 
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -24,39 +23,35 @@ public class NotificationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         if (intent.getAction().equals(NOTIFY_PLAY)) {
-            if (MainActivity.musicService.isPlaying()) {
-
-                MainActivity.musicService.pausePlayer();
+            if (HomeActivity.musicService.isPlaying()) {
+                HomeActivity.musicService.pausePlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                 if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
                     DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                     PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                 }
-
-                MusicService.updateRemoteview();
+                HomeActivity.musicService.updateRemoteview();
 
             } else {
-                MainActivity.musicService.startPlayer();
+                HomeActivity.musicService.startPlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+                HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
                     DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                     PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 }
-                MusicService.updateRemoteview();
-
+                HomeActivity.musicService.updateRemoteview();
             }
 
 
         } else if (intent.getAction().equals(NOTIFY_NEXT)) {
-
-            MainActivity.musicService.playNext();
-            if (MainActivity.musicService.isPlaying()) {
+            HomeActivity.musicService.playNext();
+            if (HomeActivity.musicService.isPlaying()) {
 
             } else {
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+                HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
                     DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                     PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
@@ -64,21 +59,16 @@ public class NotificationReceiver extends BroadcastReceiver {
             }
 
         } else if (intent.getAction().equals(NOTIFY_PREVIOUS)) {
-            MainActivity.musicService.playPrev();
-            if (MainActivity.musicService.isPlaying()) {
-
+            HomeActivity.musicService.playPrev();
+            if (HomeActivity.musicService.isPlaying()) {
             } else {
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                MainActivity.mImgContrlPlay.setImageResource(R.drawable.ic_pause_white_48dp);
+                HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
                     DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                     PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 }
             }
-
-        }else {
-            Toast.makeText(context,"Tai nghe đã được cắm!",Toast.LENGTH_LONG).show();
         }
-
     }
 }

@@ -12,7 +12,7 @@
         android:roundIcon="@drawable/icon_music"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.activity.MainActivity">
+        <activity android:name=".view.activity.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,22 +22,22 @@
         <activity android:name=".view.activity.DetailAlbumArtist" />
         <activity android:name=".view.activity.PlayingQueue" />
 
-        <receiver android:name=".view.utilities.notification.NotificationReceiver">
+        <receiver
+            android:name=".utilities.notification.NotificationReceiver"
+            android:exported="true">
             <intent-filter>
+                <action android:name="android.intent.action.HEADSET_PLUG" />
                 <action android:name="com.example.windows10gamer.beautimusic.previous" />
-                <action android:name="com.example.windows10gamer.beautimusic.delete" />
-                <action android:name="com.example.windows10gamer.beautimusic.pause" />
                 <action android:name="com.example.windows10gamer.beautimusic.next" />
                 <action android:name="com.example.windows10gamer.beautimusic.play" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name=".view.utilities.service.MusicService"
+            android:name=".utilities.service.MusicService"
             android:enabled="true" />
 
         <activity android:name=".view.activity.PlayMusicActivity" />
-        <activity android:name=".view.activity.SearchActivity"></activity>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.windows10gamer.beautimusic.view.utilities.service;
+package com.example.windows10gamer.beautimusic.utilities.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -8,23 +8,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.session.MediaController;
-import android.media.session.MediaController.Callback;
-import android.media.session.MediaSession;
-import android.media.session.MediaSessionManager;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.view.activity.MainActivity;
+import com.example.windows10gamer.beautimusic.view.activity.HomeActivity;
 
 import java.util.List;
 import java.util.Random;
@@ -38,17 +32,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public static NotificationManager nm;
     public static Notification notification;
     // tag check playmusic error
-    private static final String TAG_CHECK_BUG = "MainActivity";
+    private static final String TAG_CHECK_BUG = "HomeActivity";
     // notification
     public static final String NOTIFY_PREVIOUS = "com.example.windows10gamer.beautimusic.previous";
     public static final String NOTIFY_PLAY = "com.example.windows10gamer.beautimusic.play";
     public static final String NOTIFY_NEXT = "com.example.windows10gamer.beautimusic.next";
-
-    private static final int NOTIFICATION_ID_OPEN_ACTIVITY = 9;
     private static final int NOTIFICATION_ID_CUSTOM_BIG = 9;
 
     //media player
-    public static MediaPlayer mPlayer;
+    public MediaPlayer mPlayer;
     //song list
     public static List<Song> mSongList;
     //current position
@@ -142,7 +134,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         nc = new NotificationCompat.Builder(getApplicationContext());
         nm = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent notifyIntent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent notifyIntent = new Intent(getApplicationContext(), HomeActivity.class);
 
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -174,7 +166,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         remoteViewBig.setOnClickPendingIntent(R.id.notifiNext, pNext);
     }
 
-    public static void updateRemoteview() {
+    public void updateRemoteview() {
         if (mPlayer.isPlaying()) {
             remoteView.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
             remoteViewBig.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
@@ -189,6 +181,19 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     }
 
+    public void setSongList(List<Song> songs) {
+        mSongList = songs;
+    }
+
+    public void setIndexPlay(int index) {
+        mPosition = index;
+    }
+    public List<Song> getSongList(){
+        return mSongList;
+    }
+    public int getIndexPlay(){
+        return mPosition;
+    }
     public int getDuaration() {
         return Integer.valueOf(mSongList.get(mPosition).getDuaration());
     }
@@ -239,7 +244,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public String nameSong() {
         return mSongList.get(mPosition).getNameSong();
     }
-    public String getImageSong(){
+
+    public String getImageSong() {
         return mSongList.get(mPosition).getImageSong();
     }
 
@@ -288,7 +294,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mPlayer.prepareAsync();
     }
 
-    public boolean setShuffle() {
+    public boolean isShuffle() {
         if (shuffle) {
             shuffle = false;
             return false;
@@ -296,17 +302,19 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return true;
     }
 
-    public boolean setRepeat() {
+    public boolean isRepeat() {
         if (repeat) {
             repeat = false;
             return false;
         } else repeat = true;
         return true;
     }
-    public boolean getRepeat(){
+
+    public boolean getRepeat() {
         return repeat;
     }
-    public boolean getShuffle(){
+
+    public boolean getShuffle() {
         return shuffle;
     }
 

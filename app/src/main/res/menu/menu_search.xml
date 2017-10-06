@@ -5,13 +5,13 @@
         android:id="@+id/itemSearch"
         android:title="Search View"
         app:showAsAction="ifRoom|collapseActionView"
-        android:icon="@drawable/ic_search_white_48dp"
+        android:icon="@drawable/ic_action_search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         />
     <item
         android:id="@+id/itemList"
         android:orderInCategory="100"
-        android:title="Hiên thị list or grid"
+        android:title="Hiên thị list || grid"
         app:showAsAction="never" />
 
 </menu>
