@@ -231,6 +231,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         } else if (Utils.getCurrentScreen(this).equals(Utils.XXHDPI)) {
             mLayoutControl.getLayoutParams().height = 180;
             mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+        }else if (Utils.getCurrentScreen(this).equals(Utils.XXXHDPI)){
+            mLayoutControl.getLayoutParams().height = 210;
+            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
         }
     }
 }

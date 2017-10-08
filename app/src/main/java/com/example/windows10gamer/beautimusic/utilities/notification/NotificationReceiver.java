@@ -3,15 +3,13 @@ package com.example.windows10gamer.beautimusic.utilities.notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.view.activity.HomeActivity;
 import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
-import com.example.windows10gamer.beautimusic.view.activity.PlayingQueue;
-import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
+import com.example.windows10gamer.beautimusic.view.activity.PlayingQueueActivity;
 
 import static com.example.windows10gamer.beautimusic.utilities.service.MusicService.NOTIFY_NEXT;
 import static com.example.windows10gamer.beautimusic.utilities.service.MusicService.NOTIFY_PLAY;
@@ -27,9 +25,9 @@ public class NotificationReceiver extends BroadcastReceiver {
                 HomeActivity.musicService.pausePlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                 HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
+                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueueActivity.mPlayPause != null) {
                     DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    PlayingQueueActivity.mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                 }
                 HomeActivity.musicService.updateRemoteview();
 
@@ -37,9 +35,9 @@ public class NotificationReceiver extends BroadcastReceiver {
                 HomeActivity.musicService.startPlayer();
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
+                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueueActivity.mPlayPause != null) {
                     DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    PlayingQueueActivity.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 }
                 HomeActivity.musicService.updateRemoteview();
             }
@@ -52,9 +50,9 @@ public class NotificationReceiver extends BroadcastReceiver {
             } else {
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
+                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueueActivity.mPlayPause != null) {
                     DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    PlayingQueueActivity.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 }
             }
 
@@ -64,9 +62,9 @@ public class NotificationReceiver extends BroadcastReceiver {
             } else {
                 PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueue.mPlayPause != null) {
+                if (DetailAlbumArtist.mControlPlayPause != null && PlayingQueueActivity.mPlayPause != null) {
                     DetailAlbumArtist.mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    PlayingQueue.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    PlayingQueueActivity.mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 }
             }
         }

@@ -1,7 +1,5 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,8 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -228,7 +224,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void doQueue() {
-        Intent intent = new Intent(this, PlayingQueue.class);
+        Intent intent = new Intent(this, PlayingQueueActivity.class);
         if (filteredModelList != null && filteredModelList.size() != 0) {
             intent.putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) filteredModelList);
         } else {

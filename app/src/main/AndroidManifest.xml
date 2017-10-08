@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.activity.DetailAlbumArtist" />
-        <activity android:name=".view.activity.PlayingQueue" />
+        <activity android:name=".view.activity.PlayingQueueActivity" />
 
         <receiver
             android:name=".utilities.notification.NotificationReceiver"

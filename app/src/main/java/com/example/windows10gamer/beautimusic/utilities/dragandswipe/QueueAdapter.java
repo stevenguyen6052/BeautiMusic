@@ -15,7 +15,7 @@ import com.example.windows10gamer.beautimusic.R;
 
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.ItemClickListener;
-import com.example.windows10gamer.beautimusic.view.activity.PlayingQueue;
+import com.example.windows10gamer.beautimusic.view.activity.PlayingQueueActivity;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 
 import java.util.ArrayList;
@@ -24,12 +24,12 @@ import java.util.List;
 
 public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHolder> implements ItemTouchHelperAdapter {
     private List<Song> mSongList = new ArrayList<>();
-    private PlayingQueue mContext;
+    private PlayingQueueActivity mContext;
     private ListChangedListener mListChangeListener;
 
     private OnStartDragListener mDragStartListener;
 
-    public QueueAdapter(PlayingQueue context, OnStartDragListener dragStartListener, List<Song> songList, ListChangedListener listChangedListener) {
+    public QueueAdapter(PlayingQueueActivity context, OnStartDragListener dragStartListener, List<Song> songList, ListChangedListener listChangedListener) {
         mDragStartListener = dragStartListener;
         mSongList = songList;
         mContext = context;
