@@ -27,9 +27,9 @@ public class SongDatabase extends SQLiteOpenHelper {
     private static final String TBL_SONG = "DetailSong";
     private static final String TBL_PLAYLIST = "Playlist";
 
-    private static final String PL_ID="Id";
-    private static final String PL_LIST="ListIdSong";
-    private static final String PL_NAME_LIST="NameList";
+    private static final String PL_ID = "Id";
+    private static final String PL_LIST = "ListIdSong";
+    private static final String PL_NAME_LIST = "NameList";
 
     private static final String CL_ID = "Id";
     private static final String CL_NAME_SONG = "Namesong";
@@ -40,7 +40,7 @@ public class SongDatabase extends SQLiteOpenHelper {
     private static final String CL_DUARATION = "Duaration";
     private static final String CL_ALBUM_ID = "AlbumId";
     private static final String CL_ARTIST_ID = "ArtistId";
-    private static final String CREATE_TBL_SOMG = "CREATE TABLE " + TBL_SONG + "("
+    private static final String CREATE_TBL_SOMG = "CREATE TABLE IF NOT EXISTS  " + TBL_SONG + "("
             + CL_ID + " TEXT PRIMARY KEY , "
             + CL_NAME_SONG + " TEXT NOT NULL, "
             + CL_NAME_ALBUM + " TEXT NOT NULL, "
@@ -51,35 +51,61 @@ public class SongDatabase extends SQLiteOpenHelper {
             + CL_ALBUM_ID + " INTEGER NOT NULL, "
             + CL_ARTIST_ID + " INTEGER NOT NULL "
             + ")";
-    private static final String CREATE_TBL_PLAYLIST = "CREATE TABLE " + TBL_PLAYLIST + "("
-            + PL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT , "
-            + PL_LIST + " TEXT , "
-            + PL_NAME_LIST + " TEXT "
+    private static final String CREATE_TBL_PLAYLIST = "CREATE TABLE IF NOT EXISTS  " + TBL_PLAYLIST + " ("
+            + PL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + PL_LIST + " TEXT,  "
+            + PL_NAME_LIST + " TEXT"
             + ")";
 
 
     public SongDatabase(Context context) {
         super(context, NAME_DATABASE, null, VERSION);
     }
-    public void addPlayList(Playlist playList){
+
+    public void updatePlaylist(String listId, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(PL_LIST, listId);
+        db.update(TBL_PLAYLIST, args, PL_ID + " = ?", new String[]{String.valueOf(id)});
+
+    }
+
+    public void updateNamePlaylist(String namePlaylist, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put(PL_NAME_LIST, namePlaylist);
+        db.update(TBL_PLAYLIST, args, PL_ID + " = " + id , null);
+    }
+
+    public void deletePlaylist(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TBL_PLAYLIST, PL_ID + " = " + id + "", null);
+    }
+
+    public void addPlayList(String nameList, String listId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(PL_ID, playList.getIdPlaylist());
-        values.put(PL_LIST, playList.getListIdSong());
-        values.put(PL_NAME_LIST, playList.getName());
+        values.put(PL_LIST, listId);
+        values.put(PL_NAME_LIST, nameList);
 
         db.insert(TBL_PLAYLIST, null, values);
         db.close();
     }
-    public List<Playlist> getPlaylist(){
+
+    public List<Playlist> getPlaylist() {
         List<Playlist> playlists = new ArrayList<>();
         String mSelect = "SELECT * FROM " + TBL_PLAYLIST;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor mCursor = db.rawQuery(mSelect, null);
         if (mCursor.moveToFirst()) {
             do {
-                playlists.add(new Playlist(mCursor.getInt(0),mCursor.getString(1),mCursor.getString(2)));
+                Playlist playlist = new Playlist();
+                playlist.setId(mCursor.getInt(0));
+                playlist.setListIdSong(mCursor.getString(1));
+                playlist.setName(mCursor.getString(2));
+                playlists.add(playlist);
+                //playlists.add(new Playlist(mCursor.getInt(0), mCursor.getString(1),mCursor.getString(2)));
 
             } while (mCursor.moveToNext());
         }

@@ -2,6 +2,7 @@ package com.example.windows10gamer.beautimusic.view.fragment;
 
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -33,63 +34,64 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
     private View view;
     private List<Album> mAlbumList, filteredModelList;
     private RecyclerView lvAlbums;
-    private AlbumAdapter mAlbumAdapter;
+    private AlbumAdapter adapter;
     private GridLayoutManager gridLayoutManager;
     private SearchView searchView;
+    private MenuItem itemSearch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_album, container, false);
         setHasOptionsMenu(true);
+
         mAlbumList = new ArrayList<>();
+        gridLayoutManager = new GridLayoutManager(getContext(), 2);
         lvAlbums = (RecyclerView) view.findViewById(R.id.recycleViewAl);
         lvAlbums.setHasFixedSize(true);
-        gridLayoutManager = new GridLayoutManager(getContext(), 2);
         lvAlbums.setLayoutManager(gridLayoutManager);
 
-        mAlbumList = SongDatabase.getAlbumFromDevice(getContext());
-        mAlbumAdapter = new AlbumAdapter(getContext(), mAlbumList);
-        lvAlbums.setAdapter(mAlbumAdapter);
-        lvAlbums.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), lvAlbums,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(view.getContext(), DetailAlbumArtist.class);
-                        Bundle b = new Bundle();
-                        b.putString(Utils.TAG, Utils.TAG_ALBUM);
-                        b.putString(NAME_ALBUM, mAlbumList.get(position).getNameAlbum());
-                        b.putInt(Utils.ALBUM_ID, mAlbumList.get(position).getId());
-                        intent.putExtras(b);
-                        view.getContext().startActivity(intent);
-                    }
+        adapter = new AlbumAdapter(getContext(), mAlbumList);
+        lvAlbums.setAdapter(adapter);
 
-                    @Override
-                    public void onItemLongClick(View view, int position) {
-
-                    }
-                }));
+        loadData();
 
         return view;
     }
 
+    private void loadData() {
+        new AsyncTask<String, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(String... params) {
+                mAlbumList.clear();
+                mAlbumList.addAll(SongDatabase.getAlbumFromDevice(getContext()));
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                adapter.notifyDataSetChanged();
+
+            }
+        }.execute("");
+    }
+
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.menu_search, menu);
-        MenuItem itemSearch = menu.findItem(R.id.itemSearch);
+        itemSearch = menu.findItem(R.id.itemSearch);
         searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
-
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.itemList:
-                boolean isSwitched = mAlbumAdapter.toggleItemViewType();
+                boolean isSwitched = adapter.toggleItemViewType();
                 lvAlbums.setLayoutManager(isSwitched ? new GridLayoutManager(getContext(), 2)
                         : new LinearLayoutManager(getContext()));
-                mAlbumAdapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
                 break;
 
             case R.id.itemSearch:
@@ -102,8 +104,7 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
                     @Override
                     public boolean onQueryTextChange(String newText) {
                         filteredModelList = Utils.filterAlbum(mAlbumList, newText.trim());
-
-                        mAlbumAdapter.setFilter(filteredModelList);
+                        adapter.setFilter(filteredModelList);
                         return true;
                     }
                 });

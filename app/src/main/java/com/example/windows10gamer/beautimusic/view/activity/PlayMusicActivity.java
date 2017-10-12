@@ -26,6 +26,7 @@ import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.adapter.RecyclerItemClickListener;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
+import com.example.windows10gamer.beautimusic.view.adapter.SongAdapterPlaying;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -47,14 +48,16 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private String check, name = "";
     private Boolean isCheck;
     private RecyclerView lvSongs;
-    private SongAdapter songAdapter;
+    private SongAdapterPlaying songAdapter;
+    private Toolbar toolbar;
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playmusic);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -64,9 +67,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         getData();
 
         lvSongs.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         lvSongs.setLayoutManager(linearLayoutManager);
-        songAdapter = new SongAdapter(mSongList, this);
+        songAdapter = new SongAdapterPlaying(mSongList, this);
         lvSongs.setAdapter(songAdapter);
 
         addItemClick();
@@ -375,19 +378,21 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     protected void onDestroy() {
         super.onDestroy();
         //save status shuffle or repeat
-        SharedPreferences sharedPreferences = getSharedPreferences("ShuffleRepeat", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Utils.SHUFFLE_REPEAT, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("ShuffleOn", HomeActivity.musicService.getShuffle());
-        editor.putBoolean("RepeatOn", HomeActivity.musicService.getRepeat());
+        editor.putBoolean(Utils.SHUFFLE, HomeActivity.musicService.getShuffle());
+        editor.putBoolean(Utils.REPEAT, HomeActivity.musicService.getRepeat());
         editor.apply();
     }
 
     private void loadStatusShuffleRepeat() {
         boolean shuffle, repeat;
-        SharedPreferences sharedPreferences = this.getSharedPreferences("ShuffleRepeat", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(Utils.SHUFFLE_REPEAT, Context.MODE_PRIVATE);
         if (sharedPreferences != null) {
-            shuffle = sharedPreferences.getBoolean("ShuffleOn", false);
-            repeat = sharedPreferences.getBoolean("RepeatOn", false);
+
+            shuffle = sharedPreferences.getBoolean(Utils.SHUFFLE, false);
+            repeat = sharedPreferences.getBoolean(Utils.REPEAT, false);
+
             if (shuffle) {
                 mShffle.setImageResource(R.drawable.ic_shuffle_black_48dp);
             }

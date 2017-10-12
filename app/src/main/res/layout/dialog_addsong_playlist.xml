@@ -2,38 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="10"
-    >
+    android:layout_margin="10dp"
+    android:orientation="vertical">
 
     <LinearLayout
+        android:paddingLeft="5dp"
         android:id="@+id/viewAddPlaylist"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:background="@color/colorAccent"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_empty_music" />
-
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:text="Add new playlist"
-
-            />
+            android:gravity="center"
+            android:text="@string/add_playlist"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/lvPlaylist"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="0dp"
-        android:layout_weight="8"/>
+        android:layout_weight="8" />
 
 </LinearLayout>

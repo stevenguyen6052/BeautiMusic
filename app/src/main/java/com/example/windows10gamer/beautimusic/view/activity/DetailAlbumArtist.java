@@ -65,10 +65,10 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
     protected void onResume() {
         super.onResume();
 
-        checkPlayMusic();
+
 
         if (HomeActivity.musicService.mPlayer != null) {
-            changeLayout();
+            checkPlayMusic();
             miniControlPlayMusic();
 
         } else {
@@ -98,16 +98,14 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
     }
 
     private void checkPlayMusic() {
-        if (HomeActivity.musicService.getSongList() != null) {
+        if (HomeActivity.musicService.getSongList() != null)
             mLayoutControl.setVisibility(View.VISIBLE);
-        } else {
-            mLayoutControl.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
+        //finish();
         return true;
     }
 
@@ -144,7 +142,7 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
 
         mLayout.setOnClickListener(this);
         mControlPlayPause.setOnClickListener(this);
-        addItemClick();
+        //addItemClick();
     }
 
     private void addItemClick() {
@@ -172,6 +170,7 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
     }
 
     private void getData() {
+
         mSongList = new ArrayList<>();
         Bundle b = getIntent().getExtras();
         tag = b.getString(Utils.TAG);
@@ -184,7 +183,11 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
             nameAlbumArtist = b.getString(Utils.NAME_ARTIST);
             idAlbumArtist = b.getInt(Utils.ARTIST_ID);
             mSongList = SongDatabase.getArtistSong(idAlbumArtist, this);
+        } else if (tag.equals("PLAYLIST")) {
+            nameAlbumArtist = b.getString("NamePlaylist");
+            mSongList = b.getParcelableArrayList(Utils.LIST_SONG);
         }
+
     }
 
     @Override
@@ -210,19 +213,4 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void changeLayout() {
-        if (Utils.getCurrentScreen(this).equals(Utils.HDPI)) {
-            mLayoutControl.getLayoutParams().height = 90;
-            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        } else if (Utils.getCurrentScreen(this).equals(Utils.XHDPI)) {
-            mLayoutControl.getLayoutParams().height = 120;
-            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        } else if (Utils.getCurrentScreen(this).equals(Utils.XXHDPI)) {
-            mLayoutControl.getLayoutParams().height = 180;
-            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        }else if (Utils.getCurrentScreen(this).equals(Utils.XXXHDPI)){
-            mLayoutControl.getLayoutParams().height = 210;
-            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        }
-    }
 }

@@ -95,7 +95,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         super.onResume();
         if (musicService.mSongList != null) {
-            changeLayout();
+            //changeLayout();
+            mLayoutControl.setVisibility(View.VISIBLE);
             miniControlPlayMusic();
         }
     }
@@ -166,13 +167,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(mViewPager);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_music_note_white_48dp);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_album_white_48dp1);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_person_white_48dp1);
-        tabLayout.getTabAt(3).setIcon(R.drawable.ic_favorite_white_48dp);
+//        tabLayout.getTabAt(0).setIcon(R.drawable.ic_music_note_white_48dp);
+//        tabLayout.getTabAt(1).setIcon(R.drawable.ic_album_white_48dp1);
+//        tabLayout.getTabAt(2).setIcon(R.drawable.ic_person_white_48dp1);
+//        tabLayout.getTabAt(3).setIcon(R.drawable.ic_favorite_white_48dp);
     }
 
-    // set connection to service
     private ServiceConnection getMusicConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -218,22 +218,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if (musicBound) {
             unbindService(getMusicConnection);
             musicBound = false;
-        }
-    }
-
-    private void changeLayout() {
-        if (Utils.getCurrentScreen(this).equals(Utils.HDPI)) {
-            mLayoutControl.getLayoutParams().height = 90;
-            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        } else if (Utils.getCurrentScreen(this).equals(Utils.XHDPI)) {
-            mLayoutControl.getLayoutParams().height = 120;
-            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        } else if (Utils.getCurrentScreen(this).equals(Utils.XXHDPI)) {
-            mLayoutControl.getLayoutParams().height = 180;
-            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-        }else if (Utils.getCurrentScreen(this).equals(Utils.XXXHDPI)){
-            mLayoutControl.getLayoutParams().height = 210;
-            mLayoutControl.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
         }
     }
 }

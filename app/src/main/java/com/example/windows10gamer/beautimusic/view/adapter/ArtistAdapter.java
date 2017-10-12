@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder>  {
+public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
     private static final String NAME_ARTIST = "Name Artist";
 
     private static final int LIST_ITEM = 0;
@@ -42,7 +42,6 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
-
         if (viewType == LIST_ITEM) {
             itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_artist_list, null);
         } else {
@@ -52,42 +51,34 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         final Artist artist = mArtistList.get(position);
-        String s = artist.getSumAlbum() + " Album | " + artist.getSumSong() + " Song";
+        String s = artist.getSumAlbum() + " Albums | " + artist.getSumSong() + " Songs";
         holder.mTvNameArtist.setText(artist.getNameArtist());
         holder.mTvSumAlbum.setText(s);
 
-        holder.setItemClickListener(new ItemClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view, int position, boolean isLongClick) {
-                if (isLongClick) {
-
-                } else {
-                    Intent intent = new Intent(view.getContext(), DetailAlbumArtist.class);
-                    Bundle b = new Bundle();
-                    b.putString(Utils.TAG, Utils.TAG_ARTIST);
-                    b.putString(NAME_ARTIST, mArtistList.get(position).getNameArtist());
-                    b.putInt(Utils.ARTIST_ID, mArtistList.get(position).getId());
-                    intent.putExtras(b);
-                    view.getContext().startActivity(intent);
-
-                }
+            public void onClick(View v) {
+                v.getContext().startActivity(new Intent(v.getContext(), DetailAlbumArtist.class)
+                        .putExtra(Utils.TAG, Utils.TAG_ARTIST)
+                        .putExtra(NAME_ARTIST, mArtistList.get(position).getNameArtist())
+                        .putExtra(Utils.ARTIST_ID, mArtistList.get(position).getId())
+                );
             }
         });
+
     }
 
     public void setFilter(List<Artist> mData) {
-
         mArtistList = new ArrayList<>();
         mArtistList.addAll(mData);
-
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return mArtistList.size();
+        return (null != mArtistList ? mArtistList.size() : 0);
     }
 
     @Override
@@ -99,31 +90,13 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mTvNameArtist, mTvSumAlbum;
-        private ItemClickListener itemClickListener;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mTvNameArtist = (TextView) itemView.findViewById(R.id.item_nameartist);
             mTvSumAlbum = (TextView) itemView.findViewById(R.id.item_sumg_album);
-            itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
-        }
-
-        public void setItemClickListener(ItemClickListener itemClickListener) {
-            this.itemClickListener = itemClickListener;
-        }
-
-        @Override
-        public void onClick(View v) {
-            itemClickListener.onClick(v, getAdapterPosition(), false);
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            itemClickListener.onClick(v, getAdapterPosition(), false);
-            return true;
         }
     }
 }

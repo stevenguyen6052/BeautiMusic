@@ -38,6 +38,7 @@
             android:enabled="true" />
 
         <activity android:name=".view.activity.PlayMusicActivity" />
+        <activity android:name=".view.activity.AddSongToPlaylisActivity"></activity>
     </application>
 
 </manifest>

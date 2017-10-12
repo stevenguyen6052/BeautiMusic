@@ -67,7 +67,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
 
                 } else {
                     mContext.mPostion = position;
-                    mContext.check=Utils.ITEM_CLICK;
+                    mContext.check = Utils.ITEM_CLICK;
                     mContext.dataResult();
                     mContext.finish();
                 }

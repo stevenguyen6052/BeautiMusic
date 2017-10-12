@@ -1,5 +1,6 @@
 package com.example.windows10gamer.beautimusic.view.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,25 +26,55 @@ import java.util.List;
 
 public class ArtistFragment extends android.support.v4.app.Fragment {
     private View view;
-    private List<Artist> mArtistList,filteredModelList;
+    private List<Artist> mArtistList, filteredModelList;
     private ArtistAdapter mArtistAdapter;
-    private RecyclerView lvArtist;
+    private RecyclerView recycArtist;
     SearchView searchView;
+    private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_artist, container, false);
+
         setHasOptionsMenu(true);
+
         mArtistList = new ArrayList<>();
-        mArtistList = SongDatabase.getArtistFromDevice(getContext());
-        lvArtist = (RecyclerView) view.findViewById(R.id.recycleViewAr);
-        lvArtist.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        lvArtist.setLayoutManager(gridLayoutManager);
+        gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+
+        recycArtist = (RecyclerView) view.findViewById(R.id.recycleViewAr);
+        recycArtist.setHasFixedSize(true);
+        recycArtist.setLayoutManager(gridLayoutManager);
         mArtistAdapter = new ArtistAdapter(mArtistList, getActivity());
-        lvArtist.setAdapter(mArtistAdapter);
+        recycArtist.setAdapter(mArtistAdapter);
+
+        loadData();
+
         return view;
     }
+
+    private void loadData() {
+        new AsyncTask<String, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(String... params) {
+                mArtistList.clear();
+                mArtistList.addAll(SongDatabase.getArtistFromDevice(getContext()));
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                mArtistAdapter.notifyDataSetChanged();
+
+            }
+        }.execute("");
+    }
+
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
@@ -69,16 +100,19 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.itemList:
                 boolean isSwitched = mArtistAdapter.toggleItemViewType();
-                lvArtist.setLayoutManager(isSwitched ?  new GridLayoutManager(getContext(), 2) : new LinearLayoutManager(getContext()));
+                recycArtist.setLayoutManager(isSwitched ? new GridLayoutManager(getContext(), 2)
+                        : new LinearLayoutManager(getContext()));
                 mArtistAdapter.notifyDataSetChanged();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-
-
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 }

@@ -2,8 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:padding="5dp">
+    android:paddingBottom="6dp"
+    android:paddingLeft="8dp"
+    android:paddingTop="6dp">
 
     <ImageView
         android:id="@+id/handle"
@@ -25,15 +28,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_weight="3"
         android:orientation="vertical"
         android:paddingLeft="10dp">
 
         <TextView
             android:id="@+id/itm_que_nameSong"
+            style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:maxLength="40"
             android:maxLines="1"
             android:text="Name Song"
@@ -42,12 +44,13 @@
 
         <TextView
             android:id="@+id/itm_que_nameArtist"
+            style="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:maxLength="30"
             android:maxLines="1"
-            android:text="Name Artist" />
+            android:text="Name Artist"
+            android:textSize="13sp" />
     </LinearLayout>
 
 </LinearLayout>

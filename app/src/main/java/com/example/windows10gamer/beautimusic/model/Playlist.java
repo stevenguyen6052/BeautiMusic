@@ -1,11 +1,13 @@
 package com.example.windows10gamer.beautimusic.model;
 
+import android.print.PageRange;
+
 /**
  * Created by Windows 10 Gamer on 06/10/2017.
  */
 
 public class Playlist {
-    private int idPlaylist;
+    private int id;
     private String listIdSong;
     private String name;
 
@@ -13,13 +15,16 @@ public class Playlist {
 
     }
 
-    public Playlist(String listIdSong, String name) {
-        this.listIdSong = listIdSong;
-        this.name = name;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Playlist(int idPlaylist, String listIdSong, String name) {
-        this.idPlaylist = idPlaylist;
+    public int getId() {
+        return id;
+    }
+
+    public Playlist(int  id, String listIdSong, String name) {
+        this.id = id;
         this.listIdSong = listIdSong;
         this.name = name;
     }
@@ -40,11 +45,6 @@ public class Playlist {
         this.name = name;
     }
 
-    public int getIdPlaylist() {
-        return idPlaylist;
-    }
 
-    public void setIdPlaylist(int idPlaylist) {
-        this.idPlaylist = idPlaylist;
-    }
+
 }

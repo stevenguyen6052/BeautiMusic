@@ -11,7 +11,7 @@
     <item
         android:id="@+id/itemList"
         android:orderInCategory="100"
-        android:title="Hiên thị list || grid"
+        android:title="List || Grid"
         app:showAsAction="never" />
 
 </menu>

@@ -2,43 +2,60 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="70dp"
+    android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:padding="5dp">
+    android:paddingBottom="6dp"
+    android:paddingLeft="8dp"
+    android:paddingTop="6dp">
 
-    <ImageView
-        android:id="@+id/alImgViewAlbum"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center" />
-
-    <LinearLayout
+    <RelativeLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:weightSum="2">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/alTvNameAlbum"
+        <ImageView
+            android:id="@+id/alImgViewAlbum"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_splash" />
+
+        <LinearLayout
+            android:layout_centerInParent="true"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:maxLength="40"
-            android:maxLines="1"
-            android:text="Name Album"
-            android:textColor="@color/colorBack"
-            android:textSize="16sp" />
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/alImgViewAlbum"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="10dp">
 
-        <TextView
-            android:id="@+id/alTvNameArtist"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:maxLength="30"
-            android:maxLines="1"
-            android:text="Name Artist" />
+            <TextView
+                android:id="@+id/alTvNameAlbum"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLength="30"
+                android:maxLines="1"
+                android:text="Name Album"
+                android:textColor="@color/colorBack"
+                android:textSize="16sp" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/alTvNameArtist"
+                style="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLength="30"
+                android:maxLines="1"
+                android:text="Name Artist"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
 
 
 </LinearLayout>

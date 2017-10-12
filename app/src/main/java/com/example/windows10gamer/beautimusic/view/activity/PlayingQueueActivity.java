@@ -19,6 +19,7 @@ import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.utilities.dragandswipe.ListChangedListener;
 import com.example.windows10gamer.beautimusic.utilities.dragandswipe.QueueAdapter;
 import com.example.windows10gamer.beautimusic.utilities.dragandswipe.SimpleItemTouchHelperCallback;
+import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -37,6 +38,11 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
     public static ImageView mPlayPause;
     private CircleImageView mImgSong;
     private List<Song> getListSong;
+    private QueueAdapter mQueueAdapter;
+    private RecyclerView mRecycleview;
+    private ItemTouchHelper.Callback callback;
+    private Toolbar toolbar;
+    private MusicService service;
 
 
     @Override
@@ -44,14 +50,11 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing_queue);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null)
-            setSupportActionBar(toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         initView();
-        mSongList = getIntent().getExtras().getParcelableArrayList(Utils.LIST_SONG);
         setUpAdapter();
 
     }
@@ -63,12 +66,13 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
     }
 
     private void initView() {
-        mSongList = new ArrayList<>();
+        mSongList = getIntent().getExtras().getParcelableArrayList(Utils.LIST_SONG);
         mTvNameSong = (TextView) findViewById(R.id.queueNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.queueNameArtist);
         mPlayPause = (ImageView) findViewById(R.id.queuePlayPause);
         mImgSong = (CircleImageView) findViewById(R.id.queueImage);
         mLayoutOpenPlayMusic = findViewById(R.id.queueOpenPlayMusic);
+
         mPlayPause.setOnClickListener(this);
         mLayoutOpenPlayMusic.setOnClickListener(this);
     }
@@ -98,14 +102,14 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
     }
 
     private void setUpAdapter() {
-        QueueAdapter adapter = new QueueAdapter(this, this, mSongList, this);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycleQueue);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
+        mQueueAdapter = new QueueAdapter(this, this, mSongList, this);
+        mRecycleview = (RecyclerView) findViewById(R.id.recycleQueue);
+        mRecycleview.setHasFixedSize(true);
+        mRecycleview.setAdapter(mQueueAdapter);
+        mRecycleview.setLayoutManager(new LinearLayoutManager(this));
+        callback = new SimpleItemTouchHelperCallback(mQueueAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(recyclerView);
+        mItemTouchHelper.attachToRecyclerView(mRecycleview);
     }
 
     private void miniControlPlay() {
@@ -149,14 +153,14 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         switch (v.getId()) {
             case R.id.queuePlayPause:
                 if (HomeActivity.musicService.isPlaying()) {
-                    HomeActivity.musicService.pausePlayer();
                     mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    HomeActivity.musicService.pausePlayer();
                     PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                     HomeActivity.musicService.updateRemoteview();
 
                 } else {
-                    HomeActivity.musicService.startPlayer();
                     mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    HomeActivity.musicService.startPlayer();
                     PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                     HomeActivity.musicService.updateRemoteview();
                 }

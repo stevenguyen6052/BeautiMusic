@@ -5,4 +5,12 @@
     <string name="name_song">Name Artist</string>
     <string name="sum_album">Sum Album</string>
     <string name="sum_song">Sum Song</string>
+    <string name="song"> Song</string>
+    <string name="choose_list_song">Select list songs</string>
+    <string name="added_playlist">Added playlist!</string>
+    <string name="add_to_playlist">Add to playlist!</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="add_playlist">Add new playlist</string>
+
 </resources>

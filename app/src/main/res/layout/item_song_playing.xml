@@ -27,7 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:layout_toRightOf="@id/ImgView"
-            android:layout_toLeftOf="@+id/imgMoreVert"
             android:orientation="vertical"
             android:paddingLeft="12dp"
             android:paddingTop="5dp">
@@ -57,16 +56,6 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/imgMoreVert"
-            android:layout_width="24dp"
-            android:layout_height="50dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="12dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_more_vert_black_48dp" />
     </RelativeLayout>
-
 
 </LinearLayout>

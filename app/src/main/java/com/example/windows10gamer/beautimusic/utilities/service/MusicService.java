@@ -188,12 +188,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void setIndexPlay(int index) {
         mPosition = index;
     }
+
     public List<Song> getSongList(){
         return mSongList;
     }
+
     public int getIndexPlay(){
         return mPosition;
     }
+
     public int getDuaration() {
         return Integer.valueOf(mSongList.get(mPosition).getDuaration());
     }

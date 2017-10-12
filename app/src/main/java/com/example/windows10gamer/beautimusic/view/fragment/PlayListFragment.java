@@ -1,54 +1,87 @@
 package com.example.windows10gamer.beautimusic.view.fragment;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
+import com.example.windows10gamer.beautimusic.model.Playlist;
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.view.activity.AddSongToPlaylisActivity;
+import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
+import com.example.windows10gamer.beautimusic.view.adapter.PlaylistAdapter;
 import com.example.windows10gamer.beautimusic.view.adapter.RecyclerItemClickListener;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
+import static com.example.windows10gamer.beautimusic.utilities.Utils.NAME_ALBUM;
 
 /**
  * Created by Windows 10 Gamer on 03/10/2017.
  */
 
-public class PlayListFragment extends Fragment {
-    private List<Song> mSongList, filteredModelList;
+public class PlayListFragment extends Fragment implements View.OnClickListener {
+    //private List<Song> mSongList, filteredModelList;
+    public List<Playlist> mPlaylists,filteredModelList;
+    public PlaylistAdapter mPlaylistAdapter;
     private SongDatabase mSongDatabase;
     private View view;
     private TextView tvSumSong;
     SearchView searchView;
     private RecyclerView lvSongs;
-    private SongAdapter mSongAdapter;
+    private List<Song> mSongList;
+    private LinearLayoutManager linearLayoutManager;
+    private Gson gson;
+    private Type type;
+    private FloatingActionButton floatButton;
+    private Dialog dialog;
+    private EditText edtInputPlaylist;
+    private SongDatabase songDatabase;
+    private static final int REQUEST_CODE = 1;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_playlist, container, false);
         setHasOptionsMenu(true);
+        mSongList = new ArrayList<>();
+        mPlaylists = new ArrayList<>();
+        songDatabase = new SongDatabase(getContext());
+
         lvSongs = (RecyclerView) view.findViewById(R.id.lvSongPlayList);
         tvSumSong = (TextView) view.findViewById(R.id.playlisstSum);
-        mSongList = new ArrayList<>();
-
+        floatButton = (FloatingActionButton) view.findViewById(R.id.floatButton);
+        floatButton.setOnClickListener(this);
 
         return view;
     }
@@ -56,69 +89,51 @@ public class PlayListFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mSongDatabase = new SongDatabase(getContext());
-        mSongList.addAll(mSongDatabase.getAllListSong());
 
         lvSongs.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        gson = new Gson();
+        type = new TypeToken<List<Song>>() {
+        }.getType();
+        mSongDatabase = new SongDatabase(getContext());
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        mPlaylistAdapter = new PlaylistAdapter(this, mPlaylists);
         lvSongs.setLayoutManager(linearLayoutManager);
-        mSongAdapter = new SongAdapter(mSongList, getActivity());
-        lvSongs.setAdapter(mSongAdapter);
-        addItemClick();
+        lvSongs.setAdapter(mPlaylistAdapter);
 
-        if (mSongList.size() != 0) {
-            tvSumSong.setText(mSongList.size() + " Bài hát");
-        } else {
-            tvSumSong.setText("Không có bài hát nào !");
+        loadData();
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            mPlaylists.clear();
+            mPlaylists.addAll(mSongDatabase.getPlaylist());
+            mPlaylistAdapter.notifyDataSetChanged();
         }
     }
 
-    private void addItemClick() {
-        lvSongs.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), lvSongs,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(getContext(), PlayMusicActivity.class);
-                        Bundle b = new Bundle();
-                        if (filteredModelList != null && filteredModelList.size() != 0) {
-                            b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) filteredModelList);
-                        } else {
-                            b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) mSongList);
-                        }
-                        b.putInt(Utils.POSITION, position);
-                        intent.putExtras(b);
-                        startActivity(intent);
-                    }
+    private void loadData(){
+        new AsyncTask<String, Void, Void>() {
 
-                    @Override
-                    public void onItemLongClick(View view, final int position) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setMessage("Bạn có muốn xóa bài hát khỏi list yêu thích không ?");
-                        builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                mSongDatabase.deleteSong(mSongList.get(position));
-                                mSongList.clear();
-                                mSongList.addAll(mSongDatabase.getAllListSong());
-                                mSongAdapter.notifyDataSetChanged();
-                                if (mSongList.size() != 0) {
-                                    tvSumSong.setText(mSongList.size() + " Bài hát");
-                                } else {
-                                    tvSumSong.setText("Không có bài hát nào !");
-                                }
-                            }
-                        });
-                        builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        AlertDialog alert = builder.create();
-                        alert.show();
+            @Override
+            protected Void doInBackground(String... params) {
+                mPlaylists.clear();
+                mPlaylists.addAll(mSongDatabase.getPlaylist());
 
-                    }
-                }));
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                mPlaylistAdapter.notifyDataSetChanged();
+
+            }
+        }.execute("");
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -137,10 +152,51 @@ public class PlayListFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filteredModelList = Utils.filter(mSongList, newText.trim());
-                mSongAdapter.setFilter(filteredModelList);
+                filteredModelList = Utils.filterPlaylist(mPlaylists,newText);
+                mPlaylistAdapter.setFilter(filteredModelList);
                 return true;
             }
         });
     }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.floatButton:
+
+                dialog = new Dialog(getContext());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_add_playlist);
+                edtInputPlaylist = (EditText) dialog.findViewById(R.id.edtAddPlayList);
+
+                dialog.findViewById(R.id.btnYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String namePlaylist = edtInputPlaylist.getText().toString();
+                        if (edtInputPlaylist.getText().toString().equals("")) {
+                            Toast.makeText(getContext(), "Please input name playlist !", Toast.LENGTH_SHORT).show();
+                        } else if (Utils.checkString(namePlaylist)) {
+                            Toast.makeText(getContext(), "Input all space, Please Input again!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            startActivityForResult(new Intent(getContext(), AddSongToPlaylisActivity.class)
+                                    .putExtra(Utils.NAME_PLAYLIST, namePlaylist), REQUEST_CODE);
+                            dialog.dismiss();
+                        }
+
+
+                    }
+                });
+                dialog.findViewById(R.id.btnNo).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+                break;
+        }
+    }
+
 }

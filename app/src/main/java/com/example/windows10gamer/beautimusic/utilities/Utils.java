@@ -11,6 +11,7 @@ import android.view.animation.TranslateAnimation;
 
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.model.Artist;
+import com.example.windows10gamer.beautimusic.model.Playlist;
 import com.example.windows10gamer.beautimusic.model.Song;
 
 import java.text.Normalizer;
@@ -25,6 +26,8 @@ public class Utils {
     public static final String POSITION = "POSITION";
     // check to get data from fragment song,album,artist
     public final static String TAG = "TAG";
+    public final static String PLAYLIST = "PLAYLIST";
+    public final static String NAME_PLAYLIST = "NamePlaylist";
     public final static String TAG_SONG = "SONG";
     public final static String TAG_ARTIST = "ARTIST";
     public final static String TAG_ALBUM = "ALBUM";
@@ -40,11 +43,27 @@ public class Utils {
     public static final String EMPTY = "EMPTY";
     public static final String TRUE = "True";
     public static final String ITEM_CLICK = "Click";
-    public static final String HDPI = "hdpi";
-    public static final String XHDPI = "xhdpi";
-    public static final String XXHDPI = "xxhdpi";
-    public static final String XXXHDPI = "xxxhdpi";
     public static final String SHUFFLE_REPEAT = "ShuffleRepeat";
+    public static final String SHUFFLE = "ShuffleOn";
+    public static final String REPEAT = "RepeatOn";
+
+    public static boolean checkString(String s) {
+        int sum = 0;
+
+        String[] separated = s.split(" ");
+        for (int i = 0; i > separated.length; i++) {
+            if (separated[i].equals(" ")) {
+                sum = sum + 1;
+            }
+        }
+        if (sum == separated.length) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
 
     public static void sortCollection(List<Song> mSongList) {
         Collections.sort(mSongList, new Comparator<Song>() {
@@ -73,40 +92,11 @@ public class Utils {
         });
     }
 
-    //resize bitmap
-    public static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
 
     public static String unAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(temp).replaceAll("").replaceAll("Đ", "D").replaceAll("đ", "d");
-    }
-
-    public static void setAnimitionTextView() {
-        Animation animationToLeft = new TranslateAnimation(400, -400, 0, 0);
-        animationToLeft.setDuration(12000);
-        animationToLeft.setRepeatMode(Animation.RESTART);
-        animationToLeft.setRepeatCount(Animation.INFINITE);
-
-        Animation animationToRight = new TranslateAnimation(-400, 400, 0, 0);
-        animationToRight.setDuration(12000);
-        animationToRight.setRepeatMode(Animation.RESTART);
-        animationToRight.setRepeatCount(Animation.INFINITE);
     }
 
     public static List<Song> filter(List<Song> mlistSong, String query) {
@@ -134,6 +124,18 @@ public class Utils {
         }
         return filteredModelList;
     }
+    public static List<Playlist> filterPlaylist(List<Playlist> playlists, String query) {
+        String s = Utils.unAccent(query.toLowerCase());
+        List<Playlist> filteredModelList = new ArrayList<>();
+
+        for (Playlist playlist : playlists) {
+            String text = Utils.unAccent(playlist.getName().toLowerCase());
+            if (text.contains(s)) {
+                filteredModelList.add(playlist);
+            }
+        }
+        return filteredModelList;
+    }
 
     public static List<Artist> filterArtist(List<Artist> mArtistList, String query) {
         String s = Utils.unAccent(query.toLowerCase());
@@ -146,27 +148,5 @@ public class Utils {
             }
         }
         return filteredModelList;
-    }
-
-    public static String getCurrentScreen(Context context) {
-        String checkScreen = "";
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-        if (width == 480  || width == 540 ) {
-            checkScreen = HDPI;
-        } else if (width == 720 || width == 768 ) {
-            checkScreen = XHDPI;
-        } else if (width == 1080 ) {
-            checkScreen = XXHDPI;
-        } else if (width == 1440 ) {
-            checkScreen = XXXHDPI;
-        }
-        return checkScreen;
-
     }
 }

@@ -3,7 +3,9 @@ package com.example.windows10gamer.beautimusic.view.fragment;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -47,59 +50,43 @@ public class SongFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_song, container, false);
         setHasOptionsMenu(true);
+
+        mSongList = new ArrayList<>();
         mSongDatabase = new SongDatabase(getContext());
         lvSongs = (RecyclerView) view.findViewById(R.id.mListViewSong);
-        mSongList = SongDatabase.getSongFromDevice(getContext());
 
         lvSongs.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getContext());
         lvSongs.setLayoutManager(linearLayoutManager);
-        mSongAdapter = new SongAdapter(mSongList, getActivity());
+        if (filteredModelList!=null && filteredModelList.size()>0){
+            mSongAdapter = new SongAdapter(filteredModelList, getActivity());
+        }else {
+            mSongAdapter = new SongAdapter(mSongList, getActivity());
+        }
         lvSongs.setAdapter(mSongAdapter);
-        addItemClick();
 
+        loadData();
         return view;
     }
 
-    private void addItemClick() {
-        lvSongs.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), lvSongs,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(getContext(), PlayMusicActivity.class);
-                        Bundle b = new Bundle();
-                        if (filteredModelList != null && filteredModelList.size() != 0) {
-                            b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) filteredModelList);
-                        } else {
-                            b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) mSongList);
-                        }
-                        b.putInt(Utils.POSITION, position);
-                        intent.putExtras(b);
-                        startActivity(intent);
-                    }
+    private void loadData(){
+        new AsyncTask<String, Void, Void>() {
 
-                    @Override
-                    public void onItemLongClick(View view, final int position) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            @Override
+            protected Void doInBackground(String... params) {
+                mSongList.clear();
+                mSongList.addAll(SongDatabase.getSongFromDevice(getContext()));
 
-                        builder.setMessage("Bạn có muốn thêm bài hát vào playlist không ?");
-                        builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                return null;
+            }
 
-                            public void onClick(DialogInterface dialog, int which) {
-                                mSongDatabase.addNewSong(mSongList.get(position));
-                            }
-                        });
-                        builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        AlertDialog alert = builder.create();
-                        alert.show();
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                mSongAdapter.notifyDataSetChanged();
 
-                    }
-                }));
+            }
+        }.execute("");
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
