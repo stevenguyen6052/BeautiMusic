@@ -1,7 +1,10 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,7 +38,7 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
     public String check = "";
     private View mLayoutOpenPlayMusic;
     private TextView mTvNameSong, mTvNameArtist;
-    public static ImageView mPlayPause;
+    private ImageView mPlayPause;
     private CircleImageView mImgSong;
     private List<Song> getListSong;
     private QueueAdapter mQueueAdapter;
@@ -50,12 +53,19 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing_queue);
 
+        service = HomeActivity.musicService;
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         initView();
         setUpAdapter();
+
+        IntentFilter it = new IntentFilter();
+        it.addAction(Utils.PAUSE_KEY);
+        it.addAction(Utils.PLAY_KEY);
+        registerReceiver(receiver, it);
 
     }
 
@@ -113,15 +123,15 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
     }
 
     private void miniControlPlay() {
-        if (HomeActivity.musicService.isPlaying()) {
+        if (service.isPlaying()) {
             mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
             currentSongPlaying();
         } else {
             mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
         }
 
-        mTvNameSong.setText(HomeActivity.musicService.nameSong());
-        mTvNameArtist.setText(HomeActivity.musicService.nameArtist());
+        mTvNameSong.setText(service.nameSong());
+        mTvNameArtist.setText(service.nameArtist());
         Picasso.with(this)
                 .load(HomeActivity.musicService.getImageSong())
                 .placeholder(R.drawable.icon_music)
@@ -136,9 +146,9 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
             @Override
             public void run() {
                 mHandler.postDelayed(this, 500);
-                HomeActivity.musicService.setOnComplete();
-                mTvNameSong.setText(HomeActivity.musicService.nameSong());
-                mTvNameArtist.setText(HomeActivity.musicService.nameArtist());
+                service.setOnComplete();
+                mTvNameSong.setText(service.nameSong());
+                mTvNameArtist.setText(service.nameArtist());
             }
         }, 100);
     }
@@ -152,17 +162,15 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.queuePlayPause:
-                if (HomeActivity.musicService.isPlaying()) {
+                if (service.isPlaying()) {
                     mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    HomeActivity.musicService.pausePlayer();
-                    PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    HomeActivity.musicService.updateRemoteview();
+                    sendBroadcast(new Intent().setAction(Utils.NOTIFI));
+                    sendBroadcast(new Intent().setAction(Utils.PAUSE_KEY));
 
                 } else {
                     mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    HomeActivity.musicService.startPlayer();
-                    PlayMusicActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    HomeActivity.musicService.updateRemoteview();
+                    sendBroadcast(new Intent().setAction(Utils.NOTIFI));
+                    sendBroadcast(new Intent().setAction(Utils.PLAY_KEY));
                 }
                 break;
 
@@ -186,5 +194,17 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         finish();
         return true;
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Utils.PAUSE_KEY)) {
+                mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+            } else if (intent.getAction().equals(Utils.PLAY_KEY)) {
+                mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+            }
+
+        }
+    };
 
 }

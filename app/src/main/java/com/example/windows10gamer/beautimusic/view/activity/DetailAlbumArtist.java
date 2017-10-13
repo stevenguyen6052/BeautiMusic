@@ -1,6 +1,10 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -34,7 +38,7 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView mTvNameSong, mTvNameArtist;
-    public static ImageView mControlPlayPause;
+    private ImageView mControlPlayPause;
     public View mLayoutControl;
     private List<Song> mSongList;
     private String nameAlbumArtist, tag;
@@ -59,6 +63,11 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         initView();
         setImageAlbum();
 
+        IntentFilter it = new IntentFilter();
+        it.addAction(Utils.PAUSE_KEY);
+        it.addAction(Utils.PLAY_KEY);
+        registerReceiver(receiver, it);
+
     }
 
     @Override
@@ -66,12 +75,9 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         super.onResume();
 
 
-
         if (HomeActivity.musicService.mPlayer != null) {
             checkPlayMusic();
             miniControlPlayMusic();
-
-        } else {
 
         }
     }
@@ -174,6 +180,7 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
         mSongList = new ArrayList<>();
         Bundle b = getIntent().getExtras();
         tag = b.getString(Utils.TAG);
+
         if (tag.equals(Utils.TAG_ALBUM)) {
             nameAlbumArtist = b.getString(Utils.NAME_ALBUM);
             idAlbumArtist = b.getInt(Utils.ALBUM_ID);
@@ -183,8 +190,9 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
             nameAlbumArtist = b.getString(Utils.NAME_ARTIST);
             idAlbumArtist = b.getInt(Utils.ARTIST_ID);
             mSongList = SongDatabase.getArtistSong(idAlbumArtist, this);
-        } else if (tag.equals("PLAYLIST")) {
-            nameAlbumArtist = b.getString("NamePlaylist");
+
+        } else if (tag.equals(Utils.PLAYLIST)) {
+            nameAlbumArtist = b.getString(Utils.NAME_PLAYLIST);
             mSongList = b.getParcelableArrayList(Utils.LIST_SONG);
         }
 
@@ -199,18 +207,28 @@ public class DetailAlbumArtist extends AppCompatActivity implements View.OnClick
             case R.id.albumControlPlayPause:
 
                 if (HomeActivity.musicService.isPlaying()) {
-                    HomeActivity.musicService.pausePlayer();
                     mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    HomeActivity.musicService.updateRemoteview();
+                    sendBroadcast(new Intent().setAction(Utils.PAUSE_KEY));
+                    sendBroadcast(new Intent().setAction(Utils.NOTIFI));
                 } else {
-                    HomeActivity.musicService.startPlayer();
                     mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    HomeActivity.mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    HomeActivity.musicService.updateRemoteview();
+                    sendBroadcast(new Intent().setAction(Utils.PLAY_KEY));
+                    sendBroadcast(new Intent().setAction(Utils.NOTIFI));
                 }
                 break;
         }
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Utils.PAUSE_KEY)) {
+                mControlPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+            } else if (intent.getAction().equals(Utils.PLAY_KEY)) {
+                mControlPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+            }
+
+        }
+    };
 
 }

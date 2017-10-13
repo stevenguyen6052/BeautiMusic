@@ -40,6 +40,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.security.AccessController.getContext;
+
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     private List<Playlist> mPlaylist = new ArrayList<>();
@@ -139,9 +141,16 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                                                 gson = new Gson();
                                                 s.add(mSongList.get(i));
                                                 String listSong = gson.toJson(s);
-                                                songDatabase.addPlayList(edtNamePlaylist.getText().toString(), listSong);
-                                                Toast.makeText(mContext, "Added into playlist !", Toast.LENGTH_SHORT).show();
-                                                dialogAddSong.dismiss();
+
+                                                if (edtNamePlaylist.getText().toString().equals("")) {
+                                                    Toast.makeText(mContext, "Please input name playlist !", Toast.LENGTH_SHORT).show();
+                                                } else if (Utils.checkString(edtNamePlaylist.getText().toString())) {
+                                                    Toast.makeText(mContext, "Input all space, Please Input again!", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    songDatabase.addPlayList(edtNamePlaylist.getText().toString(), listSong);
+                                                    Toast.makeText(mContext, "Added into playlist !", Toast.LENGTH_SHORT).show();
+                                                    dialogAddSong.dismiss();
+                                                }
 
                                             }
                                         });
@@ -206,7 +215,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                             }
                         }
 
-                        if (sum == 0){
+                        if (sum == 0) {
                             listSong.add(mSongList.get(i));
                         }
 

@@ -46,6 +46,11 @@ public class Utils {
     public static final String SHUFFLE_REPEAT = "ShuffleRepeat";
     public static final String SHUFFLE = "ShuffleOn";
     public static final String REPEAT = "RepeatOn";
+    public static final String PLAY_KEY = "play";
+    public static final String PAUSE_KEY = "pause";
+    public static final String NOTIFI = "update.notifi";
+    public static final String NEXT_PLAY = "nextplay";
+    public static final String PREVIOUS_PLAY = "previousplay";
 
     public static boolean checkString(String s) {
         int sum = 0;

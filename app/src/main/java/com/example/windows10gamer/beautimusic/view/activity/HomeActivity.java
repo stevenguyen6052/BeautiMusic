@@ -1,9 +1,11 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -42,7 +44,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public static MusicService musicService;
     private TextView mTvNameSong;
     private TextView mTvNameArtist;
-    public static ImageView mImgPlayPause;
+    private ImageView playPause;
     private CircleImageView mImgSong;
     private Intent playIntent;
     private boolean musicBound = false;
@@ -64,7 +66,26 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
         initView();
+
+        IntentFilter it = new IntentFilter();
+        it.addAction(Utils.PAUSE_KEY);
+        it.addAction(Utils.PLAY_KEY);
+        registerReceiver(receiver, it);
+
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Utils.PAUSE_KEY)) {
+                playPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+            } else if (intent.getAction().equals(Utils.PLAY_KEY)) {
+                playPause.setImageResource(R.drawable.ic_pause_white_48dp);
+            }
+
+        }
+    };
+
 
     private void addPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -119,12 +140,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             if (musicService.mPlayer.isPlaying()) {
                 mTvNameSong.setText(musicService.nameSong());
                 mTvNameArtist.setText(musicService.nameArtist());
-                mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                playPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 currentSongPlaying();
             } else {
                 mTvNameSong.setText(musicService.nameSong());
                 mTvNameArtist.setText(musicService.nameArtist());
-                mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                playPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
             }
             Picasso.with(this)
                     .load(musicService.getImageSong())
@@ -152,11 +173,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mLayoutControl = findViewById(R.id.mainLayoutControl);
         mTvNameSong = (TextView) findViewById(R.id.mainNameSong);
         mTvNameArtist = (TextView) findViewById(R.id.mainNameSingle);
-        mImgPlayPause = (ImageView) findViewById(R.id.mainControlPlay);
+        playPause = (ImageView) findViewById(R.id.mainControlPlay);
         mImgSong = (CircleImageView) findViewById(R.id.mainImgSong);
         mMiniControl = findViewById(R.id.mainMiniControl);
         mMiniControl.setOnClickListener(this);
-        mImgPlayPause.setOnClickListener(this);
+        playPause.setOnClickListener(this);
 
     }
 
@@ -167,10 +188,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(mViewPager);
-//        tabLayout.getTabAt(0).setIcon(R.drawable.ic_music_note_white_48dp);
-//        tabLayout.getTabAt(1).setIcon(R.drawable.ic_album_white_48dp1);
-//        tabLayout.getTabAt(2).setIcon(R.drawable.ic_person_white_48dp1);
-//        tabLayout.getTabAt(3).setIcon(R.drawable.ic_favorite_white_48dp);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_music_note_white_48dp);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_album_white_48dp1);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_person_white_48dp1);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_favorite_white_48dp);
     }
 
     private ServiceConnection getMusicConnection = new ServiceConnection() {
@@ -198,13 +219,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mainControlPlay:
                 if (musicService.isPlaying()) {
                     musicService.pausePlayer();
-                    mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    musicService.updateRemoteview();
+                    playPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
                 } else {
                     musicService.startPlayer();
-                    mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    musicService.updateRemoteview();
+                    playPause.setImageResource(R.drawable.ic_pause_white_48dp);
                 }
+                sendBroadcast(new Intent().setAction(Utils.NOTIFI));
                 break;
         }
     }
