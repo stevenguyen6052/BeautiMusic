@@ -28,6 +28,7 @@ import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
+import com.example.windows10gamer.beautimusic.view.fragment.FragmentMiniControl;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -35,19 +36,15 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+public class HomeActivity extends AppCompatActivity  {
 
     private ViewPager mViewPager;
     private AdapterTab adapterTab;
     private View mLayoutControl;
-    private View mMiniControl;
     public static MusicService musicService;
-    private TextView mTvNameSong;
-    private TextView mTvNameArtist;
-    private ImageView playPause;
-    private CircleImageView mImgSong;
     private Intent playIntent;
     private boolean musicBound = false;
+    private FragmentMiniControl mFragmentMiniControl;
 
 
     @Override
@@ -65,27 +62,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) setSupportActionBar(toolbar);
+
         initView();
-
-        IntentFilter it = new IntentFilter();
-        it.addAction(Utils.PAUSE_KEY);
-        it.addAction(Utils.PLAY_KEY);
-        registerReceiver(receiver, it);
-
     }
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Utils.PAUSE_KEY)) {
-                playPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-            } else if (intent.getAction().equals(Utils.PLAY_KEY)) {
-                playPause.setImageResource(R.drawable.ic_pause_white_48dp);
-            }
-
-        }
-    };
-
 
     private void addPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -113,12 +92,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onResume() {
-
         super.onResume();
         if (musicService.mSongList != null) {
-            //changeLayout();
             mLayoutControl.setVisibility(View.VISIBLE);
-            miniControlPlayMusic();
+            getSupportFragmentManager().beginTransaction().
+                    replace(R.id.mainLayoutControl, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();
+
         }
     }
 
@@ -133,52 +112,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    // update current nameSong,nameArtist of song isplaying
-    private void miniControlPlayMusic() {
-        if (musicService.mSongList.size() > 0) {
-
-            if (musicService.mPlayer.isPlaying()) {
-                mTvNameSong.setText(musicService.nameSong());
-                mTvNameArtist.setText(musicService.nameArtist());
-                playPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                currentSongPlaying();
-            } else {
-                mTvNameSong.setText(musicService.nameSong());
-                mTvNameArtist.setText(musicService.nameArtist());
-                playPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-            }
-            Picasso.with(this)
-                    .load(musicService.getImageSong())
-                    .placeholder(R.drawable.dianhac)
-                    .error(R.drawable.dianhac)
-                    .into(mImgSong);
-        }
-    }
-
-    // update view when song complete
-    private void currentSongPlaying() {
-        final Handler mHandler = new Handler();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mHandler.postDelayed(this, 500);
-                musicService.setOnComplete();
-                mTvNameSong.setText(musicService.nameSong());
-                mTvNameArtist.setText(musicService.nameArtist());
-            }
-        }, 100);
-    }
-
     private void initView() {
+        mFragmentMiniControl = new FragmentMiniControl();
         mLayoutControl = findViewById(R.id.mainLayoutControl);
-        mTvNameSong = (TextView) findViewById(R.id.mainNameSong);
-        mTvNameArtist = (TextView) findViewById(R.id.mainNameSingle);
-        playPause = (ImageView) findViewById(R.id.mainControlPlay);
-        mImgSong = (CircleImageView) findViewById(R.id.mainImgSong);
-        mMiniControl = findViewById(R.id.mainMiniControl);
-        mMiniControl.setOnClickListener(this);
-        playPause.setOnClickListener(this);
-
+        mLayoutControl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this,PlayMusicActivity.class));
+            }
+        });
     }
 
     private void addTabFragment() {
@@ -207,27 +149,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             musicBound = false;
         }
     };
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.mainMiniControl:
-                startActivity(new Intent(this, PlayMusicActivity.class));
-                break;
-
-            case R.id.mainControlPlay:
-                if (musicService.isPlaying()) {
-                    musicService.pausePlayer();
-                    playPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                } else {
-                    musicService.startPlayer();
-                    playPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                }
-                sendBroadcast(new Intent().setAction(Utils.NOTIFI));
-                break;
-        }
-    }
 
     public void doBindService() {
         bindService(playIntent, getMusicConnection, Context.BIND_AUTO_CREATE);

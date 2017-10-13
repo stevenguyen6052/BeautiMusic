@@ -23,6 +23,7 @@ import com.example.windows10gamer.beautimusic.utilities.dragandswipe.ListChanged
 import com.example.windows10gamer.beautimusic.utilities.dragandswipe.QueueAdapter;
 import com.example.windows10gamer.beautimusic.utilities.dragandswipe.SimpleItemTouchHelperCallback;
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
+import com.example.windows10gamer.beautimusic.view.fragment.FragmentMiniControl;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -30,22 +31,20 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class PlayingQueueActivity extends AppCompatActivity implements QueueAdapter.OnStartDragListener, View.OnClickListener, ListChangedListener {
+public class PlayingQueueActivity extends AppCompatActivity implements QueueAdapter.OnStartDragListener, ListChangedListener {
 
     private ItemTouchHelper mItemTouchHelper;
     private List<Song> mSongList;
     public int mPostion;
     public String check = "";
     private View mLayoutOpenPlayMusic;
-    private TextView mTvNameSong, mTvNameArtist;
-    private ImageView mPlayPause;
-    private CircleImageView mImgSong;
+
     private List<Song> getListSong;
     private QueueAdapter mQueueAdapter;
     private RecyclerView mRecycleview;
     private ItemTouchHelper.Callback callback;
     private Toolbar toolbar;
-    private MusicService service;
+    private FragmentMiniControl mFragmentMiniControl;
 
 
     @Override
@@ -53,38 +52,34 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing_queue);
 
-        service = HomeActivity.musicService;
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         initView();
         setUpAdapter();
-
-        IntentFilter it = new IntentFilter();
-        it.addAction(Utils.PAUSE_KEY);
-        it.addAction(Utils.PLAY_KEY);
-        registerReceiver(receiver, it);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        miniControlPlay();
+        getSupportFragmentManager().beginTransaction().
+                replace(R.id.queueLayout, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();
     }
 
     private void initView() {
+        mFragmentMiniControl = new FragmentMiniControl();
         mSongList = getIntent().getExtras().getParcelableArrayList(Utils.LIST_SONG);
-        mTvNameSong = (TextView) findViewById(R.id.queueNameSong);
-        mTvNameArtist = (TextView) findViewById(R.id.queueNameArtist);
-        mPlayPause = (ImageView) findViewById(R.id.queuePlayPause);
-        mImgSong = (CircleImageView) findViewById(R.id.queueImage);
-        mLayoutOpenPlayMusic = findViewById(R.id.queueOpenPlayMusic);
+        mLayoutOpenPlayMusic = findViewById(R.id.queueLayout);
 
-        mPlayPause.setOnClickListener(this);
-        mLayoutOpenPlayMusic.setOnClickListener(this);
+        mLayoutOpenPlayMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PlayingQueueActivity.this, PlayMusicActivity.class));
+            }
+        });
     }
 
     public void dataResult() {
@@ -122,64 +117,12 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         mItemTouchHelper.attachToRecyclerView(mRecycleview);
     }
 
-    private void miniControlPlay() {
-        if (service.isPlaying()) {
-            mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-            currentSongPlaying();
-        } else {
-            mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-        }
-
-        mTvNameSong.setText(service.nameSong());
-        mTvNameArtist.setText(service.nameArtist());
-        Picasso.with(this)
-                .load(HomeActivity.musicService.getImageSong())
-                .placeholder(R.drawable.icon_music)
-                .error(R.drawable.icon_music)
-                .into(mImgSong);
-        currentSongPlaying();
-    }
-
-    private void currentSongPlaying() {
-        final Handler mHandler = new Handler();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mHandler.postDelayed(this, 500);
-                service.setOnComplete();
-                mTvNameSong.setText(service.nameSong());
-                mTvNameArtist.setText(service.nameArtist());
-            }
-        }, 100);
-    }
 
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.queuePlayPause:
-                if (service.isPlaying()) {
-                    mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    sendBroadcast(new Intent().setAction(Utils.NOTIFI));
-                    sendBroadcast(new Intent().setAction(Utils.PAUSE_KEY));
-
-                } else {
-                    mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    sendBroadcast(new Intent().setAction(Utils.NOTIFI));
-                    sendBroadcast(new Intent().setAction(Utils.PLAY_KEY));
-                }
-                break;
-
-            case R.id.queueOpenPlayMusic:
-                dataResult();
-                finish();
-                break;
-        }
-    }
 
     @Override
     public void onNoteListChanged(List<Song> mSongs) {
@@ -194,17 +137,5 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         finish();
         return true;
     }
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Utils.PAUSE_KEY)) {
-                mPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-            } else if (intent.getAction().equals(Utils.PLAY_KEY)) {
-                mPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-            }
-
-        }
-    };
 
 }

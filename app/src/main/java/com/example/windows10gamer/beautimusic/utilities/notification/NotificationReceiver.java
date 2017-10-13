@@ -32,10 +32,12 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             case NOTIFY_NEXT:
                 context.sendBroadcast(new Intent().setAction(Utils.NEXT_PLAY));
+                context.sendBroadcast(new Intent().setAction(Utils.PLAY_KEY));
                 break;
 
             case NOTIFY_PREVIOUS:
                 context.sendBroadcast(new Intent().setAction(Utils.PREVIOUS_PLAY));
+                context.sendBroadcast(new Intent().setAction(Utils.PLAY_KEY));
                 break;
 
         }

@@ -91,7 +91,6 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
     public void sendList(List<Song> songs) {
         songList.clear();
         songList.addAll(songs);
-        Log.d("List", String.valueOf(songList.size()));
     }
 
     @Override

@@ -29,82 +29,14 @@
     </android.support.v7.widget.RecyclerView>
 
     <LinearLayout
+        android:id="@+id/queueLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:background="@color/colorPink"
         android:orientation="horizontal"
-        android:weightSum="10">
+        android:weightSum="10"/>
 
-        <LinearLayout
-            android:id="@+id/queueOpenPlayMusic"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="8.25"
-            android:orientation="horizontal"
-            android:weightSum="10">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/queueImage"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/dianhac" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_toRightOf="@id/queueImage"
-                android:layout_weight="10"
-                android:orientation="vertical"
-                android:weightSum="10">
-
-                <TextView
-                    android:id="@+id/queueNameSong"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_toRightOf="@id/queueImage"
-                    android:layout_weight="5"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:paddingTop="5dp"
-                    android:scrollHorizontally="true"
-                    android:text="Tên bài hát"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/queueNameArtist"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_below="@+id/mainNameSong"
-                    android:layout_toRightOf="@id/queueImage"
-                    android:layout_weight="5"
-                    android:ellipsize="end"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:scrollHorizontally="true"
-                    android:text="Tên ca sĩ"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/queuePlayPause"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1.5" />
-
-    </LinearLayout>
 
 
 </LinearLayout>

@@ -70,7 +70,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
         initView();
         getData();
-
         lvSongs.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(this);
         lvSongs.setLayoutManager(linearLayoutManager);
@@ -81,8 +80,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         loadStatusShuffleRepeat();
 
         IntentFilter it = new IntentFilter();
-        it.addAction("pause");
-        it.addAction("play");
+        it.addAction(Utils.PAUSE_KEY);
+        it.addAction(Utils.PLAY_KEY);
         registerReceiver(receiver, it);
     }
 
@@ -92,9 +91,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                     @Override
                     public void onItemClick(View view, int i) {
                         if (filteredModelList != null && filteredModelList.size() != 0) {
-                            HomeActivity.musicService.setSongList(filteredModelList);
+                            service.setSongList(filteredModelList);
                         }
-                        HomeActivity.musicService.setIndexPlay(i);
+                        service.setIndexPlay(i);
                         playMusic();
                     }
 
@@ -116,7 +115,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         } else {
             if (service.mPlayer != null) {
                 setDataForView();
-                mSongList = HomeActivity.musicService.getSongList();
+                mSongList = service.getSongList();
             }
         }
     }
@@ -193,10 +192,12 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         if (service.isPlaying()) {
             service.pausePlayer();
             mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+            sendBroadcast(new Intent().setAction(Utils.PAUSE_KEY));
             sendBroadcast(new Intent().setAction(Utils.NOTIFI));
         } else {
             service.startPlayer();
             mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+            sendBroadcast(new Intent().setAction(Utils.PLAY_KEY));
             sendBroadcast(new Intent().setAction(Utils.NOTIFI));
         }
     }
