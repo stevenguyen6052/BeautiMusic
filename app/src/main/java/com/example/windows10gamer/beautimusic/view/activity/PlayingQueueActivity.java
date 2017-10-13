@@ -77,7 +77,8 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         mLayoutOpenPlayMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(PlayingQueueActivity.this, PlayMusicActivity.class));
+                dataResult();
+                finish();
             }
         });
     }

@@ -6,9 +6,12 @@
     android:layout_height="match_parent"
     tools:context="com.example.windows10gamer.beautimusic.view.activity.AddSongToPlaylisActivity">
 
-    <include
+    <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        layout="@layout/custom_toolbar" />
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorAccent"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycleCheckList"
