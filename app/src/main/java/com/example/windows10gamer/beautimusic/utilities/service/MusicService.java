@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -24,19 +25,18 @@ import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.activity.HomeActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 
 public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
-    //lock screen
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     private RemoteViews remoteView;
     private RemoteViews remoteViewBig;
     private NotificationCompat.Builder nc;
     private NotificationManager nm;
-    private Notification notification;
-    // tag check playmusic error
-    private static final String TAG_CHECK_BUG = "HomeActivity";
     // notification
     public static final String NOTIFY_PREVIOUS = "com.example.windows10gamer.beautimusic.previous";
     public static final String NOTIFY_PLAY = "com.example.windows10gamer.beautimusic.play";
@@ -44,8 +44,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private static final int NOTIFICATION_ID_CUSTOM_BIG = 9;
 
     public MediaPlayer mPlayer;
-    public static List<Song> mSongList;
-    public static int mPosition;
+    public static List<Song> mSongList ;
+    public int mPosition;
     private String songTitle = "";
     private String artistTitle = "";
     private final IBinder musicBind = new MusicBinder();
@@ -57,8 +57,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public void onCreate() {
         super.onCreate();
+
         rand = new Random();
-        //create player
+        sharedPreferences = MusicService.this.getSharedPreferences(Utils.SHARE_PREFERENCE, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
         mPlayer = new MediaPlayer();
         initMusicPlayer();
         IntentFilter it = new IntentFilter();
@@ -69,6 +72,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         it.addAction(Utils.PLAY_KEY);
         registerReceiver(receiver, it);
     }
+
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -93,11 +97,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
     };
 
+
     private void initMusicPlayer() {
         mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-        //set listeners
         mPlayer.setOnPreparedListener(this);
         mPlayer.setOnErrorListener(this);
     }
@@ -121,14 +125,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        return START_NOT_STICKY;
-    }
-
-    @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.d(TAG_CHECK_BUG, "Playback Error");
         if (mPlayer != null) {
             try {
                 mPlayer.stop();
@@ -143,7 +140,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public void onPrepared(MediaPlayer mp) {
         mPlayer.start();
-        // create notification
+        this.sendBroadcast(new Intent().setAction(Utils.START));
+
         initNotification();
 
     }
@@ -176,15 +174,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Notification notification = nc.build();
         startForeground(NOTIFICATION_ID_CUSTOM_BIG, notification);
     }
-
-    private boolean checkPlayer(){
-        if (mPlayer.isPlaying()){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
 
     private void setListener() {
         Intent previous = new Intent(NOTIFY_PREVIOUS);
@@ -219,25 +208,17 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     }
 
-    public boolean isPlaylist() {
-        if (mSongList != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public void setSongList(List<Song> songs) {
         mSongList = songs;
+    }
+    public List<Song> getSongList(){
+        return mSongList;
     }
 
     public void setIndexPlay(int index) {
         mPosition = index;
     }
 
-    public List<Song> getSongList() {
-        return mSongList;
-    }
 
     public int getIndexPlay() {
         return mPosition;
@@ -249,10 +230,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void pausePlayer() {
         mPlayer.pause();
+        editor.putBoolean("StatusPlay", false);
+        editor.commit();
     }
 
     public void startPlayer() {
         mPlayer.start();
+        editor.putBoolean("StatusPlay", true);
+        editor.commit();
     }
 
     public int getCurrentPosition() {
@@ -280,10 +265,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             }
         }
         playSong();
-    }
-
-    public String pathSong() {
-        return mSongList.get(mPosition).getFileSong();
     }
 
     public String nameArtist() {
@@ -337,15 +318,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         try {
             mPlayer.setDataSource(getApplicationContext(), Uri.parse(mSongList.get(mPosition).getFileSong()));
         } catch (Exception e) {
-            Log.d(TAG_CHECK_BUG, "Error setting data source", e);
+
         }
 
         mPlayer.prepareAsync();
         this.sendBroadcast(new Intent()
-                .setAction("updateMiniControl")
-                .putExtra("NameSong", nameSong())
-                .putExtra("NameArtist", nameArtist())
-                .putExtra("ImageSong", getImageSong())
+                .setAction(Utils.TRUE)
+                .putParcelableArrayListExtra("SongList", (ArrayList) mSongList)
+                .putExtra("Index", mPosition)
         );
     }
 
@@ -377,8 +357,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG_CHECK_BUG, "Service is destroyed");
-        stopForeground(true);
         mPlayer.stop();
         mPlayer.release();
         mPlayer = null;

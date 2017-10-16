@@ -1,4 +1,4 @@
-package com.example.windows10gamer.beautimusic.view.adapter;
+package com.example.windows10gamer.beautimusic.utilities;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

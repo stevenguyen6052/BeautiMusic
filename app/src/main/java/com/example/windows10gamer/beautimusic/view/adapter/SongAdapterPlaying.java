@@ -17,7 +17,7 @@ import java.util.List;
 public class SongAdapterPlaying extends RecyclerView.Adapter<SongAdapterPlaying.ViewHolder> {
     private List<Song> mSongList;
     private Context mContext;
-    private Song mSong;
+
 
 
     public SongAdapterPlaying(List<Song> mSongList, Context mContext) {
@@ -35,11 +35,12 @@ public class SongAdapterPlaying extends RecyclerView.Adapter<SongAdapterPlaying.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int i) {
-        mSong = mSongList.get(i);
-        holder.mTvNameSong.setText(mSong.getNameSong());
-        holder.mTvNameArtist.setText(mSong.getNameArtist());
+        Song song = mSongList.get(i);
+
+        holder.mTvNameSong.setText(song.getNameSong());
+        holder.mTvNameArtist.setText(song.getNameArtist());
         Picasso.with(mContext)
-                .load(mSong.getImageSong())
+                .load(song.getImageSong())
                 .placeholder(R.drawable.ic_musicqh)
                 .error(R.drawable.ic_musicqh)
                 .into(holder.mImgView);

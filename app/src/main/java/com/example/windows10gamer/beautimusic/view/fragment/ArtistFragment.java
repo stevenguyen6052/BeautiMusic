@@ -27,11 +27,10 @@ import java.util.List;
 public class ArtistFragment extends android.support.v4.app.Fragment {
     private View view;
     private List<Artist> mArtistList, filteredModelList;
-    private ArtistAdapter mArtistAdapter;
-    private RecyclerView recycArtist;
-    SearchView searchView;
+    private ArtistAdapter mAdapter;
+    private RecyclerView mLvArtist;
     private GridLayoutManager gridLayoutManager;
-    private LinearLayoutManager linearLayoutManager;
+
 
 
     @Override
@@ -41,14 +40,13 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
         setHasOptionsMenu(true);
 
         mArtistList = new ArrayList<>();
-        gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        linearLayoutManager = new LinearLayoutManager(getContext());
 
-        recycArtist = (RecyclerView) view.findViewById(R.id.recycleViewAr);
-        recycArtist.setHasFixedSize(true);
-        recycArtist.setLayoutManager(gridLayoutManager);
-        mArtistAdapter = new ArtistAdapter(mArtistList, getActivity());
-        recycArtist.setAdapter(mArtistAdapter);
+        gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        mLvArtist = (RecyclerView) view.findViewById(R.id.recycleViewAr);
+        mLvArtist.setHasFixedSize(true);
+        mLvArtist.setLayoutManager(gridLayoutManager);
+        mAdapter = new ArtistAdapter(mArtistList, getActivity());
+        mLvArtist.setAdapter(mAdapter);
 
         loadData();
 
@@ -69,7 +67,7 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                mArtistAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
 
             }
         }.execute("");
@@ -80,7 +78,7 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
         menu.clear();
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-
+        SearchView searchView;
         searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -92,7 +90,7 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 filteredModelList = Utils.filterArtist(mArtistList, newText.trim());
-                mArtistAdapter.setFilter(filteredModelList);
+                mAdapter.setFilter(filteredModelList);
                 return true;
             }
         });
@@ -102,10 +100,10 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.itemList:
-                boolean isSwitched = mArtistAdapter.toggleItemViewType();
-                recycArtist.setLayoutManager(isSwitched ? new GridLayoutManager(getContext(), 2)
+                boolean isSwitched = mAdapter.toggleItemViewType();
+                mLvArtist.setLayoutManager(isSwitched ? new GridLayoutManager(getContext(), 2)
                         : new LinearLayoutManager(getContext()));
-                mArtistAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
                 break;
         }
         return super.onOptionsItemSelected(item);

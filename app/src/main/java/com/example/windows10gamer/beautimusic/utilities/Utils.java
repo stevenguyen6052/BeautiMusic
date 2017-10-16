@@ -51,6 +51,9 @@ public class Utils {
     public static final String NOTIFI = "update.notifi";
     public static final String NEXT_PLAY = "nextplay";
     public static final String PREVIOUS_PLAY = "previousplay";
+    public static final String SHARE_PREFERENCE = "share";
+    public static final String STATUS_PLAY = "StatusPlay";
+    public static final String START = "Start";
 
     public static boolean checkString(String s) {
         int sum = 0;

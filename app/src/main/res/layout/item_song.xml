@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
@@ -19,15 +20,16 @@
             android:layout_height="55dp"
             android:layout_alignParentLeft="true"
             android:padding="1dp"
-            android:src="@drawable/ic_empty_music" />
+            android:src="@drawable/ic_empty_music"
+             />
 
         <LinearLayout
             android:id="@+id/lv1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:layout_toRightOf="@id/ImgView"
             android:layout_toLeftOf="@+id/imgMoreVert"
+            android:layout_toRightOf="@id/ImgView"
             android:orientation="vertical"
             android:paddingLeft="12dp"
             android:paddingTop="5dp">
@@ -38,9 +40,9 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:maxLength="40"
                 android:maxLines="1"
                 android:text="Name Song"
-                android:maxLength="40"
                 android:textSize="16sp" />
 
             <TextView
@@ -50,8 +52,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="1"
                 android:maxLength="40"
+                android:maxLines="1"
                 android:text="Name Artist"
                 android:textSize="13sp" />
 

@@ -36,14 +36,13 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
     private ItemTouchHelper mItemTouchHelper;
     private List<Song> mSongList;
     public int mPostion;
-    public String check = "";
-    private View mLayoutOpenPlayMusic;
+    public Boolean isClickItem = false;
+    private View mMiniControl;
 
     private List<Song> getListSong;
     private QueueAdapter mQueueAdapter;
-    private RecyclerView mRecycleview;
+    private RecyclerView mLvSong;
     private ItemTouchHelper.Callback callback;
-    private Toolbar toolbar;
     private FragmentMiniControl mFragmentMiniControl;
 
 
@@ -52,8 +51,8 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing_queue);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Toolbar toobar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toobar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -72,9 +71,9 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
     private void initView() {
         mFragmentMiniControl = new FragmentMiniControl();
         mSongList = getIntent().getExtras().getParcelableArrayList(Utils.LIST_SONG);
-        mLayoutOpenPlayMusic = findViewById(R.id.queueLayout);
 
-        mLayoutOpenPlayMusic.setOnClickListener(new View.OnClickListener() {
+        mMiniControl = findViewById(R.id.queueLayout);
+        mMiniControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dataResult();
@@ -88,20 +87,20 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         Bundle b = new Bundle();
         boolean isCheckChange = false;
 
+        //isCheckchange check xem đã sắp xếp list hay chưa
+        // string check để kiểm tra là ấn back hay là click vào item trong list song
         if (getListSong != null) {
-            //isCheckchange check xem đã sắp xếp list hay chưa
-            // string check để kiểm tra là ấn back hay là click vào item trong list song
             isCheckChange = true;
             b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) getListSong);
             b.putInt(Utils.POSITION, mPostion);
             b.putBoolean(Utils.TRUE, isCheckChange);
-            b.putString(Utils.CHECK, check);
+            b.putBoolean(Utils.CHECK, isClickItem);
 
         } else {
             isCheckChange = false;
             b.putInt(Utils.POSITION, mPostion);
             b.putBoolean(Utils.TRUE, isCheckChange);
-            b.putString(Utils.CHECK, check);
+            b.putBoolean(Utils.CHECK, isClickItem);
         }
         intent.putExtras(b);
         setResult(Activity.RESULT_OK, intent);
@@ -109,13 +108,13 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
 
     private void setUpAdapter() {
         mQueueAdapter = new QueueAdapter(this, this, mSongList, this);
-        mRecycleview = (RecyclerView) findViewById(R.id.recycleQueue);
-        mRecycleview.setHasFixedSize(true);
-        mRecycleview.setAdapter(mQueueAdapter);
-        mRecycleview.setLayoutManager(new LinearLayoutManager(this));
+        mLvSong = (RecyclerView) findViewById(R.id.recycleQueue);
+        mLvSong.setHasFixedSize(true);
+        mLvSong.setAdapter(mQueueAdapter);
+        mLvSong.setLayoutManager(new LinearLayoutManager(this));
         callback = new SimpleItemTouchHelperCallback(mQueueAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(mRecycleview);
+        mItemTouchHelper.attachToRecyclerView(mLvSong);
     }
 
 

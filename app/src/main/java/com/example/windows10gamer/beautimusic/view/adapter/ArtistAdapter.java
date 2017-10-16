@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
-import com.example.windows10gamer.beautimusic.utilities.ItemClickListener;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.R;
 
@@ -53,7 +52,9 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final Artist artist = mArtistList.get(position);
+
         String s = artist.getSumAlbum() + " Albums | " + artist.getSumSong() + " Songs";
+
         holder.mTvNameArtist.setText(artist.getNameArtist());
         holder.mTvSumAlbum.setText(s);
 

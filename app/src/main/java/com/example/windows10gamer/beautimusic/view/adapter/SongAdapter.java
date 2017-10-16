@@ -1,24 +1,16 @@
 package com.example.windows10gamer.beautimusic.view.adapter;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +21,7 @@ import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Playlist;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.utilities.RecyclerItemClickListener;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
@@ -39,8 +32,6 @@ import com.squareup.picasso.Picasso;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.security.AccessController.getContext;
 
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
@@ -58,8 +49,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     private View view;
     private Gson gson;
     private Type type;
-    List<Song> songs = new ArrayList<>();
+
     List<Song> listSong = new ArrayList<>();
+
 
 
     public SongAdapter(List<Song> mSongList, Context mContext) {
@@ -92,6 +84,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                 mContext.startActivity(new Intent(mContext, PlayMusicActivity.class)
                         .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList) mSongList)
                         .putExtra(Utils.POSITION, i));
+                mContext.sendBroadcast(new Intent().setAction(Utils.PLAY_KEY));
             }
         });
         holder.mImgMoreVert.setOnClickListener(new View.OnClickListener() {
@@ -199,6 +192,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         });
     }
 
+
     private void listPlaylistItemClick(final int i) {
         recyPlaylist.addOnItemTouchListener(new RecyclerItemClickListener(mContext, recyPlaylist,
                 new RecyclerItemClickListener.OnItemClickListener() {
@@ -249,12 +243,16 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             mTvNameArtist = (TextView) itemView.findViewById(R.id.TvNameSinger);
             mImgView = (ImageView) itemView.findViewById(R.id.ImgView);
             mImgMoreVert = (ImageView) itemView.findViewById(R.id.imgMoreVert);
+
         }
     }
+
 
     public void setFilter(List<Song> mData) {
         mSongList = new ArrayList<>();
         mSongList.addAll(mData);
         notifyDataSetChanged();
     }
+
+
 }

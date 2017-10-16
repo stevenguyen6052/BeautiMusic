@@ -9,15 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.windows10gamer.beautimusic.R;
-
-
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.utilities.ItemClickListener;
 import com.example.windows10gamer.beautimusic.view.activity.PlayingQueueActivity;
-import com.example.windows10gamer.beautimusic.utilities.Utils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -67,7 +61,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
 
                 } else {
                     mContext.mPostion = position;
-                    mContext.check = Utils.ITEM_CLICK;
+                    mContext.isClickItem = true;
                     mContext.dataResult();
                     mContext.finish();
                 }
@@ -142,6 +136,10 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
             return true;
         }
 
+
+    }
+    public interface ItemClickListener {
+        void onClick(View view, int position,boolean isLongClick);
     }
 }
 

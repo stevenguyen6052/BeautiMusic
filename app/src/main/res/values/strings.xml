@@ -12,5 +12,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="add_playlist">Add new playlist</string>
+    <string name="dont_have_playlist">Dont have any playlist!</string>
 
 </resources>

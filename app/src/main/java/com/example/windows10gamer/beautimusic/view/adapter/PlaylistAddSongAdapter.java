@@ -73,9 +73,10 @@ public class PlaylistAddSongAdapter extends RecyclerView.Adapter<PlaylistAddSong
 
         }
 
+
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            //addSongToList(getAdapterPosition());
+
             if (isChecked){
                 listSongAfterCheck.add(mSongList.get(getAdapterPosition()));
             }
@@ -84,8 +85,8 @@ public class PlaylistAddSongAdapter extends RecyclerView.Adapter<PlaylistAddSong
             }
 
         }
-    }
 
+    }
     public interface GetList {
         void sendList(List<Song> songs);
     }

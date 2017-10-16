@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
@@ -36,33 +38,29 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeActivity extends AppCompatActivity  {
+public class HomeActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
-    private AdapterTab adapterTab;
+    private AdapterTab mTab;
     private View mLayoutControl;
-    public static MusicService musicService;
-    private Intent playIntent;
-    private boolean musicBound = false;
+    private MusicService mService;
     private FragmentMiniControl mFragmentMiniControl;
-
+    private SharedPreferences mSharepreference;
+    private SharedPreferences.Editor mEditor;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        if (playIntent == null) {
-            playIntent = new Intent(this, MusicService.class);
-            startService(playIntent);
-            doBindService();
-        }
+        mService = ((App) getApplicationContext()).getService();
+        mSharepreference = this.getSharedPreferences(Utils.SHARE_PREFERENCE, MODE_PRIVATE);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+
         addPermission();
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) setSupportActionBar(toolbar);
-
         initView();
     }
 
@@ -93,23 +91,19 @@ public class HomeActivity extends AppCompatActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-        if (musicService.mSongList != null) {
+
+        if (mService.mSongList != null) {
             mLayoutControl.setVisibility(View.VISIBLE);
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.mainLayoutControl, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();
-
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (musicService.mPlayer.isPlaying()) {
-
-        } else {
-            musicService.stopForeground(true);
-            doUnbindService();
-        }
+        if (!mSharepreference.getBoolean(Utils.STATUS_PLAY, false))
+            ((App) getApplicationContext()).getService().stopForeground(true);
     }
 
     private void initView() {
@@ -118,15 +112,15 @@ public class HomeActivity extends AppCompatActivity  {
         mLayoutControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this,PlayMusicActivity.class));
+                startActivity(new Intent(HomeActivity.this, PlayMusicActivity.class));
             }
         });
     }
 
     private void addTabFragment() {
-        adapterTab = new AdapterTab(getSupportFragmentManager());
+        mTab = new AdapterTab(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
-        mViewPager.setAdapter(adapterTab);
+        mViewPager.setAdapter(mTab);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(mViewPager);
@@ -134,31 +128,5 @@ public class HomeActivity extends AppCompatActivity  {
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_album_white_48dp1);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_person_white_48dp1);
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_favorite_white_48dp);
-    }
-
-    private ServiceConnection getMusicConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            MusicService.MusicBinder musicBinder = (MusicService.MusicBinder) service;
-            musicService = musicBinder.getService();
-            musicBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            musicBound = false;
-        }
-    };
-
-    public void doBindService() {
-        bindService(playIntent, getMusicConnection, Context.BIND_AUTO_CREATE);
-        musicBound = true;
-    }
-
-    public void doUnbindService() {
-        if (musicBound) {
-            unbindService(getMusicConnection);
-            musicBound = false;
-        }
     }
 }

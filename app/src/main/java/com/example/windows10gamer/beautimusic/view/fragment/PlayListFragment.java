@@ -1,19 +1,15 @@
 package com.example.windows10gamer.beautimusic.view.fragment;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,11 +26,7 @@ import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Playlist;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.activity.AddSongToPlaylisActivity;
-import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
-import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
 import com.example.windows10gamer.beautimusic.view.adapter.PlaylistAdapter;
-import com.example.windows10gamer.beautimusic.view.adapter.RecyclerItemClickListener;
-import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -44,45 +36,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.windows10gamer.beautimusic.utilities.Utils.NAME_ALBUM;
-
-/**
- * Created by Windows 10 Gamer on 03/10/2017.
- */
 
 public class PlayListFragment extends Fragment implements View.OnClickListener {
-    //private List<Song> mSongList, filteredModelList;
+
     public List<Playlist> mPlaylists,filteredModelList;
-    public PlaylistAdapter mPlaylistAdapter;
+    public PlaylistAdapter mAdapter;
     private SongDatabase mSongDatabase;
     private View view;
-    private TextView tvSumSong;
+    private TextView mTvNotifi;
     SearchView searchView;
     private RecyclerView lvSongs;
-    private List<Song> mSongList;
     private LinearLayoutManager linearLayoutManager;
-    private Gson gson;
-    private Type type;
-    private FloatingActionButton floatButton;
+    private FloatingActionButton mBtnAdd;
     private Dialog dialog;
     private EditText edtInputPlaylist;
-    private SongDatabase songDatabase;
     private static final int REQUEST_CODE = 1;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_playlist, container, false);
+
         setHasOptionsMenu(true);
-        mSongList = new ArrayList<>();
+
         mPlaylists = new ArrayList<>();
-        songDatabase = new SongDatabase(getContext());
-
         lvSongs = (RecyclerView) view.findViewById(R.id.lvSongPlayList);
-        tvSumSong = (TextView) view.findViewById(R.id.playlisstSum);
-        floatButton = (FloatingActionButton) view.findViewById(R.id.floatButton);
-        floatButton.setOnClickListener(this);
-
+        mTvNotifi = (TextView) view.findViewById(R.id.playlistSum);
+        mBtnAdd = (FloatingActionButton) view.findViewById(R.id.floatButton);
+        mBtnAdd.setOnClickListener(this);
         return view;
     }
 
@@ -91,16 +72,18 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
         super.onActivityCreated(savedInstanceState);
 
         lvSongs.setHasFixedSize(true);
-        gson = new Gson();
-        type = new TypeToken<List<Song>>() {
-        }.getType();
         mSongDatabase = new SongDatabase(getContext());
         linearLayoutManager = new LinearLayoutManager(getContext());
-        mPlaylistAdapter = new PlaylistAdapter(this, mPlaylists);
+        mAdapter = new PlaylistAdapter(this, mPlaylists);
         lvSongs.setLayoutManager(linearLayoutManager);
-        lvSongs.setAdapter(mPlaylistAdapter);
+        lvSongs.setAdapter(mAdapter);
 
         loadData();
+
+        if (mPlaylists.size() == 0)
+            mTvNotifi.setText(getString(R.string.dont_have_playlist));
+        else
+            mTvNotifi.setText(" ");
 
     }
 
@@ -108,9 +91,16 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+
             mPlaylists.clear();
             mPlaylists.addAll(mSongDatabase.getPlaylist());
-            mPlaylistAdapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
+
+            if (mPlaylists.size() == 0)
+                mTvNotifi.setText(getString(R.string.dont_have_playlist));
+            else
+                mTvNotifi.setText(" ");
+
         }
     }
 
@@ -128,7 +118,7 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                mPlaylistAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
 
             }
         }.execute("");
@@ -153,7 +143,7 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
             @Override
             public boolean onQueryTextChange(String newText) {
                 filteredModelList = Utils.filterPlaylist(mPlaylists,newText);
-                mPlaylistAdapter.setFilter(filteredModelList);
+                mAdapter.setFilter(filteredModelList);
                 return true;
             }
         });

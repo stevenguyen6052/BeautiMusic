@@ -58,6 +58,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
         holder.nameAlbum.setText(mAlbumList.get(i).getNameAlbum());
         holder.nameArtist.setText(mAlbumList.get(i).getNameArtist());
+
         Picasso.with(mContext)
                 .load(mAlbumList.get(i).getImage())
                 .placeholder(R.drawable.ic_splash)

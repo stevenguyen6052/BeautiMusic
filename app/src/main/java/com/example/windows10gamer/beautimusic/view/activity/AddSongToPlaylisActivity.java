@@ -26,16 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddSongToPlaylisActivity extends AppCompatActivity implements PlaylistAddSongAdapter.GetList {
-    private Toolbar toolbar;
-    private RecyclerView recyclSongList;
-    private PlaylistAddSongAdapter adapter;
+
+    private RecyclerView mLvSong;
+    private PlaylistAddSongAdapter mAdapter;
     private List<Song> mSongList;
-    private List<Song> songList;
+    private List<Song> mGetList;
     private LinearLayoutManager linearLayoutManager;
-    private String namePlaylist;
-    private Gson gson;
-    private Type type;
-    private SongDatabase songDatabase;
+    private SongDatabase mDbHanler;
 
 
     @Override
@@ -43,9 +40,7 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_song_to_playlis);
 
-        namePlaylist = getIntent().getStringExtra(Utils.NAME_PLAYLIST);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.choose_list_song);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -61,37 +56,36 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
             protected Void doInBackground(String... params) {
                 mSongList.clear();
                 mSongList.addAll(SongDatabase.getSongFromDevice(getApplicationContext()));
-
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                adapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
 
             }
         }.execute("");
     }
 
     private void initView() {
-        songList = new ArrayList<>();
+        mGetList = new ArrayList<>();
         mSongList = new ArrayList<>();
-        recyclSongList = (RecyclerView) findViewById(R.id.recycleCheckList);
-        recyclSongList.setHasFixedSize(true);
+        mDbHanler = new SongDatabase(this);
+
+        mLvSong = (RecyclerView) findViewById(R.id.recycleCheckList);
+        mLvSong.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(this);
-        recyclSongList.setLayoutManager(linearLayoutManager);
-        adapter = new PlaylistAddSongAdapter(this, mSongList, this);
-        recyclSongList.setAdapter(adapter);
-        songDatabase = new SongDatabase(this);
+        mLvSong.setLayoutManager(linearLayoutManager);
+        mAdapter = new PlaylistAddSongAdapter(this, mSongList, this);
+        mLvSong.setAdapter(mAdapter);
 
     }
 
     @Override
     public void sendList(List<Song> songs) {
-        songList.clear();
-        songList.addAll(songs);
-        Log.d("List", String.valueOf(songList.size()));
+        mGetList.clear();
+        mGetList.addAll(songs);
     }
 
     @Override
@@ -106,23 +100,24 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
         switch (item.getItemId()) {
             case R.id.itemDone:
 
-                gson = new Gson();
-                String listSong = gson.toJson(songList);
-                songDatabase.addPlayList(namePlaylist, listSong);
+                Gson gson = new Gson();
+                String namePlaylist = getIntent().getStringExtra(Utils.NAME_PLAYLIST);
+                String listSong = gson.toJson(mGetList);
 
-                setResult(RESULT_OK,new Intent());
+                mDbHanler.addPlayList(namePlaylist, listSong);
+
+                setResult(RESULT_OK, new Intent());
                 finish();
 
                 break;
-
         }
         return true;
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        //onBackPressed();
-        Toast.makeText(this,"ABC",Toast.LENGTH_SHORT).show();
+        onBackPressed();
+        Toast.makeText(this, "ABC", Toast.LENGTH_SHORT).show();
         return true;
     }
 

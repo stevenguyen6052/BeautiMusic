@@ -1,34 +1,23 @@
 package com.example.windows10gamer.beautimusic.view.fragment;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Toast;
 
-import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
 import com.example.windows10gamer.beautimusic.database.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.view.adapter.RecyclerItemClickListener;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 
@@ -36,46 +25,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SongFragment extends android.support.v4.app.Fragment {
-    private View view;
-    private List<Song> mSongList, filteredModelList;
-    private SearchView searchView;
-    private SongDatabase mSongDatabase;
-    private RecyclerView lvSongs;
-    private SongAdapter mSongAdapter;
-    private LinearLayoutManager linearLayoutManager;
-    private Dialog dialog;
+public class SongFragment extends android.support.v4.app.Fragment implements SearchView.OnQueryTextListener {
+    private View mRootView;
+    private List<Song> mSongList, mSearchList;
+
+    private RecyclerView mLvSong;
+    private SongAdapter mAdapter;
+    private LinearLayoutManager mLinearLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_song, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_song, container, false);
         setHasOptionsMenu(true);
 
         mSongList = new ArrayList<>();
-        mSongDatabase = new SongDatabase(getContext());
-        lvSongs = (RecyclerView) view.findViewById(R.id.mListViewSong);
+        mLinearLayout = new LinearLayoutManager(getContext());
 
-        lvSongs.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        lvSongs.setLayoutManager(linearLayoutManager);
-        if (filteredModelList!=null && filteredModelList.size()>0){
-            mSongAdapter = new SongAdapter(filteredModelList, getActivity());
-        }else {
-            mSongAdapter = new SongAdapter(mSongList, getActivity());
-        }
-        lvSongs.setAdapter(mSongAdapter);
+        mLvSong = (RecyclerView) mRootView.findViewById(R.id.mListViewSong);
+        mLvSong.setHasFixedSize(true);
+        mLvSong.setLayoutManager(mLinearLayout);
+
+        if (mSearchList != null && mSearchList.size() > 0)
+            mAdapter = new SongAdapter(mSearchList, getContext());
+        else
+            mAdapter = new SongAdapter(mSongList, getContext());
+
+        mLvSong.setAdapter(mAdapter);
 
         loadData();
-        return view;
+
+        return mRootView;
     }
 
-    private void loadData(){
+    private void loadData() {
         new AsyncTask<String, Void, Void>() {
 
             @Override
             protected Void doInBackground(String... params) {
                 mSongList.clear();
                 mSongList.addAll(SongDatabase.getSongFromDevice(getContext()));
+                Log.d("abc", String.valueOf(mSongList.size()));
 
                 return null;
             }
@@ -83,7 +72,7 @@ public class SongFragment extends android.support.v4.app.Fragment {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                mSongAdapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
 
             }
         }.execute("");
@@ -94,24 +83,21 @@ public class SongFragment extends android.support.v4.app.Fragment {
         menu.clear();
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-
+        SearchView searchView;
         searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                filteredModelList = Utils.filter(mSongList, newText.trim());
-                mSongAdapter.setFilter(filteredModelList);
-                return true;
-            }
-        });
+        searchView.setOnQueryTextListener(this);
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
 
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        mSearchList = Utils.filter(mSongList, newText.trim());
+        mAdapter.setFilter(mSearchList);
+        return true;
+    }
 }
 

@@ -43,13 +43,9 @@ public class PlaylistDialogAdapter extends RecyclerView.Adapter<PlaylistDialogAd
     private Context mContext;
     private List<Playlist> mPlaylist;
     private List<Song> mSongList;
-    private Gson gson;
-    private Type type;
-    private PopupMenu popupMenu;
-    private Dialog dialog;
-    private EditText edtName;
-    private SongDatabase songDatabase;
-
+    private Gson gson = new Gson();
+    private Type type = new TypeToken<List<Song>>() {
+    }.getType();
 
     public PlaylistDialogAdapter(Context mContext, List<Playlist> mPlaylist) {
         this.mContext = mContext;
@@ -66,9 +62,6 @@ public class PlaylistDialogAdapter extends RecyclerView.Adapter<PlaylistDialogAd
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int i) {
 
-        gson = new Gson();
-        type = new TypeToken<List<Song>>() {
-        }.getType();
         mSongList = gson.fromJson(mPlaylist.get(i).getListIdSong(), type);
 
         holder.tvNamePlaylist.setText(mPlaylist.get(i).getName());

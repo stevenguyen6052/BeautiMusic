@@ -43,14 +43,13 @@ import java.util.Random;
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHolder> {
     private PlayListFragment mContext;
     private List<Playlist> mPlaylist;
-    private List<Song> mSongList;
-    private Gson gson;
-    private Type type;
+    private Gson gson = new Gson();
     private PopupMenu popupMenu;
     private Dialog dialog;
     private EditText edtName;
     private SongDatabase songDatabase;
-    int pos;
+    private Type type = new TypeToken<List<Song>>() {
+    }.getType();
 
     public PlaylistAdapter(PlayListFragment mContext, List<Playlist> mPlaylist) {
         this.mContext = mContext;
@@ -66,14 +65,12 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int i) {
-        pos = i;
-        gson = new Gson();
-        type = new TypeToken<List<Song>>() {
-        }.getType();
-        mSongList = gson.fromJson(mPlaylist.get(i).getListIdSong(), type);
+
+        List<Song> mSongList = gson.fromJson(mPlaylist.get(i).getListIdSong(), type);
 
         holder.tvNamePlaylist.setText(mPlaylist.get(i).getName());
         holder.tvSumSong.setText(mSongList.size() + " Songs");
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,6 +81,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                 );
             }
         });
+
         holder.imgMoreVert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,7 +107,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                                         songDatabase.updateNamePlaylist(edtName.getText().toString(), mPlaylist.get(i).getId());
                                         mContext.mPlaylists.clear();
                                         mContext.mPlaylists.addAll(songDatabase.getPlaylist());
-                                        mContext.mPlaylistAdapter.notifyDataSetChanged();
+                                        mContext.mAdapter.notifyDataSetChanged();
                                         dialog.dismiss();
 
                                     }
@@ -126,7 +124,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                             case R.id.itemDeletePlaylist:
                                 songDatabase.deletePlaylist(mPlaylist.get(i).getId());
                                 mContext.mPlaylists.remove(i);
-                                mContext.mPlaylistAdapter.notifyDataSetChanged();
+                                mContext.mAdapter.notifyDataSetChanged();
                                 break;
 
                         }
@@ -142,6 +140,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     public int getItemCount() {
         return (null != mPlaylist ? mPlaylist.size() : 0);
     }
+
     public void setFilter(List<Playlist> mData) {
         mPlaylist = new ArrayList<>();
         mPlaylist.addAll(mData);
