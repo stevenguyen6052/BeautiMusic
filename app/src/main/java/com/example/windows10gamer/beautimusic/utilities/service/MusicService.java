@@ -44,7 +44,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private static final int NOTIFICATION_ID_CUSTOM_BIG = 9;
 
     public MediaPlayer mPlayer;
-    public static List<Song> mSongList ;
+    public static List<Song> mSongList  ;
     public int mPosition;
     private String songTitle = "";
     private String artistTitle = "";
@@ -102,6 +102,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
+        //set listeners
         mPlayer.setOnPreparedListener(this);
         mPlayer.setOnErrorListener(this);
     }
@@ -120,28 +121,26 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public boolean onUnbind(Intent intent) {
-
+        Log.d("Main","disconect");
         return true;
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        if (mPlayer != null) {
-            try {
-                mPlayer.stop();
-                mPlayer.release();
-            } finally {
-                mPlayer = null;
-            }
-        }
+//        if (mPlayer != null) {
+//            try {
+//                mPlayer.stop();
+//                mPlayer.release();
+//            } finally {
+//                mPlayer = null;
+//            }
+//        }
         return false;
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
         mPlayer.start();
-        this.sendBroadcast(new Intent().setAction(Utils.START));
-
         initNotification();
 
     }
@@ -322,11 +321,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
 
         mPlayer.prepareAsync();
-        this.sendBroadcast(new Intent()
-                .setAction(Utils.TRUE)
-                .putParcelableArrayListExtra("SongList", (ArrayList) mSongList)
-                .putExtra("Index", mPosition)
-        );
+
     }
 
     public boolean isShuffle() {
