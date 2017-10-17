@@ -22,16 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.database.SongDatabase;
+import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Playlist;
-import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.view.activity.AddSongToPlaylisActivity;
 import com.example.windows10gamer.beautimusic.view.adapter.PlaylistAdapter;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +62,7 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
         mBtnAdd.setOnClickListener(this);
 
         mLvPlaylist.setHasFixedSize(true);
-        mSongDatabase = new SongDatabase(getContext());
+        mSongDatabase = SongDatabase.getInstance(getContext());
         mLinearLayout = new LinearLayoutManager(getContext());
         mAdapter = new PlaylistAdapter(this, mPlaylists);
         mLvPlaylist.setLayoutManager(mLinearLayout);
@@ -169,8 +165,6 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
                                     .putExtra(Utils.NAME_PLAYLIST, namePlaylist), REQUEST_CODE);
                             dialog.dismiss();
                         }
-
-
                     }
                 });
                 dialog.findViewById(R.id.btnNo).setOnClickListener(new View.OnClickListener() {

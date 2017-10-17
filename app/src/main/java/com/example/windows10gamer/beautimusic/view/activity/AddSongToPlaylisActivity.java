@@ -7,21 +7,18 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.database.SongDatabase;
+import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.adapter.PlaylistAddSongAdapter;
 import com.google.gson.Gson;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +68,7 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
     private void initView() {
         mGetList = new ArrayList<>();
         mSongList = new ArrayList<>();
-        mDbHanler = new SongDatabase(this);
+        mDbHanler = SongDatabase.getInstance(this);
 
         mLvSong = (RecyclerView) findViewById(R.id.recycleCheckList);
         mLvSong.setHasFixedSize(true);

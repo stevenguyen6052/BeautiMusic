@@ -8,16 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class SongAdapterPlaying extends RecyclerView.Adapter<SongAdapterPlaying.ViewHolder> {
     private List<Song> mSongList;
     private Context mContext;
-
 
 
     public SongAdapterPlaying(List<Song> mSongList, Context mContext) {
@@ -64,6 +65,7 @@ public class SongAdapterPlaying extends RecyclerView.Adapter<SongAdapterPlaying.
 
         }
     }
+
     public void setFilter(List<Song> mData) {
         mSongList = new ArrayList<>();
         mSongList.addAll(mData);

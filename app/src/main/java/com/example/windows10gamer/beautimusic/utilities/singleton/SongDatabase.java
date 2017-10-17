@@ -1,4 +1,4 @@
-package com.example.windows10gamer.beautimusic.database;
+package com.example.windows10gamer.beautimusic.utilities.singleton;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -14,7 +14,6 @@ import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.model.Playlist;
 import com.example.windows10gamer.beautimusic.model.Song;
-import com.example.windows10gamer.beautimusic.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +35,16 @@ public class SongDatabase extends SQLiteOpenHelper {
             + PL_NAME_LIST + " TEXT"
             + ")";
 
+    private static SongDatabase instance;
 
-    public SongDatabase(Context context) {
+    public static SongDatabase getInstance(Context context) {
+        if (instance == null) {
+            instance = new SongDatabase(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    private SongDatabase(Context context) {
         super(context, NAME_DATABASE, null, VERSION);
     }
 
@@ -86,6 +93,16 @@ public class SongDatabase extends SQLiteOpenHelper {
         mCursor.close();
         db.close();
         return playlists;
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(CREATE_TBL_PLAYLIST);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
     }
 
     public static List<Album> getAlbumFromDevice(Context context) {
@@ -252,15 +269,5 @@ public class SongDatabase extends SQLiteOpenHelper {
             atristList.add(atrist);
         }
         return atristList;
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TBL_PLAYLIST);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
 }

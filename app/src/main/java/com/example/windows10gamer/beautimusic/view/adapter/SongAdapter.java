@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.example.windows10gamer.beautimusic.view.activity.PlayMusic;
-import com.example.windows10gamer.beautimusic.database.SongDatabase;
+import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Playlist;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
@@ -48,7 +48,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     private PopupMenu popupMenu;
     private View view;
     private Gson gson;
-    private Type type;
 
     List<Song> listSong = new ArrayList<>();
 
@@ -99,7 +98,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                         switch (item.getItemId()) {
                             case R.id.itemAddPlayList:
 
-                                songDatabase = new SongDatabase(mContext);
+                                songDatabase = SongDatabase.getInstance(mContext.getApplicationContext());
                                 mPlaylist.clear();
                                 mPlaylist.addAll(songDatabase.getPlaylist());
                                 dialogAddSong = new Dialog(mContext);

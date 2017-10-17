@@ -72,35 +72,6 @@ public class Utils {
 
     }
 
-
-    public static void sortCollection(List<Song> mSongList) {
-        Collections.sort(mSongList, new Comparator<Song>() {
-            @Override
-            public int compare(Song o1, Song o2) {
-                return o1.getNameSong().compareTo(o2.getNameSong());
-            }
-        });
-    }
-
-    public static void sortCollectionAlbum(List<Album> mSongAlbum) {
-        Collections.sort(mSongAlbum, new Comparator<Album>() {
-            @Override
-            public int compare(Album o1, Album o2) {
-                return o1.getNameAlbum().compareTo(o2.getNameAlbum());
-            }
-        });
-    }
-
-    public static void sortCollectionArtist(List<Artist> mArtist) {
-        Collections.sort(mArtist, new Comparator<Artist>() {
-            @Override
-            public int compare(Artist o1, Artist o2) {
-                return o1.getNameArtist().compareTo(o2.getNameArtist());
-            }
-        });
-    }
-
-
     public static String unAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");

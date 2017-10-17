@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.utilities.singleton.SharedPrefs;
 import com.example.windows10gamer.beautimusic.view.fragment.AdapterTab;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
@@ -45,8 +46,6 @@ public class HomeActivity extends AppCompatActivity {
     private View mLayoutControl;
     private MusicService mService;
     private FragmentMiniControl mFragmentMiniControl;
-    private SharedPreferences mSharepreference;
-    private SharedPreferences.Editor mEditor;
     private Toolbar mToolbar;
 
     @Override
@@ -55,7 +54,6 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         mService = ((App) getApplicationContext()).getService();
-        mSharepreference = this.getSharedPreferences(Utils.SHARE_PREFERENCE, MODE_PRIVATE);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -92,7 +90,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (mService.mSongList!= null) {
+        if (mService.mSongList != null) {
             mLayoutControl.setVisibility(View.VISIBLE);
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.mainLayoutControl, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();
@@ -102,7 +100,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!mSharepreference.getBoolean(Utils.STATUS_PLAY, false))
+        if (!SharedPrefs.getInstance().get(Utils.STATUS_PLAY, Boolean.class, false))
             ((App) getApplicationContext()).getService().stopForeground(true);
     }
 

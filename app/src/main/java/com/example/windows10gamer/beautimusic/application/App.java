@@ -7,15 +7,26 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
+import com.google.gson.Gson;
 
 public class App extends Application {
-
+    private static App mySelf;
+    private Gson mGSon;
     private boolean isConnected = false;
     private MusicService mService;
     private ServiceConnection serviceConnection;
+
+    public static App self(){
+        return mySelf;
+    }
+    public Gson getGSon() {
+        return mGSon;
+    }
+
     public void onCreate() {
         super.onCreate();
-
+        mySelf = this;
+        mGSon = new Gson();
         connectServiceAndPlay();
 
     }

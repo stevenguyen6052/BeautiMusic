@@ -88,7 +88,7 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         boolean isCheckChange = false;
 
         //isCheckchange check xem đã sắp xếp list hay chưa
-        // string check để kiểm tra là ấn back hay là click vào item trong list song
+        // check để kiểm tra là ấn back hay là click vào item trong list song
         if (getListSong != null) {
             isCheckChange = true;
             b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) getListSong);

@@ -23,6 +23,7 @@ import android.widget.RemoteViews;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
+import com.example.windows10gamer.beautimusic.utilities.singleton.SharedPrefs;
 import com.example.windows10gamer.beautimusic.view.activity.HomeActivity;
 
 import java.util.ArrayList;
@@ -31,8 +32,6 @@ import java.util.Random;
 
 
 public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
     private RemoteViews remoteView;
     private RemoteViews remoteViewBig;
     private NotificationCompat.Builder nc;
@@ -59,10 +58,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         super.onCreate();
 
         rand = new Random();
-        sharedPreferences = MusicService.this.getSharedPreferences(Utils.SHARE_PREFERENCE, MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-
         mPlayer = new MediaPlayer();
+
         initMusicPlayer();
         IntentFilter it = new IntentFilter();
         it.addAction(Utils.PAUSE_KEY);
@@ -126,14 +123,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-//        if (mPlayer != null) {
-//            try {
-//                mPlayer.stop();
-//                mPlayer.release();
-//            } finally {
-//                mPlayer = null;
-//            }
-//        }
         return false;
     }
 
@@ -143,7 +132,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         initNotification();
 
     }
-    public List<Song> getList(){
+
+    public List<Song> getList() {
         return mSongList;
     }
 
@@ -232,14 +222,13 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void pausePlayer() {
         mPlayer.pause();
-        editor.putBoolean("StatusPlay", false);
-        editor.commit();
+        SharedPrefs.getInstance().put(Utils.STATUS_PLAY, false);
+
     }
 
     public void startPlayer() {
         mPlayer.start();
-        editor.putBoolean("StatusPlay", true);
-        editor.commit();
+        SharedPrefs.getInstance().put(Utils.STATUS_PLAY, true);
     }
 
     public int getCurrentPosition() {
@@ -248,25 +237,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void seek(int duaration) {
         mPlayer.seekTo(duaration);
-    }
-
-
-    public void playPrev() {
-        if (repeat) {
-
-        } else {
-            if (shuffle) {
-                int newSong = mPosition;
-                while (newSong == mPosition) {
-                    newSong = rand.nextInt(mSongList.size());
-                }
-                mPosition = newSong;
-            } else {
-                mPosition--;
-                if (mPosition < 0) mPosition = mSongList.size() - 1;
-            }
-        }
-        playSong();
     }
 
     public String nameArtist() {
@@ -292,6 +262,24 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public boolean isPlaying() {
         return mPlayer.isPlaying();
+    }
+
+    public void playPrev() {
+        if (repeat) {
+
+        } else {
+            if (shuffle) {
+                int newSong = mPosition;
+                while (newSong == mPosition) {
+                    newSong = rand.nextInt(mSongList.size());
+                }
+                mPosition = newSong;
+            } else {
+                mPosition--;
+                if (mPosition < 0) mPosition = mSongList.size() - 1;
+            }
+        }
+        playSong();
     }
 
     public void playNext() {
@@ -326,6 +314,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mPlayer.prepareAsync();
 
     }
+    public void setShuffle(boolean shuffle){
+        this.shuffle = shuffle;
+    }
+    public void setRepeat(boolean repeat){
+        this.repeat = repeat;
+    }
 
     public boolean isShuffle() {
         if (shuffle) {
@@ -358,6 +352,5 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mPlayer.stop();
         mPlayer.release();
         mPlayer = null;
-
     }
 }

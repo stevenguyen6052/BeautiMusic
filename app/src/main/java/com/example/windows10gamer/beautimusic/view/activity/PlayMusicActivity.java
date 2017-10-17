@@ -32,6 +32,7 @@ import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 import com.example.windows10gamer.beautimusic.utilities.RecyclerItemClickListener;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
+import com.example.windows10gamer.beautimusic.utilities.singleton.SharedPrefs;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapterPlaying;
 import com.squareup.picasso.Picasso;
 
@@ -57,18 +58,13 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private Toolbar mToolbar;
     private LinearLayoutManager mLinearLayout;
     private MusicService mService;
-    private SharedPreferences mShareFre;
-    private SharedPreferences.Editor mEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playmusic);
 
-        mShareFre = PlayMusicActivity.this.getSharedPreferences(Utils.SHARE_PREFERENCE, MODE_PRIVATE);
-        mEditor = mShareFre.edit();
-        mEditor.putBoolean(Utils.STATUS_PLAY, true);
-        mEditor.apply();
+        SharedPrefs.getInstance().put(Utils.STATUS_PLAY, true);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -88,6 +84,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         IntentFilter it = new IntentFilter();
         it.addAction(Utils.PAUSE_KEY);
         it.addAction(Utils.PLAY_KEY);
+        it.addAction(Utils.PREVIOUS_PLAY);
+        it.addAction(Utils.NEXT_PLAY);
         registerReceiver(receiver, it);
 
         addItemClick();
@@ -186,12 +184,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
     private void doPlayPause() {
         if (mService.isPlaying()) {
-            mService.pausePlayer();
             mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
             sendBroadcast(new Intent().setAction(Utils.PAUSE_KEY));
             sendBroadcast(new Intent().setAction(Utils.NOTIFI));
+
         } else {
-            mService.startPlayer();
             mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
             sendBroadcast(new Intent().setAction(Utils.PLAY_KEY));
             sendBroadcast(new Intent().setAction(Utils.NOTIFI));
@@ -377,27 +374,25 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        mEditor = mShareFre.edit();
-        mEditor.putBoolean(Utils.SHUFFLE, mService.getShuffle());
-        mEditor.putBoolean(Utils.REPEAT, mService.getRepeat());
-        mEditor.apply();
+        SharedPrefs.getInstance().put(Utils.SHUFFLE, mService.getShuffle());
+        SharedPrefs.getInstance().put(Utils.REPEAT, mService.getRepeat());
     }
 
     private void loadStatusShuffleRepeat() {
         boolean shuffle, repeat;
-        if (mShareFre != null) {
+        shuffle = SharedPrefs.getInstance().get(Utils.SHUFFLE, Boolean.class, false);
+        repeat = SharedPrefs.getInstance().get(Utils.REPEAT, Boolean.class, false);
 
-            shuffle = mShareFre.getBoolean(Utils.SHUFFLE, false);
-            repeat = mShareFre.getBoolean(Utils.REPEAT, false);
-
-            if (shuffle)
-                mShffle.setImageResource(R.drawable.ic_shuffle_black_48dp);
-
-            if (repeat)
-                mReppeat.setImageResource(R.drawable.ic_repeat_black_48dp);
-
+        if (shuffle) {
+            mShffle.setImageResource(R.drawable.ic_shuffle_black_48dp);
+            mService.setShuffle(shuffle);
         }
+
+        if (repeat) {
+            mReppeat.setImageResource(R.drawable.ic_repeat_black_48dp);
+            mService.setRepeat(repeat);
+        }
+
     }
 
     @Override
@@ -421,6 +416,10 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             if (intent.getAction().equals(Utils.PAUSE_KEY)) {
                 mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
             } else if (intent.getAction().equals(Utils.PLAY_KEY)) {
+                mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+            } else if (intent.getAction().equals(Utils.NEXT_PLAY)) {
+                mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+            } else if (intent.getAction().equals(Utils.PREVIOUS_PLAY)) {
                 mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
             }
         }
