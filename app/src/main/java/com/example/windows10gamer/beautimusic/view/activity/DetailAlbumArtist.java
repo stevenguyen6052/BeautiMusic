@@ -65,7 +65,7 @@ public class DetailAlbumArtist extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (service.mSongList != null) {
+        if (service.mSongList !=null) {
             mLayoutControl.setVisibility(View.VISIBLE);
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.album_minicontrol, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();

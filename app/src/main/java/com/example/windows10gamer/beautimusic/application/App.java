@@ -5,11 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.util.Log;
-
-import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 
 public class App extends Application {
@@ -17,12 +13,11 @@ public class App extends Application {
     private boolean isConnected = false;
     private MusicService mService;
     private ServiceConnection serviceConnection;
-    private SharedPreferences mSharepreference ;
-    private SharedPreferences.Editor mEditor;
     public void onCreate() {
         super.onCreate();
 
         connectServiceAndPlay();
+
     }
 
     private void connectServiceAndPlay() {

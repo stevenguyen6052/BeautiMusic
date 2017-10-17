@@ -39,14 +39,14 @@ import static android.app.Activity.RESULT_OK;
 
 public class PlayListFragment extends Fragment implements View.OnClickListener {
 
-    public List<Playlist> mPlaylists,filteredModelList;
+    public List<Playlist> mPlaylists,mSearchList;
     public PlaylistAdapter mAdapter;
     private SongDatabase mSongDatabase;
     private View view;
     private TextView mTvNotifi;
-    SearchView searchView;
-    private RecyclerView lvSongs;
-    private LinearLayoutManager linearLayoutManager;
+    private SearchView searchView;
+    private RecyclerView mLvPlaylist;
+    private LinearLayoutManager mLinearLayout;
     private FloatingActionButton mBtnAdd;
     private Dialog dialog;
     private EditText edtInputPlaylist;
@@ -60,31 +60,21 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
         setHasOptionsMenu(true);
 
         mPlaylists = new ArrayList<>();
-        lvSongs = (RecyclerView) view.findViewById(R.id.lvSongPlayList);
+        mLvPlaylist = (RecyclerView) view.findViewById(R.id.lvSongPlayList);
         mTvNotifi = (TextView) view.findViewById(R.id.playlistSum);
         mBtnAdd = (FloatingActionButton) view.findViewById(R.id.floatButton);
         mBtnAdd.setOnClickListener(this);
-        return view;
-    }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        lvSongs.setHasFixedSize(true);
+        mLvPlaylist.setHasFixedSize(true);
         mSongDatabase = new SongDatabase(getContext());
-        linearLayoutManager = new LinearLayoutManager(getContext());
+        mLinearLayout = new LinearLayoutManager(getContext());
         mAdapter = new PlaylistAdapter(this, mPlaylists);
-        lvSongs.setLayoutManager(linearLayoutManager);
-        lvSongs.setAdapter(mAdapter);
+        mLvPlaylist.setLayoutManager(mLinearLayout);
+        mLvPlaylist.setAdapter(mAdapter);
 
         loadData();
 
-        if (mPlaylists.size() == 0)
-            mTvNotifi.setText(getString(R.string.dont_have_playlist));
-        else
-            mTvNotifi.setText(" ");
-
+        return view;
     }
 
     @Override
@@ -118,6 +108,12 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                if (mPlaylists.size() == 0) {
+                    mTvNotifi.setText("Don't have any playlist!");
+                }
+                else {
+                    mTvNotifi.setText(" ");
+                }
                 mAdapter.notifyDataSetChanged();
 
             }
@@ -142,8 +138,8 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filteredModelList = Utils.filterPlaylist(mPlaylists,newText);
-                mAdapter.setFilter(filteredModelList);
+                mSearchList = Utils.filterPlaylist(mPlaylists,newText);
+                mAdapter.setFilter(mSearchList);
                 return true;
             }
         });

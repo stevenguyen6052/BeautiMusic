@@ -44,15 +44,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private static final int NOTIFICATION_ID_CUSTOM_BIG = 9;
 
     public MediaPlayer mPlayer;
-    public static List<Song> mSongList  ;
-    public int mPosition;
+    public static List<Song> mSongList;
+    private int mPosition;
     private String songTitle = "";
     private String artistTitle = "";
     private final IBinder musicBind = new MusicBinder();
-    //shuffle flag and random
     private boolean shuffle = false;
     private boolean repeat = false;
     private Random rand;
+
 
     @Override
     public void onCreate() {
@@ -101,7 +101,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private void initMusicPlayer() {
         mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
         //set listeners
         mPlayer.setOnPreparedListener(this);
         mPlayer.setOnErrorListener(this);
@@ -121,7 +120,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.d("Main","disconect");
+        Log.d("Main", "disconect");
         return true;
     }
 
@@ -143,6 +142,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mPlayer.start();
         initNotification();
 
+    }
+    public List<Song> getList(){
+        return mSongList;
     }
 
     private void initNotification() {
@@ -210,7 +212,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void setSongList(List<Song> songs) {
         mSongList = songs;
     }
-    public List<Song> getSongList(){
+
+    public List<Song> getSongList() {
         return mSongList;
     }
 

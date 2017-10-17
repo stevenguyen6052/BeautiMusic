@@ -92,7 +92,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (mService.mSongList != null) {
+        if (mService.mSongList!= null) {
             mLayoutControl.setVisibility(View.VISIBLE);
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.mainLayoutControl, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();
