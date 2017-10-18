@@ -18,15 +18,15 @@
 
     <ImageView
         android:id="@+id/itm_que_iconsong"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/artItem"
+        android:layout_height="@dimen/artItem"
         android:layout_marginLeft="5dp"
         android:background="@drawable/icon_music" />
 
     <LinearLayout
         android:id="@+id/linear_layout_customer_name"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:orientation="vertical"
         android:paddingLeft="10dp">
@@ -38,9 +38,9 @@
             android:layout_height="wrap_content"
             android:maxLength="40"
             android:maxLines="1"
-            android:text="Name Song"
+            android:text="@string/name_song"
             android:textColor="@color/colorBack"
-            android:textSize="16sp" />
+            android:textSize="@dimen/textH1" />
 
         <TextView
             android:id="@+id/itm_que_nameArtist"
@@ -49,8 +49,8 @@
             android:layout_height="wrap_content"
             android:maxLength="30"
             android:maxLines="1"
-            android:text="Name Artist"
-            android:textSize="13sp" />
+            android:text="@string/name_artist"
+            android:textSize="@dimen/textH2" />
     </LinearLayout>
 
 </LinearLayout>

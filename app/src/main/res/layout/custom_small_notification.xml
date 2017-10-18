@@ -7,12 +7,11 @@
     android:weightSum="10">
 
     <ImageView
-        android:layout_marginLeft="5dp"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/artItem"
+        android:layout_height="@dimen/artItem"
         android:layout_gravity="center"
-        android:src="@drawable/ic_empty_music"
-         />
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/ic_empty_music" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -23,27 +22,27 @@
         android:weightSum="10">
 
         <TextView
-            android:maxLines="1"
-            android:textSize="16sp"
             android:id="@+id/notifiNameSong"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5"
             android:gravity="center_vertical"
-            android:text="Chác ai đó sẽ vè"
+            android:maxLines="1"
+            android:text="@string/name_song"
             android:textColor="@color/colorWhite"
+            android:textSize="@dimen/textH1"
             android:textStyle="bold" />
 
         <TextView
-            android:textSize="14sp"
-            android:maxLines="1"
             android:id="@+id/notifiNameArtist"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
             android:layout_weight="5"
-            android:text="Sơn Tùng MTP"
-            android:textColor="@color/colorWhite" />
+            android:maxLines="1"
+            android:text="@string/name_artist"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/textH2" />
 
 
     </LinearLayout>
@@ -55,26 +54,25 @@
 
         <ImageView
             android:id="@+id/notifiPrevious"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="@dimen/item_notifi"
+            android:layout_height="@dimen/item_notifi"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:src="@drawable/custom_previous" />
 
         <ImageView
-            android:src="@drawable/ic_play_arrow_white_48dp"
             android:id="@+id/notifiPlay"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="@dimen/item_notifi"
+            android:layout_height="@dimen/item_notifi"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/notifiPrevious"
-             />
+            android:src="@drawable/ic_play_arrow_white_48dp" />
 
         <ImageView
             android:id="@+id/notifiNext"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="@dimen/item_notifi"
+            android:layout_height="@dimen/item_notifi"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/notifiPlay"

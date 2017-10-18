@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.windows10gamer.beautimusic.utilities.LoadData;
 import com.example.windows10gamer.beautimusic.view.adapter.ArtistAdapter;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Artist;
@@ -26,10 +27,10 @@ import java.util.List;
 
 public class ArtistFragment extends android.support.v4.app.Fragment {
     private View view;
-    private List<Artist> mArtistList, filteredModelList;
+    private List<Artist> mArtistList, mSearchList;
     private ArtistAdapter mAdapter;
     private RecyclerView mLvArtist;
-    private GridLayoutManager gridLayoutManager;
+    private GridLayoutManager mGridLayout;
 
 
 
@@ -41,10 +42,10 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
 
         mArtistList = new ArrayList<>();
 
-        gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        mGridLayout = new GridLayoutManager(getContext(), 2);
         mLvArtist = (RecyclerView) view.findViewById(R.id.recycleViewAr);
         mLvArtist.setHasFixedSize(true);
-        mLvArtist.setLayoutManager(gridLayoutManager);
+        mLvArtist.setLayoutManager(mGridLayout);
         mAdapter = new ArtistAdapter(mArtistList, getActivity());
         mLvArtist.setAdapter(mAdapter);
 
@@ -59,7 +60,7 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
             @Override
             protected Void doInBackground(String... params) {
                 mArtistList.clear();
-                mArtistList.addAll(SongDatabase.getArtistFromDevice(getContext()));
+                mArtistList.addAll(LoadData.getArtistFromDevice(getContext()));
 
                 return null;
             }
@@ -89,8 +90,8 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filteredModelList = Utils.filterArtist(mArtistList, newText.trim());
-                mAdapter.setFilter(filteredModelList);
+                mSearchList = Utils.filterArtist(mArtistList, newText.trim());
+                mAdapter.setFilter(mSearchList);
                 return true;
             }
         });

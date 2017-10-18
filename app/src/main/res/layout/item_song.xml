@@ -16,12 +16,11 @@
 
         <ImageView
             android:id="@+id/ImgView"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="@dimen/artItem"
+            android:layout_height="@dimen/artItem"
             android:layout_alignParentLeft="true"
             android:padding="1dp"
-            android:src="@drawable/ic_empty_music"
-             />
+            android:src="@drawable/ic_empty_music" />
 
         <LinearLayout
             android:id="@+id/lv1"
@@ -42,8 +41,8 @@
                 android:ellipsize="end"
                 android:maxLength="40"
                 android:maxLines="1"
-                android:text="Name Song"
-                android:textSize="16sp" />
+                android:text="@string/name_song"
+                android:textSize="@dimen/textH1" />
 
             <TextView
 
@@ -54,8 +53,8 @@
                 android:ellipsize="end"
                 android:maxLength="40"
                 android:maxLines="1"
-                android:text="Name Artist"
-                android:textSize="13sp" />
+                android:text="@string/name_artist"
+                android:textSize="@dimen/textH2" />
 
         </LinearLayout>
 

@@ -26,7 +26,7 @@ public class Utils {
     public static final String POSITION = "POSITION";
     // check to get data from fragment song,album,artist
     public final static String TAG = "TAG";
-    public final static String PLAYLIST = "PLAYLIST";
+    public final static String PLAYLIST = "Playlist";
     public final static String NAME_PLAYLIST = "NamePlaylist";
     public final static String TAG_SONG = "SONG";
     public final static String TAG_ARTIST = "ARTIST";
@@ -40,7 +40,6 @@ public class Utils {
     public static final String ALBUM_ID = "ALBUMID";
     public static final String ARTIST_ID = "ARTISTID";
     public static final String CHECK = "Check";
-    public static final String EMPTY = "EMPTY";
     public static final String TRUE = "True";
     public static final String ITEM_CLICK = "Click";
     public static final String SHUFFLE_REPEAT = "ShuffleRepeat";
@@ -54,6 +53,20 @@ public class Utils {
     public static final String SHARE_PREFERENCE = "share";
     public static final String STATUS_PLAY = "StatusPlay";
     public static final String START = "Start";
+    public static final String INPUT_NAME_PLAYSLIST = "Please input name playlist !";
+    public static final String INPUT_ALL_SPACE = "Input all space, Please Input again!";
+    public static final String ADDED_TO_PLAYLIST = "Added into playlist !";
+    public static final String EMPTY = "";
+    public static final String UPDEATED = "Updated success !";
+    public static final String SONGS = "Songs";
+    public static final String ALBUMS = "Albums";
+    public static final String ALBUMS_ = " Albums |";
+    public static final String ARTIST = "Artist";
+    public static final String NO_PLAYLIST = "Don't have any playlist!";
+    public static final String NOTIFY_PREVIOUS = "com.example.windows10gamer.beautimusic.previous";
+    public static final String NOTIFY_PLAY = "com.example.windows10gamer.beautimusic.play";
+    public static final String NOTIFY_NEXT = "com.example.windows10gamer.beautimusic.next";
+    public static final String CHECKED_PLAY = "CheckedPlay";
 
     public static boolean checkString(String s) {
         int sum = 0;

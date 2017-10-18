@@ -26,7 +26,7 @@
             android:maxLines="1"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
-            android:text="Name Album"
+            android:text="@string/name_album"
             android:textColor="@color/colorWhite" />
 
         <TextView
@@ -36,7 +36,7 @@
             android:layout_below="@id/alTvNameAlbum"
             android:maxLines="1"
             android:paddingLeft="8dp"
-            android:text="Name Artist"
+            android:text="@string/name_artist"
             android:textColor="@color/colorWhite" />
 
 

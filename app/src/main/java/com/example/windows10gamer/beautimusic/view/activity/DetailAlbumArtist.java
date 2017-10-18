@@ -1,6 +1,9 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +15,8 @@ import android.widget.ImageView;
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.application.App;
+import com.example.windows10gamer.beautimusic.utilities.LoadData;
+import com.example.windows10gamer.beautimusic.utilities.singleton.SharedPrefs;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
@@ -22,6 +27,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.windows10gamer.beautimusic.utilities.Utils.CHECKED_PLAY;
 
 
 public class DetailAlbumArtist extends AppCompatActivity {
@@ -34,15 +41,22 @@ public class DetailAlbumArtist extends AppCompatActivity {
     private SongAdapter mAdapter;
     private LinearLayoutManager mLinearLayout;
     private FragmentMiniControl mFragmentMiniControl;
-    private MusicService service;
+    private static int CHECK = 0;//check=0 chưa phát nhạc,check=1 đã đc phát
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            CHECK = 1;
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        service = ((App) getApplicationContext()).getService();
         getData();
+
+        registerReceiver(receiver, new IntentFilter(Utils.TRUE));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(mTitile);
@@ -54,17 +68,30 @@ public class DetailAlbumArtist extends AppCompatActivity {
 
         initView();
         setImageAlbum();
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        if (service.mSongList != null) {
+        if (SharedPrefs.getInstance().get(CHECKED_PLAY, Boolean.class)) {
+            CHECK = 1;
+        }
+
+        if (CHECK == 1) {
             mLayoutControl.setVisibility(View.VISIBLE);
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.album_minicontrol, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPrefs.getInstance().remove(CHECKED_PLAY);
+        unregisterReceiver(receiver);
     }
 
     @Override
@@ -112,12 +139,12 @@ public class DetailAlbumArtist extends AppCompatActivity {
         if (tag.equals(Utils.TAG_ALBUM)) {
             id = b.getInt(Utils.ALBUM_ID);
             mTitile = b.getString(Utils.NAME_ALBUM);
-            mSongList = SongDatabase.getAlbumSongs(id, this);
+            mSongList = LoadData.getAlbumSongs(id, this);
 
         } else if (tag.equals(Utils.TAG_ARTIST)) {
             id = b.getInt(Utils.ARTIST_ID);
             mTitile = b.getString(Utils.NAME_ARTIST);
-            mSongList = SongDatabase.getArtistSong(id, this);
+            mSongList = LoadData.getArtistSong(id, this);
 
         } else if (tag.equals(Utils.PLAYLIST)) {
             mTitile = b.getString(Utils.NAME_PLAYLIST);

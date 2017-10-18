@@ -8,14 +8,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.os.PowerManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -25,28 +25,26 @@ import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SharedPrefs;
 import com.example.windows10gamer.beautimusic.view.activity.HomeActivity;
+import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_NEXT;
+import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_PLAY;
+import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_PREVIOUS;
 
 public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
-    private RemoteViews remoteView;
-    private RemoteViews remoteViewBig;
-    private NotificationCompat.Builder nc;
-    private NotificationManager nm;
-    // notification
-    public static final String NOTIFY_PREVIOUS = "com.example.windows10gamer.beautimusic.previous";
-    public static final String NOTIFY_PLAY = "com.example.windows10gamer.beautimusic.play";
-    public static final String NOTIFY_NEXT = "com.example.windows10gamer.beautimusic.next";
     private static final int NOTIFICATION_ID_CUSTOM_BIG = 9;
-
-    public MediaPlayer mPlayer;
-    public static List<Song> mSongList;
+    private RemoteViews mRemoteview;
+    private NotificationCompat.Builder mNotifiCompat;
+    private NotificationManager mNotifiManager;
+    private Notification mNotification;
+    private MediaPlayer mPlayer;
+    private List<Song> mSongList;
     private int mPosition;
-    private String songTitle = "";
-    private String artistTitle = "";
+    private String songTitle;
+    private String artistTitle;
     private final IBinder musicBind = new MusicBinder();
     private boolean shuffle = false;
     private boolean repeat = false;
@@ -69,7 +67,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         it.addAction(Utils.PLAY_KEY);
         registerReceiver(receiver, it);
     }
-
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -94,7 +91,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
     };
 
-
     private void initMusicPlayer() {
         mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -117,7 +113,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.d("Main", "disconect");
+
         return true;
     }
 
@@ -137,33 +133,29 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return mSongList;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initNotification() {
-        remoteView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.custom_small_notification);
-        remoteViewBig = new RemoteViews(getApplicationContext().getPackageName(), R.layout.custom_notification);
-        remoteView.setTextViewText(R.id.notifiNameSong, songTitle);
-        remoteView.setTextViewText(R.id.notifiNameArtist, artistTitle);
-        remoteView.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
-        remoteViewBig.setTextViewText(R.id.notifiNameSong, songTitle);
-        remoteViewBig.setTextViewText(R.id.notifiNameArtist, artistTitle);
-        remoteViewBig.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
+        mRemoteview = new RemoteViews(getApplicationContext().getPackageName(), R.layout.custom_small_notification);
+        mRemoteview.setTextViewText(R.id.notifiNameSong, songTitle);
+        mRemoteview.setTextViewText(R.id.notifiNameArtist, artistTitle);
+        mRemoteview.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
 
         setListener();
 
-        nc = new NotificationCompat.Builder(getApplicationContext());
-        nm = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotifiCompat = new NotificationCompat.Builder(getApplicationContext());
+        mNotifiManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         Intent notifyIntent = new Intent(getApplicationContext(), HomeActivity.class);
 
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        nc.setOngoing(true);
-        nc.setContentIntent(pendingIntent);
-        nc.setSmallIcon(R.drawable.ic_play_arrow_white_48dp);
-        nc.setCustomContentView(remoteView);
-        nc.setCustomBigContentView(remoteViewBig);
-        nc.setVisibility(Notification.VISIBILITY_PUBLIC);
+        mNotifiCompat.setOngoing(true);
+        mNotifiCompat.setContentIntent(pendingIntent);
+        mNotifiCompat.setSmallIcon(R.drawable.ic_play_arrow_white_48dp);
+        mNotifiCompat.setCustomContentView(mRemoteview);
+        mNotifiCompat.setVisibility(Notification.VISIBILITY_PUBLIC);
 
-        Notification notification = nc.build();
-        startForeground(NOTIFICATION_ID_CUSTOM_BIG, notification);
+        mNotification = mNotifiCompat.build();
+        startForeground(NOTIFICATION_ID_CUSTOM_BIG, mNotification);
     }
 
     private void setListener() {
@@ -172,29 +164,24 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Intent play = new Intent(NOTIFY_PLAY);
 
         PendingIntent pPrevious = PendingIntent.getBroadcast(getApplicationContext(), 0, previous, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
-        remoteViewBig.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
+        mRemoteview.setOnClickPendingIntent(R.id.notifiPrevious, pPrevious);
 
         PendingIntent pPlay = PendingIntent.getBroadcast(getApplicationContext(), 0, play, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.notifiPlay, pPlay);
-        remoteViewBig.setOnClickPendingIntent(R.id.notifiPlay, pPlay);
+        mRemoteview.setOnClickPendingIntent(R.id.notifiPlay, pPlay);
 
         PendingIntent pNext = PendingIntent.getBroadcast(getApplicationContext(), 0, next, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteView.setOnClickPendingIntent(R.id.notifiNext, pNext);
-        remoteViewBig.setOnClickPendingIntent(R.id.notifiNext, pNext);
+        mRemoteview.setOnClickPendingIntent(R.id.notifiNext, pNext);
     }
 
     public void updateRemoteview() {
         if (mPlayer.isPlaying()) {
-            remoteView.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
-            remoteViewBig.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
-            Notification notification = nc.build();
-            nm.notify(NOTIFICATION_ID_CUSTOM_BIG, notification);
+            mRemoteview.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
+            mNotification = mNotifiCompat.build();
+            mNotifiManager.notify(NOTIFICATION_ID_CUSTOM_BIG, mNotification);
         } else {
-            remoteView.setImageViewResource(R.id.notifiPlay, R.drawable.ic_play_arrow_white_48dp);
-            remoteViewBig.setImageViewResource(R.id.notifiPlay, R.drawable.ic_play_arrow_white_48dp);
-            Notification notification = nc.build();
-            nm.notify(NOTIFICATION_ID_CUSTOM_BIG, notification);
+            mRemoteview.setImageViewResource(R.id.notifiPlay, R.drawable.ic_play_arrow_white_48dp);
+            mNotification = mNotifiCompat.build();
+            mNotifiManager.notify(NOTIFICATION_ID_CUSTOM_BIG, mNotification);
         }
 
     }
@@ -298,6 +285,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             }
         }
         playSong();
+        this.sendBroadcast(new Intent().setAction("NEXT"));
     }
 
     public void playSong() {
@@ -314,27 +302,33 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mPlayer.prepareAsync();
 
     }
-    public void setShuffle(boolean shuffle){
+
+    public void setShuffle(boolean shuffle) {
         this.shuffle = shuffle;
     }
-    public void setRepeat(boolean repeat){
+
+    public void setRepeat(boolean repeat) {
         this.repeat = repeat;
     }
 
     public boolean isShuffle() {
         if (shuffle) {
-            shuffle = false;
+            shuffle = !shuffle;
             return false;
-        } else shuffle = true;
-        return true;
+        } else {
+            shuffle = !shuffle;
+            return true;
+        }
     }
 
     public boolean isRepeat() {
         if (repeat) {
-            repeat = false;
+            repeat = !repeat;
             return false;
-        } else repeat = true;
-        return true;
+        } else {
+            repeat = !repeat;
+            return true;
+        }
     }
 
     public boolean getRepeat() {

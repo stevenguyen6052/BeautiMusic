@@ -44,22 +44,31 @@ public class HomeActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private AdapterTab mTab;
     private View mLayoutControl;
-    private MusicService mService;
     private FragmentMiniControl mFragmentMiniControl;
     private Toolbar mToolbar;
+    private static int CHECK = 0; //check=0 nhạc chưa phát,check=1 nhạc đã đc phát
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mLayoutControl.setVisibility(View.VISIBLE);
+            SharedPrefs.getInstance().put(Utils.CHECKED_PLAY, true);
+            CHECK = 1;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mService = ((App) getApplicationContext()).getService();
-
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
         addPermission();
         initView();
+
+        registerReceiver(receiver, new IntentFilter(Utils.TRUE));
     }
 
     private void addPermission() {
@@ -90,7 +99,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (mService.mSongList != null) {
+        if (CHECK == 1) {
             mLayoutControl.setVisibility(View.VISIBLE);
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.mainLayoutControl, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();
@@ -102,6 +111,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onDestroy();
         if (!SharedPrefs.getInstance().get(Utils.STATUS_PLAY, Boolean.class, false))
             ((App) getApplicationContext()).getService().stopForeground(true);
+        unregisterReceiver(receiver);
+
     }
 
     private void initView() {

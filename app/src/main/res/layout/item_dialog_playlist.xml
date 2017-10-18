@@ -5,6 +5,7 @@
     android:background="@drawable/custom_click"
     android:orientation="horizontal"
     android:padding="5dp"
+    android:clickable="true"
     android:weightSum="10">
 
     <ImageView
@@ -30,7 +31,7 @@
             android:ellipsize="end"
             android:maxLength="40"
             android:maxLines="1"
-            android:text="Name Playlist"
+            android:text="@string/name_playlist"
             android:textColor="@color/colorBack"
             android:textSize="16sp" />
 
@@ -41,7 +42,7 @@
             android:ellipsize="end"
             android:maxLength="30"
             android:maxLines="1"
-            android:text="Sum Song" />
+            android:text="@string/sum_song" />
 
 
     </LinearLayout>

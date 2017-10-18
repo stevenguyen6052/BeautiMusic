@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.model.Playlist;
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -47,7 +48,7 @@ public class PlaylistDialogAdapter extends RecyclerView.Adapter<PlaylistDialogAd
         mSongList = gson.fromJson(mPlaylist.get(i).getListIdSong(), type);
 
         holder.tvNamePlaylist.setText(mPlaylist.get(i).getName());
-        holder.tvSumSong.setText(mSongList.size() + " Songs");
+        holder.tvSumSong.setText(mSongList.size() + Utils.SONGS);
 
     }
 

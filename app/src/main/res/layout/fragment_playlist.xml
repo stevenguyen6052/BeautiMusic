@@ -12,7 +12,8 @@
         android:layout_centerInParent="true"
         android:layout_margin="10dp"
         android:gravity="center"
-        android:textSize="18sp" />
+        android:text="@string/no"
+        android:textSize="@dimen/_18ssp" />
 
     <android.support.v7.widget.RecyclerView
 

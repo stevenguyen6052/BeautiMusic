@@ -65,6 +65,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_playmusic);
 
         SharedPrefs.getInstance().put(Utils.STATUS_PLAY, true);
+        sendBroadcast(new Intent().setAction(Utils.TRUE));
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);

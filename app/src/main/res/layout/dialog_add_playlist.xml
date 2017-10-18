@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="@string/add_playlist"
         android:textColor="@color/colorBack"
-        android:textSize="18sp" />
+        android:textSize="@dimen/textTitle" />
 
     <EditText
         android:id="@+id/edtAddPlayList"
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:maxLines="1"
-        android:textSize="16sp"
+        android:textSize="@dimen/textH1"
 
         />
 
@@ -34,7 +34,7 @@
             android:background="@null"
             android:text="@string/yes"
             android:textColor="@color/colorAccent"
-            android:textSize="16sp" />
+            android:textSize="@dimen/textH1" />
 
         <Button
             android:id="@+id/btnNo"
@@ -45,7 +45,7 @@
             android:background="@null"
             android:text="@string/no"
             android:textColor="@color/colorAccent"
-            android:textSize="16sp" />
+            android:textSize="@dimen/textH1" />
 
 
     </RelativeLayout>

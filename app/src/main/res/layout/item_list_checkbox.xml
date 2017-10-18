@@ -22,23 +22,23 @@
             android:src="@drawable/ic_empty_music" />
 
         <LinearLayout
-            android:layout_toLeftOf="@+id/itemCheck"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/itemCheck"
             android:layout_toRightOf="@id/itemImg"
             android:orientation="vertical"
-            android:paddingLeft="12dp"
-            android:paddingTop="5dp">
+            android:paddingLeft="12dp">
 
             <TextView
                 android:id="@+id/itemNameSong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:ellipsize="end"
                 android:maxLength="35"
                 android:maxLines="1"
-                android:ellipsize="end"
-                android:text="Name Song"
+                android:text="@string/name_song"
                 android:textColor="@color/colorBack"
                 android:textSize="16sp" />
 
@@ -48,21 +48,20 @@
                 android:layout_height="wrap_content"
                 android:maxLength="30"
                 android:maxLines="1"
-                android:text="Name Artist" />
+                android:text="@string/name_artist" />
 
 
         </LinearLayout>
 
         <CheckBox
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="12dp"
             android:id="@+id/itemCheck"
-            android:layout_width="@dimen/_24sdp"
-            android:layout_height="@dimen/_24sdp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
             android:layout_gravity="center"
-             />
+            android:layout_marginRight="12dp" />
 
     </RelativeLayout>
 

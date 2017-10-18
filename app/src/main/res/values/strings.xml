@@ -2,9 +2,11 @@
     <string name="app_name">Music</string>
     <string name="name_album">Name Album</string>
     <string name="name_artist">Name Artist</string>
-    <string name="name_song">Name Artist</string>
+    <string name="name_song">Name Song</string>
+    <string name="name_playlist">Name Playlist</string>
     <string name="sum_album">Sum Album</string>
     <string name="sum_song">Sum Song</string>
+    <string name="sum_song_album">Sum Abum | Sum Song</string>
     <string name="song"> Song</string>
     <string name="choose_list_song">Select list songs</string>
     <string name="added_playlist">Added playlist!</string>
@@ -13,5 +15,6 @@
     <string name="no">No</string>
     <string name="add_playlist">Add new playlist</string>
     <string name="dont_have_playlist">Dont have any playlist!</string>
+    <string name="time">00:00</string>
 
 </resources>

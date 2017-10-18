@@ -12,9 +12,9 @@ import com.example.windows10gamer.beautimusic.utilities.singleton.SharedPrefs;
 import com.example.windows10gamer.beautimusic.view.activity.HomeActivity;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.windows10gamer.beautimusic.utilities.service.MusicService.NOTIFY_NEXT;
-import static com.example.windows10gamer.beautimusic.utilities.service.MusicService.NOTIFY_PLAY;
-import static com.example.windows10gamer.beautimusic.utilities.service.MusicService.NOTIFY_PREVIOUS;
+import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_NEXT;
+import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_PLAY;
+import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_PREVIOUS;
 
 
 public class NotificationReceiver extends BroadcastReceiver {

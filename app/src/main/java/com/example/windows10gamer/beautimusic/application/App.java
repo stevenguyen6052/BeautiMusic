@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
+
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 import com.google.gson.Gson;
 
@@ -42,6 +44,7 @@ public class App extends Application {
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
+
                 isConnected = false;
                 mService = null;
 

@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.windows10gamer.beautimusic.utilities.LoadData;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.R;
@@ -62,8 +63,7 @@ public class SongFragment extends android.support.v4.app.Fragment implements Sea
             @Override
             protected Void doInBackground(String... params) {
                 mSongList.clear();
-                mSongList.addAll(SongDatabase.getSongFromDevice(getContext()));
-                Log.d("abc", String.valueOf(mSongList.size()));
+                mSongList.addAll(LoadData.getSongFromDevice(getContext()));
 
                 return null;
             }

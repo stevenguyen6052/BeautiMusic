@@ -33,7 +33,7 @@
                 android:maxLength="30"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:text="Name Artist"
+                android:text="@string/name_artist"
                 android:textColor="@color/colorBack"
                 android:textSize="16sp" />
 
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:maxLength="30"
                 android:maxLines="1"
-                android:text="Sum Abum | Sum Song"
+                android:text="@string/sum_song_album"
                 android:textSize="13sp" />
 
         </LinearLayout>

@@ -27,10 +27,10 @@
             android:name=".utilities.notification.NotificationReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.HEADSET_PLUG" />
                 <action android:name="com.example.windows10gamer.beautimusic.previous" />
                 <action android:name="com.example.windows10gamer.beautimusic.next" />
                 <action android:name="com.example.windows10gamer.beautimusic.play" />
+                />
             </intent-filter>
         </receiver>
 
@@ -39,7 +39,7 @@
             android:enabled="true" />
 
         <activity android:name=".view.activity.PlayMusicActivity" />
-        <activity android:name=".view.activity.AddSongToPlaylisActivity"></activity>
+        <activity android:name=".view.activity.AddSongToPlaylisActivity"/>
     </application>
 
 </manifest>

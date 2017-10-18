@@ -12,9 +12,9 @@
         android:background="@drawable/ic_empty_music" />
 
     <RelativeLayout
-        android:layout_below="@id/itemartist_img"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_below="@id/itemartist_img"
         android:background="#3b000000"
         android:orientation="vertical">
 
@@ -25,7 +25,7 @@
             android:maxLines="1"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
-            android:text="Name Artist"
+            android:text="@string/name_artist"
             android:textColor="@color/colorWhite" />
 
         <TextView
@@ -34,9 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/item_nameartist"
             android:paddingLeft="8dp"
-            android:text="Sum Album   "
+            android:text="@string/sum_album"
             android:textColor="@color/colorWhite" />
-
 
     </RelativeLayout>
 

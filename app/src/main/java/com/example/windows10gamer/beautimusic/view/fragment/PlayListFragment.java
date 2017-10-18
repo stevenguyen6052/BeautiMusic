@@ -35,7 +35,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class PlayListFragment extends Fragment implements View.OnClickListener {
 
-    public List<Playlist> mPlaylists,mSearchList;
+    public List<Playlist> mPlaylists, mSearchList;
     public PlaylistAdapter mAdapter;
     private SongDatabase mSongDatabase;
     private View view;
@@ -85,12 +85,12 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
             if (mPlaylists.size() == 0)
                 mTvNotifi.setText(getString(R.string.dont_have_playlist));
             else
-                mTvNotifi.setText(" ");
+                mTvNotifi.setText(Utils.EMPTY);
 
         }
     }
 
-    private void loadData(){
+    private void loadData() {
         new AsyncTask<String, Void, Void>() {
 
             @Override
@@ -105,10 +105,9 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 if (mPlaylists.size() == 0) {
-                    mTvNotifi.setText("Don't have any playlist!");
-                }
-                else {
-                    mTvNotifi.setText(" ");
+                    mTvNotifi.setText(Utils.NO_PLAYLIST);
+                } else {
+                    mTvNotifi.setText(Utils.EMPTY);
                 }
                 mAdapter.notifyDataSetChanged();
 
@@ -134,7 +133,7 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                mSearchList = Utils.filterPlaylist(mPlaylists,newText);
+                mSearchList = Utils.filterPlaylist(mPlaylists, newText);
                 mAdapter.setFilter(mSearchList);
                 return true;
             }
@@ -156,10 +155,13 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         String namePlaylist = edtInputPlaylist.getText().toString();
-                        if (edtInputPlaylist.getText().toString().equals("")) {
-                            Toast.makeText(getContext(), "Please input name playlist !", Toast.LENGTH_SHORT).show();
+
+                        if (edtInputPlaylist.getText().toString().equals(Utils.EMPTY)) {
+                            Toast.makeText(getContext(), Utils.INPUT_NAME_PLAYSLIST, Toast.LENGTH_SHORT).show();
+
                         } else if (Utils.checkString(namePlaylist)) {
-                            Toast.makeText(getContext(), "Input all space, Please Input again!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), Utils.INPUT_ALL_SPACE, Toast.LENGTH_SHORT).show();
+
                         } else {
                             startActivityForResult(new Intent(getContext(), AddSongToPlaylisActivity.class)
                                     .putExtra(Utils.NAME_PLAYLIST, namePlaylist), REQUEST_CODE);

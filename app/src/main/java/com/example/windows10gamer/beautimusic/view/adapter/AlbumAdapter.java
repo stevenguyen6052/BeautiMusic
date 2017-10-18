@@ -23,8 +23,6 @@ import static com.example.windows10gamer.beautimusic.utilities.Utils.NAME_ALBUM;
 
 
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
-
-    private static final String NAME_ALBUM = "Name Album";
     private Context mContext;
     private List<Album> mAlbumList;
     private static final int LIST_ITEM = 0;
@@ -70,7 +68,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
             public void onClick(View v) {
                 v.getContext().startActivity(new Intent(v.getContext(), DetailAlbumArtist.class)
                         .putExtra(Utils.TAG, Utils.TAG_ALBUM)
-                        .putExtra(NAME_ALBUM, mAlbumList.get(i).getNameAlbum())
+                        .putExtra(Utils.NAME_ALBUM, mAlbumList.get(i).getNameAlbum())
                         .putExtra(Utils.ALBUM_ID, mAlbumList.get(i).getId())
                 );
             }
@@ -97,7 +95,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     public int getItemCount() {
         return (null != mAlbumList ? mAlbumList.size() : 0);
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameAlbum, nameArtist;

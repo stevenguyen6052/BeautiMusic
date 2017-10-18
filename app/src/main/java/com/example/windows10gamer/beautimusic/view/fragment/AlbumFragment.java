@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.windows10gamer.beautimusic.utilities.LoadData;
 import com.example.windows10gamer.beautimusic.view.adapter.AlbumAdapter;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Album;
@@ -59,7 +60,7 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
             @Override
             protected Void doInBackground(String... params) {
                 mAlbumList.clear();
-                mAlbumList.addAll(SongDatabase.getAlbumFromDevice(getContext()));
+                mAlbumList.addAll(LoadData.getAlbumFromDevice(getContext()));
                 return null;
             }
 

@@ -19,8 +19,6 @@ import java.util.List;
 
 
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
-    private static final String NAME_ARTIST = "Name Artist";
-
     private static final int LIST_ITEM = 0;
     private static final int GRID_ITEM = 1;
     boolean isSwitchView = true;
@@ -53,7 +51,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final Artist artist = mArtistList.get(position);
 
-        String s = artist.getSumAlbum() + " Albums | " + artist.getSumSong() + " Songs";
+        String s = artist.getSumAlbum() + Utils.ALBUMS_ + artist.getSumSong() + Utils.SONGS;
 
         holder.mTvNameArtist.setText(artist.getNameArtist());
         holder.mTvSumAlbum.setText(s);
@@ -63,7 +61,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
             public void onClick(View v) {
                 v.getContext().startActivity(new Intent(v.getContext(), DetailAlbumArtist.class)
                         .putExtra(Utils.TAG, Utils.TAG_ARTIST)
-                        .putExtra(NAME_ARTIST, mArtistList.get(position).getNameArtist())
+                        .putExtra(Utils.NAME_ARTIST, mArtistList.get(position).getNameArtist())
                         .putExtra(Utils.ARTIST_ID, mArtistList.get(position).getId())
                 );
             }

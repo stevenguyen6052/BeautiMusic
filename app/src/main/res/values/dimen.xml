@@ -4,5 +4,10 @@
     <dimen name="tvtime_size">26sp</dimen>
     <dimen name="width_height_image_item">150dp</dimen>
     <dimen name="size_icon_music">50dp</dimen>
+    <dimen name="textTitle">18sp</dimen>
+    <dimen name="textH1">16sp</dimen>
+    <dimen name="textH2">13sp</dimen>
+    <dimen name="artItem">55dp</dimen>
+    <dimen name="item_notifi">36dp</dimen>
 
 </resources>

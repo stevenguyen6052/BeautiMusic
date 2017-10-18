@@ -61,7 +61,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         List<Song> mSongList = gson.fromJson(mPlaylist.get(i).getListIdSong(), type);
 
         holder.tvNamePlaylist.setText(mPlaylist.get(i).getName());
-        holder.tvSumSong.setText(mSongList.size() + " Songs");
+        holder.tvSumSong.setText(mSongList.size() + Utils.SONGS);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,11 +97,11 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                                 dialog.findViewById(R.id.btnYes).setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if (edtName.getText().toString().equals("")) {
-                                            Toast.makeText(mContext.getContext(), "Please input name playlist!", Toast.LENGTH_SHORT).show();
+                                        if (edtName.getText().toString().equals(Utils.EMPTY)) {
+                                            Toast.makeText(mContext.getContext(), Utils.INPUT_NAME_PLAYSLIST, Toast.LENGTH_SHORT).show();
 
                                         } else if (Utils.checkString(edtName.getText().toString())) {
-                                            Toast.makeText(mContext.getContext(), "Input all space, Please Input again!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext.getContext(), Utils.INPUT_ALL_SPACE, Toast.LENGTH_SHORT).show();
 
                                         } else {
 
@@ -111,7 +111,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                                             mContext.mAdapter.notifyDataSetChanged();
                                             dialog.dismiss();
 
-                                            Toast.makeText(mContext.getContext(), "Updated success !", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext.getContext(), Utils.UPDEATED, Toast.LENGTH_SHORT).show();
                                         }
 
 

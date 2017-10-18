@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.utilities.LoadData;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
@@ -52,7 +53,7 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
             @Override
             protected Void doInBackground(String... params) {
                 mSongList.clear();
-                mSongList.addAll(SongDatabase.getSongFromDevice(getApplicationContext()));
+                mSongList.addAll(LoadData.getSongFromDevice(getApplicationContext()));
                 return null;
             }
 

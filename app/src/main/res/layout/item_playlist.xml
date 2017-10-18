@@ -4,7 +4,6 @@
     android:layout_height="70dp"
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:padding="5dp"
     android:paddingBottom="6dp"
     android:paddingLeft="8dp"
     android:paddingTop="6dp"
@@ -24,9 +23,9 @@
             android:src="@drawable/ic_splash" />
 
         <LinearLayout
-            android:layout_toLeftOf="@+id/imgMoreVertPl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/imgMoreVertPl"
             android:layout_toRightOf="@id/imgArt"
             android:orientation="vertical"
             android:paddingLeft="12dp"
@@ -39,7 +38,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="40"
-                android:text="Name Playlist"
+                android:text="@string/name_playlist"
                 android:textColor="@color/colorBack"
                 android:textSize="16sp" />
 
@@ -48,7 +47,7 @@
                 style="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Sum Song"
+                android:text="@string/sum_song"
                 android:textSize="13sp" />
 
 

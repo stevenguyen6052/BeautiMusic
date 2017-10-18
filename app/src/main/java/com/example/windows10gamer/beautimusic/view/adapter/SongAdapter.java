@@ -3,6 +3,7 @@ package com.example.windows10gamer.beautimusic.view.adapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -11,12 +12,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.example.windows10gamer.beautimusic.view.activity.PlayMusic;
+import com.example.windows10gamer.beautimusic.application.App;
+import com.example.windows10gamer.beautimusic.utilities.dragandswipe.ItemTouchHelperViewHolder;
+import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Playlist;
 import com.example.windows10gamer.beautimusic.model.Song;
@@ -34,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
+public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> implements AdapterView.OnItemSelectedListener {
     private List<Playlist> mPlaylist = new ArrayList<>();
     private List<Song> mSongList;
     private Context mContext;
@@ -50,7 +55,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     private Gson gson;
 
     List<Song> listSong = new ArrayList<>();
-
 
 
     public SongAdapter(List<Song> mSongList, Context mContext) {
@@ -69,6 +73,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, final int i) {
 
         mSong = mSongList.get(i);
+
         holder.mTvNameSong.setText(mSong.getNameSong());
         holder.mTvNameArtist.setText(mSong.getNameArtist());
         Picasso.with(mContext)
@@ -80,12 +85,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mContext.sendBroadcast(new Intent().setAction(Utils.PLAY_KEY));
                 mContext.startActivity(new Intent(mContext, PlayMusicActivity.class)
                         .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList) mSongList)
                         .putExtra(Utils.POSITION, i));
-                mContext.sendBroadcast(new Intent().setAction(Utils.PLAY_KEY));
+
             }
         });
+
         holder.mImgMoreVert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,13 +141,13 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                                                 s.add(mSongList.get(i));
                                                 String listSong = gson.toJson(s);
 
-                                                if (edtNamePlaylist.getText().toString().equals("")) {
-                                                    Toast.makeText(mContext, "Please input name playlist !", Toast.LENGTH_SHORT).show();
+                                                if (edtNamePlaylist.getText().toString().equals(Utils.EMPTY)) {
+                                                    Toast.makeText(mContext, Utils.INPUT_NAME_PLAYSLIST, Toast.LENGTH_SHORT).show();
                                                 } else if (Utils.checkString(edtNamePlaylist.getText().toString())) {
-                                                    Toast.makeText(mContext, "Input all space, Please Input again!", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, Utils.INPUT_ALL_SPACE, Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     songDatabase.addPlayList(edtNamePlaylist.getText().toString(), listSong);
-                                                    Toast.makeText(mContext, "Added into playlist !", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, Utils.ADDED_TO_PLAYLIST, Toast.LENGTH_SHORT).show();
                                                     dialogAddSong.dismiss();
                                                 }
 
@@ -213,7 +220,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                         }
 
                         songDatabase.updatePlaylist(gson.toJson(listSong), mPlaylist.get(position).getId());
-                        Toast.makeText(mContext, "Added into playlist !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, Utils.ADDED_TO_PLAYLIST, Toast.LENGTH_SHORT).show();
                         dialogChoosePlaylist.dismiss();
                     }
 
@@ -228,6 +235,16 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return mSongList.size();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -252,6 +269,5 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         mSongList.addAll(mData);
         notifyDataSetChanged();
     }
-
 
 }
