@@ -49,7 +49,6 @@ public class HomeActivity extends AppCompatActivity {
     private AdapterTab mTab;
     private View mLayoutControl;
     private FragmentMiniControl mFragmentMiniControl;
-    private Toolbar mToolbar;
     private static int CHECK_PLAYED_MUSIC = 0; //check=0 nhạc chưa phát,check=1 nhạc đã đc phát
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -66,8 +65,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         addPermission();
         initView();
@@ -115,6 +114,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onDestroy();
         if (!SharedPrefs.getInstance().get(Utils.STATUS_PLAY, Boolean.class, false))
             ((App) getApplicationContext()).getService().stopForeground(true);
+
         unregisterReceiver(receiver);
         SharedPrefs.getInstance().remove(CHECKED_PLAY);
 

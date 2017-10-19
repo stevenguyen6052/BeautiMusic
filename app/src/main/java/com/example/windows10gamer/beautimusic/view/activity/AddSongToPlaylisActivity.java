@@ -29,7 +29,7 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
     private PlaylistAddSongAdapter mAdapter;
     private List<Song> mSongList;
     private List<Song> mGetList;
-    private LinearLayoutManager linearLayoutManager;
+    private LinearLayoutManager mLinearLayout;
     private SongDatabase mDbHanler;
 
 
@@ -73,8 +73,8 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
 
         mLvSong = (RecyclerView) findViewById(R.id.recycleCheckList);
         mLvSong.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(this);
-        mLvSong.setLayoutManager(linearLayoutManager);
+        mLinearLayout = new LinearLayoutManager(this);
+        mLvSong.setLayoutManager(mLinearLayout);
         mAdapter = new PlaylistAddSongAdapter(this, mSongList, this);
         mLvSong.setAdapter(mAdapter);
 

@@ -31,6 +31,7 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
     private ArtistAdapter mAdapter;
     private RecyclerView mLvArtist;
     private GridLayoutManager mGridLayout;
+    private SearchView mSearchView;
 
 
 
@@ -79,22 +80,7 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
         menu.clear();
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem itemSearch = menu.findItem(R.id.itemSearch);
-        SearchView searchView;
-        searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                mSearchList = Utils.filterArtist(mArtistList, newText.trim());
-                mAdapter.setFilter(mSearchList);
-                return true;
-            }
-        });
+        mSearchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
     }
 
     @Override
@@ -105,6 +91,25 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
                 mLvArtist.setLayoutManager(isSwitched ? new GridLayoutManager(getActivity(), 2)
                         : new LinearLayoutManager(getActivity()));
                 mAdapter.notifyDataSetChanged();
+
+                break;
+
+            case R.id.itemSearch:
+                mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        mSearchList = Utils.filterArtist(mArtistList, newText.trim());
+                        mAdapter.setFilter(mSearchList);
+                        return true;
+                    }
+                });
+
                 break;
         }
         return super.onOptionsItemSelected(item);

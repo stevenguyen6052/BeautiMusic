@@ -102,7 +102,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                         switch (item.getItemId()) {
                             case R.id.itemAddPlayList:
 
-                                songDatabase = SongDatabase.getInstance(mContext.getApplicationContext());
+                                songDatabase = SongDatabase.getInstance(mContext);
                                 mPlaylist.clear();
                                 mPlaylist.addAll(songDatabase.getPlaylist());
                                 dialogAddSong = new Dialog(mContext);
@@ -124,40 +124,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                                     @Override
                                     public void onClick(View v) {
                                         dialogChoosePlaylist.dismiss();
-
-                                        dialogAddSong.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                        dialogAddSong.setContentView(R.layout.dialog_add_playlist);
-
-                                        edtNamePlaylist = (EditText) dialogAddSong.findViewById(R.id.edtAddPlayList);
-
-                                        dialogAddSong.findViewById(R.id.btnYes).setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                List<Song> s = new ArrayList<>();
-                                                gson = new Gson();
-                                                s.add(mSongList.get(i));
-                                                String listSong = gson.toJson(s);
-
-                                                if (edtNamePlaylist.getText().toString().equals(Utils.EMPTY)) {
-                                                    Toast.makeText(mContext, Utils.INPUT_NAME_PLAYSLIST, Toast.LENGTH_SHORT).show();
-                                                } else if (Utils.checkString(edtNamePlaylist.getText().toString())) {
-                                                    Toast.makeText(mContext, Utils.INPUT_ALL_SPACE, Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    songDatabase.addPlayList(edtNamePlaylist.getText().toString(), listSong);
-                                                    Toast.makeText(mContext, Utils.ADDED_TO_PLAYLIST, Toast.LENGTH_SHORT).show();
-                                                    dialogAddSong.dismiss();
-                                                }
-
-                                            }
-                                        });
-                                        dialogAddSong.findViewById(R.id.btnNo).setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                dialogAddSong.dismiss();
-                                            }
-                                        });
-
-                                        dialogAddSong.show();
+                                        showDialogAddSong(i);
 
                                     }
                                 });
@@ -193,6 +160,41 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
             }
 
         });
+    }
+    private void showDialogAddSong(final int index){
+        dialogAddSong.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogAddSong.setContentView(R.layout.dialog_add_playlist);
+
+        edtNamePlaylist = (EditText) dialogAddSong.findViewById(R.id.edtAddPlayList);
+
+        dialogAddSong.findViewById(R.id.btnYes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<Song> s = new ArrayList<>();
+                gson = new Gson();
+                s.add(mSongList.get(index));
+                String listSong = gson.toJson(s);
+
+                if (edtNamePlaylist.getText().toString().equals(Utils.EMPTY)) {
+                    Toast.makeText(mContext, Utils.INPUT_NAME_PLAYSLIST, Toast.LENGTH_SHORT).show();
+                } else if (Utils.checkString(edtNamePlaylist.getText().toString())) {
+                    Toast.makeText(mContext, Utils.INPUT_ALL_SPACE, Toast.LENGTH_SHORT).show();
+                } else {
+                    songDatabase.addPlayList(edtNamePlaylist.getText().toString(), listSong);
+                    Toast.makeText(mContext, Utils.ADDED_TO_PLAYLIST, Toast.LENGTH_SHORT).show();
+                    dialogAddSong.dismiss();
+                }
+
+            }
+        });
+        dialogAddSong.findViewById(R.id.btnNo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogAddSong.dismiss();
+            }
+        });
+
+        dialogAddSong.show();
     }
 
 

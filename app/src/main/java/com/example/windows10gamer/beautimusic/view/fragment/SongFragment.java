@@ -40,7 +40,6 @@ public class SongFragment extends android.support.v4.app.Fragment implements Sea
 
         mSongList = new ArrayList<>();
         mLinearLayout = new LinearLayoutManager(getActivity());
-
         mLvSong = (RecyclerView) mRootView.findViewById(R.id.mListViewSong);
         mLvSong.setHasFixedSize(true);
         mLvSong.setLayoutManager(mLinearLayout);

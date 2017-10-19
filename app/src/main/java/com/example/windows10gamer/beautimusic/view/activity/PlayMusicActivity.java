@@ -79,7 +79,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
         mLvSong.setHasFixedSize(true);
         mLinearLayout = new LinearLayoutManager(this);
-
         mLvSong.setLayoutManager(mLinearLayout);
         mAdapter = new SongAdapterPlaying(mSongList, this);
         mLvSong.setAdapter(mAdapter);

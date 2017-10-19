@@ -93,25 +93,24 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
 
     public void dataResult() {
         Intent intent = new Intent();
-        Bundle b = new Bundle();
+        Bundle bundle = new Bundle();
         boolean isCheckChange = false;
 
         //isCheckchange check xem đã sắp xếp list hay chưa
         // isClickItem để kiểm tra là ấn back hay là click vào item trong list song
         if (getListSong != null) {
-            isCheckChange = true;
-            b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) getListSong);
-            b.putInt(Utils.POSITION, mPostion);
-            b.putBoolean(Utils.TRUE, isCheckChange);
-            b.putBoolean(Utils.CHECK, isClickItem);
+            isCheckChange = !isCheckChange;
+            bundle.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) getListSong);
+            bundle.putInt(Utils.POSITION, mPostion);
+            bundle.putBoolean(Utils.TRUE, isCheckChange);
+            bundle.putBoolean(Utils.CHECK, isClickItem);
 
         } else {
-            isCheckChange = false;
-            b.putInt(Utils.POSITION, mPostion);
-            b.putBoolean(Utils.TRUE, isCheckChange);
-            b.putBoolean(Utils.CHECK, isClickItem);
+            bundle.putInt(Utils.POSITION, mPostion);
+            bundle.putBoolean(Utils.TRUE, isCheckChange);
+            bundle.putBoolean(Utils.CHECK, isClickItem);
         }
-        intent.putExtras(b);
+        intent.putExtras(bundle);
         setResult(Activity.RESULT_OK, intent);
     }
 
