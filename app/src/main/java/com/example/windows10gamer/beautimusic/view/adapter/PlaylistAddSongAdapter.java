@@ -69,13 +69,18 @@ public class PlaylistAddSongAdapter extends RecyclerView.Adapter<PlaylistAddSong
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+            // isChecked ->add to list , unChecked -> remove to list
             if (isChecked) {
-                listSongAfterCheck.add(mSongList.get(getAdapterPosition()));
+                if (!listSongAfterCheck.contains(mSongList.get(getAdapterPosition())))
+                    listSongAfterCheck.add(mSongList.get(getAdapterPosition()));
+
+            }else {
+                if (listSongAfterCheck.contains(mSongList.get(getAdapterPosition())))
+                    listSongAfterCheck.remove(mSongList.get(getAdapterPosition()));
             }
-            if (listSongAfterCheck != null && listSongAfterCheck.size() != 0) {
+
+            if (listSongAfterCheck != null && listSongAfterCheck.size() != 0)
                 getList.sendList(listSongAfterCheck);
-            }
 
         }
 

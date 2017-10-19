@@ -42,7 +42,8 @@ public class DetailAlbumArtist extends AppCompatActivity {
     private SongAdapter mAdapter;
     private LinearLayoutManager mLinearLayout;
     private FragmentMiniControl mFragmentMiniControl;
-    private static int CHECK_PLAED_MUSIC = 0;//check=0 chưa phát nhạc,check=1 đã đc phát
+    protected static int CHECK_PLAED_MUSIC = 0;//check=0 chưa phát nhạc,check=1 đã đc phát
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -68,8 +69,8 @@ public class DetailAlbumArtist extends AppCompatActivity {
         collapsingToolbarLayout.setTitle(mTitile);
 
         initView();
-        setImageAlbum();
 
+        Glide.with(this).load(mSongList.get(0).getImageSong()).placeholder(R.drawable.ic_empty_music).into(mImgAlbum);
 
     }
 
@@ -77,24 +78,12 @@ public class DetailAlbumArtist extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (SharedPrefs.getInstance().get(CHECKED_PLAY, Boolean.class,false)) {
-            CHECK_PLAED_MUSIC = 1;
-        }
-
         if (CHECK_PLAED_MUSIC == 1) {
             mLayoutControl.setVisibility(View.VISIBLE);
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.album_minicontrol, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();
         }
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        SharedPrefs.getInstance().remove(CHECKED_PLAY);
-
-    }
-
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -122,10 +111,6 @@ public class DetailAlbumArtist extends AppCompatActivity {
                 startActivity(new Intent(DetailAlbumArtist.this, PlayMusicActivity.class));
             }
         });
-    }
-
-    private void setImageAlbum() {
-        Glide.with(this).load(mSongList.get(0).getImageSong()).placeholder(R.drawable.ic_empty_music).into(mImgAlbum);
     }
 
     private void getData() {

@@ -32,7 +32,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="12dp"
         android:layout_marginRight="12dp"
-        android:src="@drawable/ic_favorite_white_48dp"
+        android:src="@drawable/ic_add_white_48dp"
         />
 
 </RelativeLayout>

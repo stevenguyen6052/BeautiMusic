@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.windows10gamer.beautimusic.view.activity.AddSongToPlaylisActivity">
+    >
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorAccent"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+        app:theme="@style/ThemeOverlay.AppCompat.Dark">
+        </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycleCheckList"

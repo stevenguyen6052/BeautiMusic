@@ -1,7 +1,9 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +25,11 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class AddSongToPlaylisActivity extends AppCompatActivity implements PlaylistAddSongAdapter.GetList {
+    private static final String YES = "YES";
+    private static final String NO = "NO";
+    private static final String SAVE_LIST = "Do do you want to save this playlist ?";
 
     private RecyclerView mLvSong;
     private PlaylistAddSongAdapter mAdapter;
@@ -42,6 +48,7 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
         toolbar.setTitle(R.string.choose_list_song);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         initView();
         loadData();
@@ -87,6 +94,12 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_done, menu);
@@ -102,21 +115,49 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
                 String namePlaylist = getIntent().getStringExtra(Utils.NAME_PLAYLIST);
                 String listSong = gson.toJson(mGetList);
 
-                mDbHanler.addPlayList(namePlaylist, listSong);
+                if (mGetList.size() != 0)
+                    mDbHanler.addPlayList(namePlaylist, listSong);
+                    setResult(RESULT_OK, new Intent());
 
-                setResult(RESULT_OK, new Intent());
                 finish();
 
                 break;
+
+//            case android.R.id.home:
+//                savePlaylist();
+//                break;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        Toast.makeText(this, "ABC", Toast.LENGTH_SHORT).show();
-        return true;
+    public void onBackPressed() {
+        savePlaylist();
     }
 
+    private void savePlaylist() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddSongToPlaylisActivity.this);
+        builder.setMessage(SAVE_LIST).setCancelable(false).setPositiveButton(YES, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Gson gson = new Gson();
+                String namePlaylist = getIntent().getStringExtra(Utils.NAME_PLAYLIST);
+                String listSong = gson.toJson(mGetList);
+
+                if (mGetList.size() != 0)
+                    mDbHanler.addPlayList(namePlaylist, listSong);
+                    setResult(RESULT_OK, new Intent());
+
+                finish();
+
+            }
+        }).setNegativeButton(NO, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 }

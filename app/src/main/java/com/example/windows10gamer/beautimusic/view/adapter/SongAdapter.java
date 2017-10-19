@@ -177,8 +177,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
                 if (edtNamePlaylist.getText().toString().equals(Utils.EMPTY)) {
                     Toast.makeText(mContext, Utils.INPUT_NAME_PLAYSLIST, Toast.LENGTH_SHORT).show();
+
                 } else if (Utils.checkString(edtNamePlaylist.getText().toString())) {
                     Toast.makeText(mContext, Utils.INPUT_ALL_SPACE, Toast.LENGTH_SHORT).show();
+
                 } else {
                     songDatabase.addPlayList(edtNamePlaylist.getText().toString(), listSong);
                     Toast.makeText(mContext, Utils.ADDED_TO_PLAYLIST, Toast.LENGTH_SHORT).show();
@@ -203,23 +205,24 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        int sum = 0;
+                        int sum = 0;// sum = 1 bài hát đã tồn tại trong list
                         Gson gson = new Gson();
                         Type type = new TypeToken<List<Song>>() {
                         }.getType();
+
                         listSong = gson.fromJson(mPlaylist.get(position).getListIdSong(), type);
                         for (Song s : listSong) {
-                            if (s.getId().equals(mSongList.get(i).getId())) {
+                            if (s.getId().equals(mSongList.get(i).getId()))
                                 sum = 1;
-                            }
                         }
 
-                        if (sum == 0) {
+                        if (sum == 0)
                             listSong.add(mSongList.get(i));
-                        }
 
                         songDatabase.updatePlaylist(gson.toJson(listSong), mPlaylist.get(position).getId());
+
                         Toast.makeText(mContext, Utils.ADDED_TO_PLAYLIST, Toast.LENGTH_SHORT).show();
+
                         dialogChoosePlaylist.dismiss();
                     }
 

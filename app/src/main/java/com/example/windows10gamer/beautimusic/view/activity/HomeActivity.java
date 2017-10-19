@@ -54,8 +54,8 @@ public class HomeActivity extends AppCompatActivity {
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            DetailAlbumArtist.CHECK_PLAED_MUSIC = 1;
             mLayoutControl.setVisibility(View.VISIBLE);
-            SharedPrefs.getInstance().put(Utils.CHECKED_PLAY, true);
             CHECK_PLAYED_MUSIC = 1;
         }
     };
@@ -64,7 +64,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -116,8 +115,6 @@ public class HomeActivity extends AppCompatActivity {
             ((App) getApplicationContext()).getService().stopForeground(true);
 
         unregisterReceiver(receiver);
-        SharedPrefs.getInstance().remove(CHECKED_PLAY);
-
     }
 
     private void initView() {

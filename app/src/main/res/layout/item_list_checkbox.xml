@@ -6,6 +6,7 @@
     android:orientation="horizontal"
     android:paddingBottom="6dp"
     android:paddingLeft="8dp"
+    android:paddingRight="8dp"
     android:paddingTop="6dp">
 
     <RelativeLayout
@@ -22,6 +23,7 @@
             android:src="@drawable/ic_empty_music" />
 
         <LinearLayout
+            android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -55,13 +57,12 @@
 
         <CheckBox
             android:id="@+id/itemCheck"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
             android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:layout_marginRight="12dp" />
+             />
 
     </RelativeLayout>
 

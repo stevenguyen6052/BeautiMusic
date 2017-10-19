@@ -4,9 +4,10 @@
 
     <item
         android:id="@+id/itemDone"
+        android:checkable="true"
         android:title="Done"
         app:showAsAction="always"
-        android:icon="@drawable/ic_done_white_48dp"
+        android:icon="@drawable/ic_done"
         />
 
 </menu>
