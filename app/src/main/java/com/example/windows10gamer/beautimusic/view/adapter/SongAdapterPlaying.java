@@ -12,10 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
+import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,7 +27,6 @@ public class SongAdapterPlaying extends RecyclerView.Adapter<SongAdapterPlaying.
     private List<Song> mSongList;
     private Context mContext;
     int selectedPosition = -1;
-    private MusicService mService ;
 
     public SongAdapterPlaying(List<Song> mSongList, Context mContext) {
         this.mSongList = mSongList;
@@ -43,22 +44,17 @@ public class SongAdapterPlaying extends RecyclerView.Adapter<SongAdapterPlaying.
     @Override
     public void onBindViewHolder(ViewHolder holder, final int i) {
         Song song = mSongList.get(i);
-        mService = ((App) mContext.getApplicationContext()).getService();
+        String indexPlay =  ((App) mContext.getApplicationContext()).getService().nameSong();
 
         holder.mTvNameSong.setText(song.getNameSong());
         holder.mTvNameArtist.setText(song.getNameArtist());
-        Picasso.with(mContext)
-                .load(song.getImageSong())
-                .placeholder(R.drawable.ic_musicqh)
-                .error(R.drawable.ic_musicqh)
-                .into(holder.mImgView);
+        Glide.with(mContext).load(song.getImageSong()).placeholder(R.drawable.ic_musicqh).into(holder.mImgView);
 
-        if (mService.getIndexPlay() == i) {
-            holder.mTvNameSong.setTextColor(Color.RED);
-        }
-        else {
+        if (indexPlay.equals(song.getNameSong()))
+            holder.mTvNameSong.setTextColor(Color.CYAN);
+        else
             holder.mTvNameSong.setTextColor(Color.BLACK);
-        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +74,7 @@ public class SongAdapterPlaying extends RecyclerView.Adapter<SongAdapterPlaying.
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mContext = itemView.getContext();
+            //mContext = itemView.getContext();
             mTvNameSong = (TextView) itemView.findViewById(R.id.TvNameSong);
             mTvNameArtist = (TextView) itemView.findViewById(R.id.TvNameSinger);
             mImgView = (ImageView) itemView.findViewById(R.id.ImgView);

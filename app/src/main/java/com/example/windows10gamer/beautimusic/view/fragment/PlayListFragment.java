@@ -62,8 +62,8 @@ public class PlayListFragment extends Fragment implements View.OnClickListener {
         mBtnAdd.setOnClickListener(this);
 
         mLvPlaylist.setHasFixedSize(true);
-        mSongDatabase = SongDatabase.getInstance(getContext());
-        mLinearLayout = new LinearLayoutManager(getContext());
+        mSongDatabase = SongDatabase.getInstance(getActivity());
+        mLinearLayout = new LinearLayoutManager(getActivity());
         mAdapter = new PlaylistAdapter(this, mPlaylists);
         mLvPlaylist.setLayoutManager(mLinearLayout);
         mLvPlaylist.setAdapter(mAdapter);

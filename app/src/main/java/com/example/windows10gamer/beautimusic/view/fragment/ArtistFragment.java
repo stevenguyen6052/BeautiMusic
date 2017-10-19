@@ -42,7 +42,7 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
 
         mArtistList = new ArrayList<>();
 
-        mGridLayout = new GridLayoutManager(getContext(), 2);
+        mGridLayout = new GridLayoutManager(getActivity(), 2);
         mLvArtist = (RecyclerView) view.findViewById(R.id.recycleViewAr);
         mLvArtist.setHasFixedSize(true);
         mLvArtist.setLayoutManager(mGridLayout);
@@ -60,7 +60,7 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
             @Override
             protected Void doInBackground(String... params) {
                 mArtistList.clear();
-                mArtistList.addAll(LoadData.getArtistFromDevice(getContext()));
+                mArtistList.addAll(LoadData.getArtistFromDevice(getActivity()));
 
                 return null;
             }
@@ -102,8 +102,8 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
         switch (item.getItemId()) {
             case R.id.itemList:
                 boolean isSwitched = mAdapter.toggleItemViewType();
-                mLvArtist.setLayoutManager(isSwitched ? new GridLayoutManager(getContext(), 2)
-                        : new LinearLayoutManager(getContext()));
+                mLvArtist.setLayoutManager(isSwitched ? new GridLayoutManager(getActivity(), 2)
+                        : new LinearLayoutManager(getActivity()));
                 mAdapter.notifyDataSetChanged();
                 break;
         }

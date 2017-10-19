@@ -9,5 +9,6 @@
     <dimen name="textH2">13sp</dimen>
     <dimen name="artItem">55dp</dimen>
     <dimen name="item_notifi">36dp</dimen>
+    <dimen name="art_item_album">180dp</dimen>
 
 </resources>

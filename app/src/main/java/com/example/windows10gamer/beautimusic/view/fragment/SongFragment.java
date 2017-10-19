@@ -39,16 +39,16 @@ public class SongFragment extends android.support.v4.app.Fragment implements Sea
         setHasOptionsMenu(true);
 
         mSongList = new ArrayList<>();
-        mLinearLayout = new LinearLayoutManager(getContext());
+        mLinearLayout = new LinearLayoutManager(getActivity());
 
         mLvSong = (RecyclerView) mRootView.findViewById(R.id.mListViewSong);
         mLvSong.setHasFixedSize(true);
         mLvSong.setLayoutManager(mLinearLayout);
 
         if (mSearchList != null && mSearchList.size() > 0)
-            mAdapter = new SongAdapter(mSearchList, getContext());
+            mAdapter = new SongAdapter(mSearchList, getActivity());
         else
-            mAdapter = new SongAdapter(mSongList, getContext());
+            mAdapter = new SongAdapter(mSongList, getActivity());
 
         mLvSong.setAdapter(mAdapter);
 
@@ -63,7 +63,7 @@ public class SongFragment extends android.support.v4.app.Fragment implements Sea
             @Override
             protected Void doInBackground(String... params) {
                 mSongList.clear();
-                mSongList.addAll(LoadData.getSongFromDevice(getContext()));
+                mSongList.addAll(LoadData.getSongFromDevice(getActivity()));
 
                 return null;
             }

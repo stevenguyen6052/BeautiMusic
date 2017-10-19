@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
@@ -93,9 +94,11 @@ public class FragmentMiniControl extends android.support.v4.app.Fragment impleme
         mTvNameArtist.setText(mService.nameArtist());
         Picasso.with(getContext())
                 .load(mService.getImageSong())
+                .resizeDimen(R.dimen.artItem,R.dimen.artItem)
                 .placeholder(R.drawable.dianhac)
                 .error(R.drawable.dianhac)
                 .into(mImgSong);
+
     }
 
 
@@ -110,6 +113,7 @@ public class FragmentMiniControl extends android.support.v4.app.Fragment impleme
                 mTvNameArtist.setText(mService.nameArtist());
                 Picasso.with(getContext())
                         .load(mService.getImageSong())
+                        .resizeDimen(R.dimen.artItem,R.dimen.artItem)
                         .placeholder(R.drawable.dianhac)
                         .error(R.drawable.dianhac)
                         .into(mImgSong);

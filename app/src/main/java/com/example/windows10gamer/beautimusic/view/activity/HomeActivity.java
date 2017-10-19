@@ -2,6 +2,7 @@ package com.example.windows10gamer.beautimusic.view.activity;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.Cache;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -39,6 +41,8 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.example.windows10gamer.beautimusic.utilities.Utils.CHECKED_PLAY;
+
 public class HomeActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
@@ -46,14 +50,14 @@ public class HomeActivity extends AppCompatActivity {
     private View mLayoutControl;
     private FragmentMiniControl mFragmentMiniControl;
     private Toolbar mToolbar;
-    private static int CHECK = 0; //check=0 nhạc chưa phát,check=1 nhạc đã đc phát
+    private static int CHECK_PLAYED_MUSIC = 0; //check=0 nhạc chưa phát,check=1 nhạc đã đc phát
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             mLayoutControl.setVisibility(View.VISIBLE);
             SharedPrefs.getInstance().put(Utils.CHECKED_PLAY, true);
-            CHECK = 1;
+            CHECK_PLAYED_MUSIC = 1;
         }
     };
 
@@ -68,7 +72,7 @@ public class HomeActivity extends AppCompatActivity {
         addPermission();
         initView();
 
-        registerReceiver(receiver, new IntentFilter(Utils.TRUE));
+        registerReceiver(receiver, new IntentFilter(Utils.CHECKED_PLAY));
     }
 
     private void addPermission() {
@@ -99,7 +103,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (CHECK == 1) {
+        if (CHECK_PLAYED_MUSIC == 1) {
             mLayoutControl.setVisibility(View.VISIBLE);
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.mainLayoutControl, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();
@@ -112,6 +116,7 @@ public class HomeActivity extends AppCompatActivity {
         if (!SharedPrefs.getInstance().get(Utils.STATUS_PLAY, Boolean.class, false))
             ((App) getApplicationContext()).getService().stopForeground(true);
         unregisterReceiver(receiver);
+        SharedPrefs.getInstance().remove(CHECKED_PLAY);
 
     }
 

@@ -41,12 +41,12 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
 
         mAlbumList = new ArrayList<>();
 
-        mGridLayout = new GridLayoutManager(getContext(), 2);
+        mGridLayout = new GridLayoutManager(getActivity(), 2);
         mLvAlbum = (RecyclerView) mRootView.findViewById(R.id.recycleViewAl);
         mLvAlbum.setHasFixedSize(true);
         mLvAlbum.setLayoutManager(mGridLayout);
 
-        mAdapter = new AlbumAdapter(getContext(), mAlbumList);
+        mAdapter = new AlbumAdapter(getActivity(), mAlbumList);
         mLvAlbum.setAdapter(mAdapter);
 
         loadData();
@@ -60,7 +60,7 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
             @Override
             protected Void doInBackground(String... params) {
                 mAlbumList.clear();
-                mAlbumList.addAll(LoadData.getAlbumFromDevice(getContext()));
+                mAlbumList.addAll(LoadData.getAlbumFromDevice(getActivity()));
                 return null;
             }
 
@@ -86,8 +86,8 @@ public class AlbumFragment extends android.support.v4.app.Fragment {
         switch (item.getItemId()) {
             case R.id.itemList:
                 boolean isSwitched = mAdapter.toggleItemViewType();
-                mLvAlbum.setLayoutManager(isSwitched ? new GridLayoutManager(getContext(), 2)
-                        : new LinearLayoutManager(getContext()));
+                mLvAlbum.setLayoutManager(isSwitched ? new GridLayoutManager(getActivity(), 2)
+                        : new LinearLayoutManager(getActivity()));
                 mAdapter.notifyDataSetChanged();
                 break;
 

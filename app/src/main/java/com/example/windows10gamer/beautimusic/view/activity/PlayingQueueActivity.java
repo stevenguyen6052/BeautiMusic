@@ -45,6 +45,13 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
     private ItemTouchHelper.Callback callback;
     private FragmentMiniControl mFragmentMiniControl;
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mQueueAdapter.notifyDataSetChanged();
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,8 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
 
         initView();
         setUpAdapter();
+        registerReceiver(mReceiver,new IntentFilter(Utils.NEXT_PLAY));
+        registerReceiver(mReceiver,new IntentFilter(Utils.PREVIOUS_PLAY));
 
     }
 
@@ -88,7 +97,7 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         boolean isCheckChange = false;
 
         //isCheckchange check xem đã sắp xếp list hay chưa
-        // check để kiểm tra là ấn back hay là click vào item trong list song
+        // isClickItem để kiểm tra là ấn back hay là click vào item trong list song
         if (getListSong != null) {
             isCheckChange = true;
             b.putParcelableArrayList(Utils.LIST_SONG, (ArrayList<Song>) getListSong);
@@ -138,4 +147,9 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+    }
 }

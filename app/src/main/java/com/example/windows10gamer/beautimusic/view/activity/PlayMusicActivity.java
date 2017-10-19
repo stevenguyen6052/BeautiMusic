@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.model.Song;
@@ -65,7 +66,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_playmusic);
 
         SharedPrefs.getInstance().put(Utils.STATUS_PLAY, true);
-        sendBroadcast(new Intent().setAction(Utils.TRUE));
+        sendBroadcast(new Intent().setAction(Utils.CHECKED_PLAY));
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -78,6 +79,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
         mLvSong.setHasFixedSize(true);
         mLinearLayout = new LinearLayoutManager(this);
+
         mLvSong.setLayoutManager(mLinearLayout);
         mAdapter = new SongAdapterPlaying(mSongList, this);
         mLvSong.setAdapter(mAdapter);
@@ -128,22 +130,19 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void setDataForView() {
+        setView();
+        updateTimeSong();
         if (mService.isPlaying())
             mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
         else
             mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-
-        mSeekbar.setMax(mService.getDuaration());
-        setView();
-        updateTimeSong();
     }
 
     private void playMusic() {
         mService.playSong();
         mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-        mSeekbar.setMax(mService.getDuaration());
-        updateTimeSong();
         setView();
+        updateTimeSong();
     }
 
     private void initView() {
@@ -173,12 +172,15 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void nextSong() {
+        mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
         mService.playNext();
         setView();
+
 
     }
 
     private void previousSong() {
+        mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
         mService.playPrev();
         setView();
     }
@@ -203,9 +205,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         mSeekbar.setMax(mService.getDuaration());
         Picasso.with(this)
                 .load(mService.getImageSong())
+                .resizeDimen(R.dimen.art_item_album,R.dimen.art_item_album)
                 .placeholder(R.drawable.ic_empty_music)
                 .error(R.drawable.ic_empty_music)
                 .into(mImgSong);
+
     }
 
     // check compleate song and update ui
@@ -218,6 +222,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 mSeekbar.setProgress(mService.getCurrentPosition());
                 mHandler.postDelayed(this, 500);
                 mService.setOnComplete();
+                mAdapter.notifyDataSetChanged();
                 setView();
             }
         }, 100);
@@ -251,11 +256,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        String name = "";
+        String nameSong = "";
         Boolean isClick, isQueue;
         if (requestCode == REQUEST_LIST) {
             if (resultCode == RESULT_OK) {
-                name = mService.nameSong();
+                nameSong = mService.nameSong();//vị trí bài hát hiện tại trước khi sắp xếp
                 isQueue = intent.getBooleanExtra(Utils.TRUE, false); // th đã được sắp xếp
                 isClick = intent.getExtras().getBoolean(Utils.CHECK); // th click vòa item trong list song
                 if (isQueue) {
@@ -285,7 +290,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                             mSearchList.addAll(songList);
                             mAdapter.setFilter(mSearchList);
                             for (int i = 0; i < mSearchList.size(); i++) {
-                                if (name.equals(mSearchList.get(i).getNameSong()))
+                                if (nameSong.equals(mSearchList.get(i).getNameSong()))
                                     mService.setIndexPlay(i); // cập nhật lại index sau khi sắp xếp
                             }
                         } else {
@@ -294,7 +299,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                             mSongList.addAll(songList);
                             mAdapter.notifyDataSetChanged();
                             for (int i = 0; i < mSongList.size(); i++) {
-                                if (name.equals(mSongList.get(i).getNameSong()))
+                                if (nameSong.equals(mSongList.get(i).getNameSong()))
                                     mService.setIndexPlay(i);
                             }
                         }
@@ -315,9 +320,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.pImgNext:
                 nextSong();
+                mAdapter.notifyDataSetChanged();
                 break;
             case R.id.pImgPrevious:
                 previousSong();
+                mAdapter.notifyDataSetChanged();
                 break;
             case R.id.pImgPlayPause:
                 doPlayPause();
@@ -414,16 +421,22 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Utils.PAUSE_KEY)) {
-                mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-            } else if (intent.getAction().equals(Utils.PLAY_KEY)) {
-                mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-            } else if (intent.getAction().equals(Utils.NEXT_PLAY)) {
-                mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-            } else if (intent.getAction().equals(Utils.PREVIOUS_PLAY)) {
-                mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+            switch (intent.getAction()) {
+                case Utils.PAUSE_KEY:
+                    mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    break;
+                case Utils.PLAY_KEY:
+                    mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    break;
+                case Utils.NEXT_PLAY:
+                    mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    mAdapter.notifyDataSetChanged();
+                    break;
+                case Utils.PREVIOUS_PLAY:
+                    mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+                    mAdapter.notifyDataSetChanged();
+                    break;
             }
         }
     };
-
 }

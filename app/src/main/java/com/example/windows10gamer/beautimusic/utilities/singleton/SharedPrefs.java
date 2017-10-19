@@ -73,7 +73,7 @@ public class SharedPrefs {
         }
         editor.apply();
     }
-    public <T> void remove(String key) {
+    public void remove(String key) {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.remove(key);
         editor.apply();

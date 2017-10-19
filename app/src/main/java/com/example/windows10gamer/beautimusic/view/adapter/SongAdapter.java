@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.example.windows10gamer.beautimusic.view.activity.PlayMusic;
+import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.utilities.dragandswipe.ItemTouchHelperViewHolder;
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
@@ -76,11 +77,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
         holder.mTvNameSong.setText(mSong.getNameSong());
         holder.mTvNameArtist.setText(mSong.getNameArtist());
-        Picasso.with(mContext)
-                .load(mSong.getImageSong())
-                .placeholder(R.drawable.ic_musicqh)
-                .error(R.drawable.ic_musicqh)
-                .into(holder.mImgView);
+        Glide.with(mContext).load(mSong.getImageSong()).placeholder(R.drawable.ic_musicqh).into(holder.mImgView);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

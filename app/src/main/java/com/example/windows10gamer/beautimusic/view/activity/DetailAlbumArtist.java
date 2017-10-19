@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.utilities.LoadData;
@@ -41,11 +42,11 @@ public class DetailAlbumArtist extends AppCompatActivity {
     private SongAdapter mAdapter;
     private LinearLayoutManager mLinearLayout;
     private FragmentMiniControl mFragmentMiniControl;
-    private static int CHECK = 0;//check=0 chưa phát nhạc,check=1 đã đc phát
+    private static int CHECK_PLAED_MUSIC = 0;//check=0 chưa phát nhạc,check=1 đã đc phát
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            CHECK = 1;
+            CHECK_PLAED_MUSIC = 1;
         }
     };
 
@@ -56,7 +57,7 @@ public class DetailAlbumArtist extends AppCompatActivity {
 
         getData();
 
-        registerReceiver(receiver, new IntentFilter(Utils.TRUE));
+        registerReceiver(receiver, new IntentFilter(Utils.CHECKED_PLAY));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(mTitile);
@@ -76,11 +77,11 @@ public class DetailAlbumArtist extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (SharedPrefs.getInstance().get(CHECKED_PLAY, Boolean.class)) {
-            CHECK = 1;
+        if (SharedPrefs.getInstance().get(CHECKED_PLAY, Boolean.class,false)) {
+            CHECK_PLAED_MUSIC = 1;
         }
 
-        if (CHECK == 1) {
+        if (CHECK_PLAED_MUSIC == 1) {
             mLayoutControl.setVisibility(View.VISIBLE);
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.album_minicontrol, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();
@@ -88,11 +89,12 @@ public class DetailAlbumArtist extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         SharedPrefs.getInstance().remove(CHECKED_PLAY);
-        unregisterReceiver(receiver);
+
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -123,11 +125,7 @@ public class DetailAlbumArtist extends AppCompatActivity {
     }
 
     private void setImageAlbum() {
-        Picasso.with(this)
-                .load(mSongList.get(0).getImageSong())
-                .placeholder(R.drawable.ic_empty_music)
-                .error(R.drawable.ic_empty_music)
-                .into(mImgAlbum);
+        Glide.with(this).load(mSongList.get(0).getImageSong()).placeholder(R.drawable.ic_empty_music).into(mImgAlbum);
     }
 
     private void getData() {

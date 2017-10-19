@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
@@ -56,12 +57,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
         holder.nameAlbum.setText(mAlbumList.get(i).getNameAlbum());
         holder.nameArtist.setText(mAlbumList.get(i).getNameArtist());
-
-        Picasso.with(mContext)
-                .load(mAlbumList.get(i).getImage())
-                .placeholder(R.drawable.ic_splash)
-                .error(R.drawable.ic_splash)
-                .into(holder.imageView);
+        Glide.with(mContext).load(mAlbumList.get(i).getImage()).placeholder(R.drawable.ic_empty_music).into(holder.imageView);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

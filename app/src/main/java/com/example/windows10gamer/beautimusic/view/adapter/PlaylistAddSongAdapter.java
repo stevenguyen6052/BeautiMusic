@@ -10,16 +10,13 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by Windows 10 Gamer on 10/10/2017.
- */
 
 public class PlaylistAddSongAdapter extends RecyclerView.Adapter<PlaylistAddSongAdapter.ViewHolder> {
     private Context mContext;
@@ -44,11 +41,7 @@ public class PlaylistAddSongAdapter extends RecyclerView.Adapter<PlaylistAddSong
 
         holder.nameSong.setText(mSongList.get(i).getNameSong());
         holder.nameArtist.setText(mSongList.get(i).getNameArtist());
-        Picasso.with(mContext)
-                .load(mSongList.get(i).getImageSong())
-                .placeholder(R.drawable.icon_music)
-                .error(R.drawable.icon_music)
-                .into(holder.imageView);
+        Glide.with(mContext).load(mSongList.get(i).getImageSong()).placeholder(R.drawable.ic_empty_music).into(holder.imageView);
     }
 
     @Override

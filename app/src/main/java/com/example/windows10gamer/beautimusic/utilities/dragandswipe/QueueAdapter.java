@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.model.Song;
+import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 import com.example.windows10gamer.beautimusic.view.activity.PlayingQueueActivity;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +22,7 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
     private List<Song> mSongList = new ArrayList<>();
     private PlayingQueueActivity mContext;
     private ListChangedListener mListChangeListener;
+    private MusicService mService;
 
     private OnStartDragListener mDragStartListener;
 
@@ -41,8 +44,16 @@ public class QueueAdapter extends RecyclerView.Adapter<QueueAdapter.ItemViewHold
 
     @Override
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
+
+        mService = ((App) mContext.getApplicationContext()).getService();
+
         holder.mTvNameSong.setText(mSongList.get(position).getNameSong());
         holder.mTvNameArtist.setText(mSongList.get(position).getNameArtist());
+
+        if (mService.getIndexPlay() == position)
+            holder.mTvNameSong.setTextColor(Color.CYAN);
+        else
+            holder.mTvNameSong.setTextColor(Color.BLACK);
 
         // Start a drag whenever the handle view it touched
         holder.handleView.setOnTouchListener(new View.OnTouchListener() {

@@ -20,7 +20,7 @@
             android:layout_height="@dimen/artItem"
             android:layout_alignParentLeft="true"
             android:padding="1dp"
-            android:src="@drawable/ic_empty_music" />
+            android:src="@drawable/icon_music" />
 
         <LinearLayout
             android:id="@+id/lv1"
