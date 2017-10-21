@@ -2,22 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-
+    android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar2"
         layout="@layout/custom_toolbar_cosllap" />
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/album_minicontrol"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/mini_control"
         android:background="@color/colorPink"
         android:orientation="horizontal"
-        >
+        android:visibility="gone">
 
     </LinearLayout>
 
