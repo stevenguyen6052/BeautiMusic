@@ -25,14 +25,16 @@ public class LoadData {
                         MediaStore.Audio.AlbumColumns.ARTIST,
 
                 }, null, null, android.provider.MediaStore.Audio.Albums.DEFAULT_SORT_ORDER);
-        mCursor.moveToFirst();
-        while (mCursor.moveToNext()) {
-            int id = mCursor.getInt(0);
-            String albumName = mCursor.getString(1);
-            String artist = mCursor.getString(2);
-            String image = ContentUris.withAppendedId(ART_CONTENT_URI, id).toString();
-            Album album = new Album(id,albumName,artist, image);
-            albumList.add(album);
+
+        if (mCursor!=null && mCursor.moveToNext()){
+            do {
+                int id = mCursor.getInt(0);
+                String albumName = mCursor.getString(1);
+                String artist = mCursor.getString(2);
+                String image = ContentUris.withAppendedId(ART_CONTENT_URI, id).toString();
+                Album album = new Album(id,albumName,artist, image);
+                albumList.add(album);
+            }while (mCursor.moveToNext());
         }
         mCursor.close();
         return albumList;
