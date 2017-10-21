@@ -1,7 +1,7 @@
 package com.example.windows10gamer.beautimusic.model;
 
 
-public class BaseModel {
+public abstract class BaseModel {
     private int id;
     private String nameArtist;
 

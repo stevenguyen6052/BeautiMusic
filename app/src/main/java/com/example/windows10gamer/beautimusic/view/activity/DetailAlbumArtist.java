@@ -114,8 +114,11 @@ public class DetailAlbumArtist extends BaseActivity {
             loadArtistSong(mId);
 
         } else if (tag.equals(PLAYLIST)) {
+            List<Song> songs ;
+            songs = bundle.getParcelableArrayList(LIST_SONG);
             mTitle = bundle.getString(NAME_PLAYLIST);
-            mSongList = bundle.getParcelableArrayList(LIST_SONG);
+            mSongList.clear();
+            mSongList.addAll(songs);
             mAdapter.notifyDataSetChanged();
             Glide.with(DetailAlbumArtist.this).load(mSongList.get(0).getImageSong())
                     .placeholder(R.drawable.ic_empty_music).into(mImgAlbum);
@@ -173,7 +176,7 @@ public class DetailAlbumArtist extends BaseActivity {
             @Override
             public Void doInBackground(Void... params) {
                 mSongList.clear();
-                mSongList.addAll(LoadData.getAlbumSongs(id, DetailAlbumArtist.this));
+                mSongList.addAll(LoadData.getArtistSong(id, DetailAlbumArtist.this));
                 return null;
             }
 
