@@ -7,21 +7,23 @@
     android:paddingBottom="6dp"
     android:paddingLeft="8dp"
     android:paddingTop="6dp">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/itemartist_img"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="@dimen/artItem"
+            android:layout_height="@dimen/artItem"
             android:layout_gravity="center"
             android:src="@drawable/ic_empty_music" />
 
         <LinearLayout
-            android:layout_toRightOf="@id/itemartist_img"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/itemartist_img"
             android:orientation="vertical"
             android:paddingLeft="10dp">
 
@@ -30,12 +32,12 @@
                 style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:maxLength="30"
                 android:maxLines="1"
-                android:ellipsize="end"
                 android:text="@string/name_artist"
                 android:textColor="@color/colorBack"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textH1" />
 
             <TextView
                 android:id="@+id/item_sumg_album"
@@ -45,13 +47,11 @@
                 android:maxLength="30"
                 android:maxLines="1"
                 android:text="@string/sum_song_album"
-                android:textSize="13sp" />
+                android:textSize="@dimen/textH2" />
 
         </LinearLayout>
 
     </RelativeLayout>
-
-
 
 
 </LinearLayout>

@@ -42,14 +42,14 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.example.windows10gamer.beautimusic.utilities.Utils.CHECKED_PLAY;
+import static com.example.windows10gamer.beautimusic.utilities.Utils.HOME;
 
-public class HomeActivity extends AppCompatActivity {
-
+public class HomeActivity extends BaseActivity {
     private ViewPager mViewPager;
     private AdapterTab mTab;
     private View mLayoutControl;
     private FragmentMiniControl mFragmentMiniControl;
-    private static int CHECK_PLAYED_MUSIC = 0; //check=0 nhạc chưa phát,check=1 nhạc đã đc phát
+    private static int CHECK_PLAYED_MUSIC = 0; //check=0 nhạc chưa phát, check=1 nhạc đã đc phát
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -63,14 +63,35 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         addPermission();
-        initView();
-
         registerReceiver(receiver, new IntentFilter(Utils.CHECKED_PLAY));
+    }
+
+    @Override
+    public void initView() {
+        mFragmentMiniControl = new FragmentMiniControl();
+        mLayoutControl = findViewById(R.id.mainLayoutControl);
+        mLayoutControl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, PlayMusicActivity.class));
+            }
+        });
+    }
+
+    @Override
+    public void initData() {
+
+    }
+
+    @Override
+    public int getLayoutResourceId() {
+        return R.layout.activity_home;
+    }
+
+    @Override
+    public String titleToolbar() {
+        return HOME;
     }
 
     private void addPermission() {
@@ -115,17 +136,6 @@ public class HomeActivity extends AppCompatActivity {
             ((App) getApplicationContext()).getService().stopForeground(true);
 
         unregisterReceiver(receiver);
-    }
-
-    private void initView() {
-        mFragmentMiniControl = new FragmentMiniControl();
-        mLayoutControl = findViewById(R.id.mainLayoutControl);
-        mLayoutControl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, PlayMusicActivity.class));
-            }
-        });
     }
 
     private void addTabFragment() {

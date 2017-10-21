@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/itemSearch"
-        android:title="Search View"
+        android:title="@string/searchview"
         app:showAsAction="ifRoom|collapseActionView"
         android:icon="@drawable/ic_action_search"
         app:actionViewClass="android.support.v7.widget.SearchView"
@@ -12,7 +12,7 @@
     <item
         android:id="@+id/itemArrange"
         android:orderInCategory="100"
-        android:title="Sắp xếp"
+        android:title="@string/queue"
         app:showAsAction="never" />
 
 </menu>

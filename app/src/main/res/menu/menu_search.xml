@@ -11,7 +11,7 @@
     <item
         android:id="@+id/itemList"
         android:orderInCategory="100"
-        android:title="List || Grid"
+        android:title="@string/list_grid"
         app:showAsAction="never" />
 
 </menu>

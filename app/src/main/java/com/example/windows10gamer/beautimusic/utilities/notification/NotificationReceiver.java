@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 
 import com.example.windows10gamer.beautimusic.utilities.Utils;
@@ -40,6 +41,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             case NOTIFY_PREVIOUS:
                 context.sendBroadcast(new Intent().setAction(Utils.PREVIOUS_PLAY));
                 break;
+
 
         }
     }

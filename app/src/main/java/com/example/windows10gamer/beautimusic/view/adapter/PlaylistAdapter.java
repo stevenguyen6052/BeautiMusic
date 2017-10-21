@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.windows10gamer.beautimusic.R;
+import com.example.windows10gamer.beautimusic.utilities.NonScrollImageView;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Playlist;
 import com.example.windows10gamer.beautimusic.model.Song;
@@ -28,17 +29,13 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Windows 10 Gamer on 09/10/2017.
- */
-
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHolder> {
     private PlayListFragment mContext;
     private List<Playlist> mPlaylist;
     private Gson gson = new Gson();
     private PopupMenu popupMenu;
     private Dialog dialog;
-    private EditText edtName;
+    private EditText edtNamePlaylist;
     private SongDatabase songDatabase;
     private Type type = new TypeToken<List<Song>>() {
     }.getType();
@@ -66,7 +63,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(new Intent(mContext.getContext(), DetailAlbumArtist.class)
+                mContext.startActivity(new Intent(mContext.getActivity(), DetailAlbumArtist.class)
                         .putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) gson.fromJson(mPlaylist.get(i).getListIdSong(), type))
                         .putExtra(Utils.TAG, Utils.PLAYLIST)
                         .putExtra(Utils.NAME_PLAYLIST, mPlaylist.get(i).getName())
@@ -91,21 +88,21 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
                                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 dialog.setContentView(R.layout.dialog_add_playlist);
 
-                                edtName = (EditText) dialog.findViewById(R.id.edtAddPlayList);
-                                edtName.setText(mPlaylist.get(i).getName());
+                                edtNamePlaylist = (EditText) dialog.findViewById(R.id.edtAddPlayList);
+                                edtNamePlaylist.setText(mPlaylist.get(i).getName());
 
                                 dialog.findViewById(R.id.btnYes).setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if (edtName.getText().toString().equals(Utils.EMPTY)) {
+                                        if (edtNamePlaylist.getText().toString().equals(Utils.EMPTY)) {
                                             Toast.makeText(mContext.getContext(), Utils.INPUT_NAME_PLAYSLIST, Toast.LENGTH_SHORT).show();
 
-                                        } else if (Utils.checkString(edtName.getText().toString())) {
+                                        } else if (Utils.checkString(edtNamePlaylist.getText().toString())) {
                                             Toast.makeText(mContext.getContext(), Utils.INPUT_ALL_SPACE, Toast.LENGTH_SHORT).show();
 
                                         } else {
 
-                                            songDatabase.updateNamePlaylist(edtName.getText().toString(), mPlaylist.get(i).getId());
+                                            songDatabase.updateNamePlaylist(edtNamePlaylist.getText().toString(), mPlaylist.get(i).getId());
                                             mContext.mPlaylists.clear();
                                             mContext.mPlaylists.addAll(songDatabase.getPlaylist());
                                             mContext.mAdapter.notifyDataSetChanged();
@@ -152,16 +149,17 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvNamePlaylist, tvSumSong;
-        ImageView imgArt, imgMoreVert;
+        ImageView imgArt;
+        NonScrollImageView imgMoreVert;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvNamePlaylist = (TextView) itemView.findViewById(R.id.tvNamePlaylist);
             tvSumSong = (TextView) itemView.findViewById(R.id.tvSumSong);
             imgArt = (ImageView) itemView.findViewById(R.id.imgArt);
-            imgMoreVert = (ImageView) itemView.findViewById(R.id.imgMoreVertPl);
+            imgMoreVert = (NonScrollImageView) itemView.findViewById(R.id.imgMoreVertPl);
         }
     }
 }

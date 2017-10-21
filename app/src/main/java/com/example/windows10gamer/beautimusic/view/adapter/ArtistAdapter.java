@@ -59,7 +59,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.getContext().startActivity(new Intent(v.getContext(), DetailAlbumArtist.class)
+                mContext.startActivity(new Intent(mContext, DetailAlbumArtist.class)
                         .putExtra(Utils.TAG, Utils.TAG_ARTIST)
                         .putExtra(Utils.NAME_ARTIST, mArtistList.get(position).getNameArtist())
                         .putExtra(Utils.ARTIST_ID, mArtistList.get(position).getId())
@@ -89,7 +89,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mTvNameArtist, mTvSumAlbum;
 
         public ViewHolder(View itemView) {

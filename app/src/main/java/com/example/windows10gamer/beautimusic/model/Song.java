@@ -5,10 +5,6 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-/**
- * Created by Windows 10 Gamer on 21/08/2017.
- */
-
 public class Song implements Parcelable {
     private String id;
     private String nameSong;
@@ -25,11 +21,6 @@ public class Song implements Parcelable {
 
     }
 
-    public Song(String na,String nab,String aid){
-        this.nameArtist = na;
-        this.nameAlbum = nab;
-
-    }
     public Song(String mId,String mNameSong, String mNameArtist, String mNameAlbum, String mFileSong,String mDuaration,int albumId,int artistId) {
         this.id = mId ;
         this.nameSong = mNameSong;

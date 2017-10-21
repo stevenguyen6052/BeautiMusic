@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/itemUpdatePlaylist"
-        android:title="Update Name Playlist"
+        android:title="@string/updae_name_playlist"
         />
     <item
         android:id="@+id/itemDeletePlaylist"
-        android:title="Delete Playlist"
+        android:title="@string/delete_playlist"
         />
 
 </menu>

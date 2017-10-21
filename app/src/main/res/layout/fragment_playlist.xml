@@ -10,13 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_margin="10dp"
         android:gravity="center"
-        android:text="@string/no"
-        android:textSize="@dimen/_18ssp" />
+        android:textSize="@dimen/textH1" />
 
     <android.support.v7.widget.RecyclerView
-
         android:id="@+id/lvSongPlayList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,7 +29,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="12dp"
         android:layout_marginRight="12dp"
-        android:src="@drawable/ic_add_white_48dp"
-        />
+        android:src="@drawable/ic_add_white_48dp" />
 
 </RelativeLayout>

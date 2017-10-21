@@ -74,7 +74,7 @@ public class PlaylistAddSongAdapter extends RecyclerView.Adapter<PlaylistAddSong
                 if (!listSongAfterCheck.contains(mSongList.get(getAdapterPosition())))
                     listSongAfterCheck.add(mSongList.get(getAdapterPosition()));
 
-            }else {
+            } else {
                 if (listSongAfterCheck.contains(mSongList.get(getAdapterPosition())))
                     listSongAfterCheck.remove(mSongList.get(getAdapterPosition()));
             }

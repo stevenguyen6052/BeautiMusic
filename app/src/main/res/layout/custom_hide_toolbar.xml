@@ -39,13 +39,13 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <!--<android.support.v4.widget.NestedScrollView-->
-            <!--android:layout_below="@+id/abl"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:fillViewport="true"-->
+        <android.support.v4.widget.NestedScrollView
+            android:layout_below="@+id/abl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
 
-            <!--&gt;-->
+            >
 
             <android.support.v4.view.ViewPager
                 android:layout_below="@id/abl"
@@ -57,7 +57,7 @@
             </android.support.v4.view.ViewPager>
 
 
-        <!--</android.support.v4.widget.NestedScrollView>-->
+        </android.support.v4.widget.NestedScrollView>
     </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>

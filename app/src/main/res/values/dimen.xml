@@ -10,5 +10,14 @@
     <dimen name="artItem">55dp</dimen>
     <dimen name="item_notifi">36dp</dimen>
     <dimen name="art_item_album">180dp</dimen>
+    <dimen name="mini_control">60dp</dimen>
+    <dimen name="with_text_nameartist">200dp</dimen>
+    <dimen name="icoin_big">48dp</dimen>
+    <dimen name="icoin_small">30dp</dimen>
+    <dimen name="height_appbar_layout">255dp</dimen>
+    <dimen name="item_grid_with">180dp</dimen>
+    <dimen name="item_grid_height">170dp</dimen>
+    <dimen name="more_vert_item">24dp</dimen>
+    <dimen name="item_move">40dp</dimen>
 
 </resources>

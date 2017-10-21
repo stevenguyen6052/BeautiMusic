@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
+    android:windowSoftInputMode="stateVisible|adjustPan"
     >
 
     <LinearLayout
@@ -95,7 +95,7 @@
 
             <TextView
                 android:id="@+id/itmNameSingle"
-                android:layout_width="200dp"
+                android:layout_width="@dimen/with_text_nameartist"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/itmNameSong"
                 android:layout_gravity="center"
@@ -115,16 +115,16 @@
 
             <ImageView
                 android:id="@+id/pImgPlayPause"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/icoin_big"
+                android:layout_height="@dimen/icoin_big"
                 android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackground" />
 
             <ImageView
                 android:id="@+id/pImgPrevious"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/icoin_big"
+                android:layout_height="@dimen/icoin_big"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -135,8 +135,8 @@
 
             <ImageView
                 android:id="@+id/pShuffle"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/icoin_small"
+                android:layout_height="@dimen/icoin_small"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/pImgPrevious"
                 android:background="?attr/selectableItemBackground"
@@ -144,8 +144,8 @@
 
             <ImageView
                 android:id="@+id/pRepeat"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/icoin_small"
+                android:layout_height="@dimen/icoin_small"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/pImgNext"
@@ -154,8 +154,8 @@
 
             <ImageView
                 android:id="@+id/pImgNext"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/icoin_big"
+                android:layout_height="@dimen/icoin_big"
                 android:layout_alignTop="@+id/pImgPlayPause"
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@+id/pImgPlayPause"

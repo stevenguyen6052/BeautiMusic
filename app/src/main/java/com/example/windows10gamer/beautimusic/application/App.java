@@ -31,6 +31,7 @@ public class App extends Application {
         mGSon = new Gson();
         connectServiceAndPlay();
 
+
     }
 
     private void connectServiceAndPlay() {

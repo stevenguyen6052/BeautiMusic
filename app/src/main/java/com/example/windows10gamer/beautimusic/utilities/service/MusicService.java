@@ -19,6 +19,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.model.Song;
@@ -73,7 +74,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case Utils.NOTIFI:
-                    updateRemoteview();
+                    try{
+                        updateRemoteview();
+                    }catch (Exception e){
+                        Toast.makeText(context, "SD Card Permission!", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case Utils.NEXT_PLAY:
                     playNext();
@@ -124,7 +129,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mPlayer.start();
+        try {
+            mPlayer.start();
+        }catch (Exception e){
+            Toast.makeText(this, "Please turn on SD card!", Toast.LENGTH_SHORT).show();
+        }
+
         initNotification();
 
     }
@@ -174,15 +184,13 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void updateRemoteview() {
-        if (mPlayer.isPlaying()) {
+        if (mPlayer.isPlaying())
             mRemoteview.setImageViewResource(R.id.notifiPlay, R.drawable.ic_pause_white_48dp);
-            mNotification = mNotifiCompat.build();
-            mNotifiManager.notify(NOTIFICATION_ID_CUSTOM_BIG, mNotification);
-        } else {
+        else
             mRemoteview.setImageViewResource(R.id.notifiPlay, R.drawable.ic_play_arrow_white_48dp);
-            mNotification = mNotifiCompat.build();
-            mNotifiManager.notify(NOTIFICATION_ID_CUSTOM_BIG, mNotification);
-        }
+
+        mNotification = mNotifiCompat.build();
+        mNotifiManager.notify(NOTIFICATION_ID_CUSTOM_BIG, mNotification);
 
     }
 
@@ -285,7 +293,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             }
         }
         playSong();
-        this.sendBroadcast(new Intent().setAction("NEXT"));
+
     }
 
     public void playSong() {
@@ -298,8 +306,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         } catch (Exception e) {
 
         }
+        try{
+            mPlayer.prepareAsync();
+        }catch (Exception e){
 
-        mPlayer.prepareAsync();
+        }
+
 
     }
 

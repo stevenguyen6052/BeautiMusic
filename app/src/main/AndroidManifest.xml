@@ -13,7 +13,9 @@
         android:roundIcon="@drawable/icon_music"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.activity.HomeActivity">
+        <activity
+            android:name=".view.activity.HomeActivity"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +32,6 @@
                 <action android:name="com.example.windows10gamer.beautimusic.previous" />
                 <action android:name="com.example.windows10gamer.beautimusic.next" />
                 <action android:name="com.example.windows10gamer.beautimusic.play" />
-                />
             </intent-filter>
         </receiver>
 
@@ -38,8 +39,10 @@
             android:name=".utilities.service.MusicService"
             android:enabled="true" />
 
-        <activity android:name=".view.activity.PlayMusicActivity" />
-        <activity android:name=".view.activity.AddSongToPlaylisActivity"/>
+        <activity
+            android:name=".view.activity.PlayMusicActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".view.activity.AddSongToPlaylisActivity" />
     </application>
 
 </manifest>

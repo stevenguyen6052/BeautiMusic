@@ -25,12 +25,14 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.windows10gamer.beautimusic.utilities.Utils.ADD_TO_PLAYLIST;
+import static com.example.windows10gamer.beautimusic.utilities.Utils.EMPTY;
 
-public class AddSongToPlaylisActivity extends AppCompatActivity implements PlaylistAddSongAdapter.GetList {
+
+public class AddSongToPlaylisActivity extends BaseActivity implements PlaylistAddSongAdapter.GetList {
     private static final String YES = "YES";
     private static final String NO = "NO";
     private static final String SAVE_LIST = "Do do you want to save this playlist ?";
-
     private RecyclerView mLvSong;
     private PlaylistAddSongAdapter mAdapter;
     private List<Song> mSongList;
@@ -42,38 +44,20 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_song_to_playlis);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.choose_list_song);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        initView();
-        loadData();
     }
 
-    private void loadData() {
-        new AsyncTask<String, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(String... params) {
-                mSongList.clear();
-                mSongList.addAll(LoadData.getSongFromDevice(getApplicationContext()));
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                mAdapter.notifyDataSetChanged();
-
-            }
-        }.execute("");
+    @Override
+    public int getLayoutResourceId() {
+        return R.layout.activity_add_song_to_playlis;
     }
 
-    private void initView() {
+    @Override
+    public String titleToolbar() {
+        return ADD_TO_PLAYLIST;
+    }
+
+    public void initView() {
         mGetList = new ArrayList<>();
         mSongList = new ArrayList<>();
         mDbHanler = SongDatabase.getInstance(this);
@@ -85,6 +69,26 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
         mAdapter = new PlaylistAddSongAdapter(this, mSongList, this);
         mLvSong.setAdapter(mAdapter);
 
+    }
+
+    @Override
+    public void initData() {
+        new AsyncTask<String, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(String... params) {
+                mSongList.clear();
+                mSongList.addAll(LoadData.getSongFromDevice(AddSongToPlaylisActivity.this));
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                mAdapter.notifyDataSetChanged();
+
+            }
+        }.execute("");
     }
 
     @Override
@@ -110,22 +114,9 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.itemDone:
-
-                Gson gson = new Gson();
-                String namePlaylist = getIntent().getStringExtra(Utils.NAME_PLAYLIST);
-                String listSong = gson.toJson(mGetList);
-
-                if (mGetList.size() != 0)
-                    mDbHanler.addPlayList(namePlaylist, listSong);
-                    setResult(RESULT_OK, new Intent());
-
-                finish();
-
+                setData();
                 break;
 
-//            case android.R.id.home:
-//                savePlaylist();
-//                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -140,16 +131,7 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
         builder.setMessage(SAVE_LIST).setCancelable(false).setPositiveButton(YES, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Gson gson = new Gson();
-                String namePlaylist = getIntent().getStringExtra(Utils.NAME_PLAYLIST);
-                String listSong = gson.toJson(mGetList);
-
-                if (mGetList.size() != 0)
-                    mDbHanler.addPlayList(namePlaylist, listSong);
-                    setResult(RESULT_OK, new Intent());
-
-                finish();
-
+                setData();
             }
         }).setNegativeButton(NO, new DialogInterface.OnClickListener() {
             @Override
@@ -159,5 +141,16 @@ public class AddSongToPlaylisActivity extends AppCompatActivity implements Playl
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+    private void setData(){
+        Gson gson = new Gson();
+        String namePlaylist = getIntent().getStringExtra(Utils.NAME_PLAYLIST);
+        String listSong = gson.toJson(mGetList);
+
+        if (mGetList.size() != 0)
+            mDbHanler.addPlayList(namePlaylist, listSong);
+
+        setResult(RESULT_OK, new Intent());
+        finish();
     }
 }

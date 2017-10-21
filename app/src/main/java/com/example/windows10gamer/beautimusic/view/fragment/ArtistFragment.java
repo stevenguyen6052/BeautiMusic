@@ -33,8 +33,6 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
     private GridLayoutManager mGridLayout;
     private SearchView mSearchView;
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_artist, container, false);

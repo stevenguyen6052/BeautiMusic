@@ -39,8 +39,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         isSwitchView = !isSwitchView;
         return isSwitchView;
     }
-
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
@@ -62,7 +60,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.getContext().startActivity(new Intent(v.getContext(), DetailAlbumArtist.class)
+                mContext.startActivity(new Intent(mContext, DetailAlbumArtist.class)
                         .putExtra(Utils.TAG, Utils.TAG_ALBUM)
                         .putExtra(Utils.NAME_ALBUM, mAlbumList.get(i).getNameAlbum())
                         .putExtra(Utils.ALBUM_ID, mAlbumList.get(i).getId())
@@ -92,13 +90,12 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         return (null != mAlbumList ? mAlbumList.size() : 0);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameAlbum, nameArtist;
         ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mContext = itemView.getContext();
             nameAlbum = (TextView) itemView.findViewById(R.id.alTvNameAlbum);
             nameArtist = (TextView) itemView.findViewById(R.id.alTvNameArtist);
             imageView = (ImageView) itemView.findViewById(R.id.alImgViewAlbum);

@@ -16,5 +16,14 @@
     <string name="add_playlist">Add new playlist</string>
     <string name="dont_have_playlist">Dont have any playlist!</string>
     <string name="time">00:00</string>
-
+    <string name="updae_name_playlist">Update Name Playlist</string>
+    <string name="searchview">Search View</string>
+    <string name="queue">Queue List </string>
+    <string name="delete_playlist">Delete Playlist</string>
+    <string name="done">Done</string>
+    <string name="go_to_album">Go To Album</string>
+    <string name="go_to_artist">Go To Artist</string>
+    <string name="play_song">Play Song</string>
+    <string name="add_to_playlists">Add To Playlist</string>
+    <string name="list_grid">List || Grid</string>
 </resources>

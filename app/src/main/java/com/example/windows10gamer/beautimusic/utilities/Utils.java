@@ -48,7 +48,6 @@ public class Utils {
     public static final String INPUT_NAME_PLAYSLIST = "Please input name playlist !";
     public static final String INPUT_ALL_SPACE = "Input all space, Please Input again!";
     public static final String ADDED_TO_PLAYLIST = "Added into playlist !";
-    public static final String EMPTY = "";
     public static final String UPDEATED = "Updated success !";
     public static final String SONGS = " Songs";
     public static final String ALBUMS = " Albums";
@@ -59,6 +58,10 @@ public class Utils {
     public static final String NOTIFY_PLAY = "com.example.windows10gamer.beautimusic.play";
     public static final String NOTIFY_NEXT = "com.example.windows10gamer.beautimusic.next";
     public static final String CHECKED_PLAY = "CheckedPlay";
+    public static final String PLAYING_QUEUE = "Playing queue";
+    public static final String HOME = "Music";
+    public static final String ADD_TO_PLAYLIST = "Select list song";
+    public static final String EMPTY = "";
 
     public static boolean checkString(String s) {
         int sum = 0;

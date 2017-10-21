@@ -3,17 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/itemAddPlayList"
-        android:title="Add To Playlist"
+        android:title="@string/add_to_playlists"
         />
     <item
         android:id="@+id/itemPlay"
-        android:title="Play Song" />
+        android:title="@string/play_song" />
     <item
-        android:title="Go To Artist"
+        android:title="@string/go_to_artist"
         android:id="@+id/itemGoToArtist"
         />
     <item
-        android:title="Go To Album"
+        android:title="@string/go_to_album"
         android:id="@+id/itemGoToAlbum"
         />
 

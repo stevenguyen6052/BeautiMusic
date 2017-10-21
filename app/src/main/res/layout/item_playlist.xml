@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
     android:paddingBottom="6dp"
@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/imgArt"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/artItem"
+            android:layout_height="@dimen/artItem"
             android:layout_gravity="center"
             android:padding="1dp"
             android:src="@drawable/ic_splash" />
@@ -40,7 +40,7 @@
                 android:maxLength="40"
                 android:text="@string/name_playlist"
                 android:textColor="@color/colorBack"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textH1" />
 
             <TextView
                 android:id="@+id/tvSumSong"
@@ -48,15 +48,15 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/sum_song"
-                android:textSize="13sp" />
+                android:textSize="@dimen/textH2" />
 
 
         </LinearLayout>
 
-        <ImageView
+        <com.example.windows10gamer.beautimusic.utilities.NonScrollImageView
             android:id="@+id/imgMoreVertPl"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/more_vert_item"
+            android:layout_height="@dimen/more_vert_item"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="12dp"

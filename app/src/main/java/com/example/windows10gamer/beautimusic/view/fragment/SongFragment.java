@@ -63,7 +63,6 @@ public class SongFragment extends android.support.v4.app.Fragment implements Sea
             protected Void doInBackground(String... params) {
                 mSongList.clear();
                 mSongList.addAll(LoadData.getSongFromDevice(getActivity()));
-
                 return null;
             }
 
@@ -71,7 +70,6 @@ public class SongFragment extends android.support.v4.app.Fragment implements Sea
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 mAdapter.notifyDataSetChanged();
-
             }
         }.execute("");
     }

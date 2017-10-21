@@ -21,6 +21,7 @@ import android.widget.Toast;
 //import com.example.windows10gamer.beautimusic.view.activity.PlayMusic;
 import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.application.App;
+import com.example.windows10gamer.beautimusic.utilities.NonScrollImageView;
 import com.example.windows10gamer.beautimusic.utilities.dragandswipe.ItemTouchHelperViewHolder;
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
@@ -62,6 +63,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         this.mSongList = mSongList;
         this.mContext = mContext;
     }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -249,18 +251,17 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView mImgMoreVert;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        NonScrollImageView mImgMoreVert;
         TextView mTvNameSong, mTvNameArtist;
         ImageView mImgView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mContext = itemView.getContext();
             mTvNameSong = (TextView) itemView.findViewById(R.id.TvNameSong);
             mTvNameArtist = (TextView) itemView.findViewById(R.id.TvNameSinger);
             mImgView = (ImageView) itemView.findViewById(R.id.ImgView);
-            mImgMoreVert = (ImageView) itemView.findViewById(R.id.imgMoreVert);
+            mImgMoreVert = (NonScrollImageView) itemView.findViewById(R.id.imgMoreVert);
 
         }
     }

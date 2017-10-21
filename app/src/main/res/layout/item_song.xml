@@ -58,10 +58,10 @@
 
         </LinearLayout>
 
-        <ImageView
+        <com.example.windows10gamer.beautimusic.utilities.NonScrollImageView
             android:id="@+id/imgMoreVert"
-            android:layout_width="24dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/more_vert_item"
+            android:layout_height="@dimen/more_vert_item"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="12dp"

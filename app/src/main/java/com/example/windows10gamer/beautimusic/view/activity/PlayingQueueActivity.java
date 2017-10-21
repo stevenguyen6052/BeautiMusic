@@ -31,7 +31,10 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class PlayingQueueActivity extends AppCompatActivity implements QueueAdapter.OnStartDragListener, ListChangedListener {
+import static com.example.windows10gamer.beautimusic.utilities.Utils.EMPTY;
+import static com.example.windows10gamer.beautimusic.utilities.Utils.PLAYING_QUEUE;
+
+public class PlayingQueueActivity extends BaseActivity implements QueueAdapter.OnStartDragListener, ListChangedListener {
 
     private ItemTouchHelper mItemTouchHelper;
     private List<Song> mSongList;
@@ -42,7 +45,7 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
     private List<Song> getListSong;
     private QueueAdapter mQueueAdapter;
     private RecyclerView mLvSong;
-    private ItemTouchHelper.Callback callback;
+    private ItemTouchHelper.Callback mCallback;
     private FragmentMiniControl mFragmentMiniControl;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -56,18 +59,30 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_playing_queue);
 
-        Toolbar toobar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toobar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mQueueAdapter = new QueueAdapter(this, this, mSongList, this);
+        mLvSong = (RecyclerView) findViewById(R.id.recycleQueue);
+        mLvSong.setHasFixedSize(true);
+        mLvSong.setAdapter(mQueueAdapter);
+        mLvSong.setLayoutManager(new LinearLayoutManager(this));
 
-        initView();
-        setUpAdapter();
+        mCallback = new SimpleItemTouchHelperCallback(mQueueAdapter);
+        mItemTouchHelper = new ItemTouchHelper(mCallback);
+        mItemTouchHelper.attachToRecyclerView(mLvSong);
+
         registerReceiver(mReceiver,new IntentFilter(Utils.NEXT_PLAY));
         registerReceiver(mReceiver,new IntentFilter(Utils.PREVIOUS_PLAY));
 
+    }
+
+    @Override
+    public int getLayoutResourceId() {
+        return R.layout.activity_playing_queue;
+    }
+
+    @Override
+    public String titleToolbar() {
+        return PLAYING_QUEUE;
     }
 
     @Override
@@ -77,7 +92,7 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
                 replace(R.id.queueLayout, mFragmentMiniControl, FragmentMiniControl.class.getName()).commit();
     }
 
-    private void initView() {
+    public void initView() {
         mFragmentMiniControl = new FragmentMiniControl();
         mSongList = getIntent().getExtras().getParcelableArrayList(Utils.LIST_SONG);
 
@@ -89,6 +104,11 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
                 finish();
             }
         });
+    }
+
+    @Override
+    public void initData() {
+
     }
 
     public void dataResult() {
@@ -113,18 +133,6 @@ public class PlayingQueueActivity extends AppCompatActivity implements QueueAdap
         intent.putExtras(bundle);
         setResult(Activity.RESULT_OK, intent);
     }
-
-    private void setUpAdapter() {
-        mQueueAdapter = new QueueAdapter(this, this, mSongList, this);
-        mLvSong = (RecyclerView) findViewById(R.id.recycleQueue);
-        mLvSong.setHasFixedSize(true);
-        mLvSong.setAdapter(mQueueAdapter);
-        mLvSong.setLayoutManager(new LinearLayoutManager(this));
-        callback = new SimpleItemTouchHelperCallback(mQueueAdapter);
-        mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(mLvSong);
-    }
-
 
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {

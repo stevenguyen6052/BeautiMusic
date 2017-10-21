@@ -41,7 +41,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+import static com.example.windows10gamer.beautimusic.utilities.Utils.EMPTY;
+
+public class PlayMusicActivity extends BaseActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private ImageView mImgPlayPause;
     private final static int REQUEST_LIST = 1;
     private TextView mTvNameSong, mTvNameSinger, mTvTime, mTvSumTime;
@@ -56,26 +58,15 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
     private RecyclerView mLvSong;
     private SongAdapterPlaying mAdapter;
-    private Toolbar mToolbar;
     private LinearLayoutManager mLinearLayout;
     private MusicService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_playmusic);
 
         SharedPrefs.getInstance().put(Utils.STATUS_PLAY, true);
         sendBroadcast(new Intent().setAction(Utils.CHECKED_PLAY));
-
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        initView();
-        getData();
 
         mLvSong.setHasFixedSize(true);
         mLinearLayout = new LinearLayoutManager(this);
@@ -94,57 +85,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         loadStatusShuffleRepeat();
     }
 
-    private void addItemClick() {
-        mLvSong.addOnItemTouchListener(new RecyclerItemClickListener(this, mLvSong,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int i) {
-                        if (mSearchList != null && mSearchList.size() != 0) {
-                            mService.setSongList(mSearchList);
-                        }
-                        mService.setIndexPlay(i);
-                        playMusic();
-                    }
-
-                    @Override
-                    public void onItemLongClick(View view, final int i) {
-
-                    }
-                }));
-    }
-
-    private void getData() {
-        bundle = getIntent().getExtras();
-        if (bundle != null) {
-            mSongList = bundle.getParcelableArrayList(Utils.LIST_SONG);
-            mPosition = bundle.getInt(Utils.POSITION);
-            mService.setSongList(mSongList);
-            mService.setIndexPlay(mPosition);
-            playMusic();
-
-        } else {
-            mSongList = mService.getSongList();
-            setDataForView();
-        }
-    }
-
-    private void setDataForView() {
-        setView();
-        updateTimeSong();
-        if (mService.isPlaying())
-            mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-        else
-            mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-    }
-
-    private void playMusic() {
-        mService.playSong();
-        mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-        setView();
-        updateTimeSong();
-    }
-
-    private void initView() {
+    @Override
+    public void initView() {
         mService = ((App) getApplicationContext()).getService();
         mSongList = new ArrayList<>();
         mSeekbar = (SeekBar) findViewById(R.id.pItmSeekbar);
@@ -170,12 +112,72 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         mSeekbar.setOnSeekBarChangeListener(this);
     }
 
+    @Override
+    public void initData() {
+        bundle = getIntent().getExtras();
+        if (bundle != null) {
+            mSongList = bundle.getParcelableArrayList(Utils.LIST_SONG);
+            mPosition = bundle.getInt(Utils.POSITION);
+            mService.setSongList(mSongList);
+            mService.setIndexPlay(mPosition);
+            playMusic();
+
+        } else {
+            mSongList = mService.getSongList();
+            setDataForView();
+        }
+    }
+
+    @Override
+    public int getLayoutResourceId() {
+        return R.layout.activity_playmusic;
+    }
+
+    @Override
+    public String titleToolbar() {
+        return EMPTY;
+    }
+
+
+    private void addItemClick() {
+        mLvSong.addOnItemTouchListener(new RecyclerItemClickListener(this, mLvSong,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int i) {
+                        if (mSearchList != null && mSearchList.size() != 0) {
+                            mService.setSongList(mSearchList);
+                        }
+                        mService.setIndexPlay(i);
+                        playMusic();
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, final int i) {
+
+                    }
+                }));
+    }
+
+    private void setDataForView() {
+        setView();
+        updateTimeSong();
+        if (mService.isPlaying())
+            mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+        else
+            mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+    }
+
+    private void playMusic() {
+        mService.playSong();
+        mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
+        setView();
+        updateTimeSong();
+    }
+
     private void nextSong() {
         mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
         mService.playNext();
         setView();
-
-
     }
 
     private void previousSong() {
@@ -204,7 +206,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         mSeekbar.setMax(mService.getDuaration());
         Picasso.with(this)
                 .load(mService.getImageSong())
-                .resizeDimen(R.dimen.art_item_album,R.dimen.art_item_album)
+                .resizeDimen(R.dimen.art_item_album, R.dimen.art_item_album)
                 .placeholder(R.drawable.ic_empty_music)
                 .error(R.drawable.ic_empty_music)
                 .into(mImgSong);
@@ -252,6 +254,20 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         startActivityForResult(intent, REQUEST_LIST);
     }
 
+    private void setSearchList(Intent intent) {
+        songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
+        mSearchList.clear();
+        mSearchList.addAll(songList);
+        mAdapter.setFilter(mSearchList);
+    }
+
+    private void setListSong(Intent intent) {
+        songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
+        mSongList.clear();
+        mSongList.addAll(songList);
+        mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -266,37 +282,25 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                     if (isClick) {
                         if (mSearchList != null && mSearchList.size() != 0) {//th sắp xếp list bài hát đang search
                             int postion = intent.getIntExtra(Utils.POSITION, 0);
-                            songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
-                            mSearchList.clear();
-                            mSearchList.addAll(songList);
-                            mAdapter.setFilter(mSearchList);
+                            setSearchList(intent);
                             mService.setSongList(mSearchList);
                             mService.setIndexPlay(postion);
                             playMusic();
                         } else {
                             int postion = intent.getIntExtra(Utils.POSITION, 0);// th  sắp xếp list nhạc màn hình playmusic
-                            songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
-                            mSongList.clear();
-                            mSongList.addAll(songList);
-                            mAdapter.notifyDataSetChanged();
+                            setListSong(intent);
                             mService.setIndexPlay(postion);
                             playMusic();
                         }
                     } else { // th click vào mini control bên dưới màn hình or ấn back
                         if (mSearchList != null && mSearchList.size() != 0) {
-                            songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
-                            mSearchList.clear();
-                            mSearchList.addAll(songList);
-                            mAdapter.setFilter(mSearchList);
+                            setSearchList(intent);
                             for (int i = 0; i < mSearchList.size(); i++) {
                                 if (nameSong.equals(mSearchList.get(i).getNameSong()))
                                     mService.setIndexPlay(i); // cập nhật lại index sau khi sắp xếp
                             }
                         } else {
-                            songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
-                            mSongList.clear();
-                            mSongList.addAll(songList);
-                            mAdapter.notifyDataSetChanged();
+                            setListSong(intent);
                             for (int i = 0; i < mSongList.size(); i++) {
                                 if (nameSong.equals(mSongList.get(i).getNameSong()))
                                     mService.setIndexPlay(i);
@@ -314,16 +318,17 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.pImgNext:
                 nextSong();
-                mAdapter.notifyDataSetChanged();
+                mAdapter.notifyItemChanged(mService.getIndexPlay());
                 break;
             case R.id.pImgPrevious:
                 previousSong();
-                mAdapter.notifyDataSetChanged();
+                mAdapter.notifyItemChanged(mService.getIndexPlay());
                 break;
             case R.id.pImgPlayPause:
                 doPlayPause();
@@ -429,11 +434,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                     break;
                 case Utils.NEXT_PLAY:
                     mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.notifyItemChanged(mService.getIndexPlay());
                     break;
                 case Utils.PREVIOUS_PLAY:
                     mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.notifyItemChanged(mService.getIndexPlay());
                     break;
             }
         }

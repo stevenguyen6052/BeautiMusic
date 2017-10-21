@@ -18,10 +18,6 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
-/**
- * Created by Windows 10 Gamer on 09/10/2017.
- */
-
 public class PlaylistDialogAdapter extends RecyclerView.Adapter<PlaylistDialogAdapter.ViewHolder> {
     private Context mContext;
     private List<Playlist> mPlaylist;

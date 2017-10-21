@@ -1,32 +1,22 @@
 package com.example.windows10gamer.beautimusic.model;
 
-import android.print.PageRange;
-
-/**
- * Created by Windows 10 Gamer on 06/10/2017.
- */
-
-public class Playlist {
+public class Playlist  {
     private int id;
     private String listIdSong;
     private String name;
 
-    public Playlist(){
-
-    }
-
-    public void setId(int id) {
+    public Playlist(int id,String listIdSong,String name) {
         this.id = id;
+        this.listIdSong = listIdSong;
+        this.name = name;
     }
 
     public int getId() {
         return id;
     }
 
-    public Playlist(int  id, String listIdSong, String name) {
+    public void setId(int id) {
         this.id = id;
-        this.listIdSong = listIdSong;
-        this.name = name;
     }
 
     public String getListIdSong() {

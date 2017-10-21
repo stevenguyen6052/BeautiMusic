@@ -31,7 +31,7 @@ public class LoadData {
             String albumName = mCursor.getString(1);
             String artist = mCursor.getString(2);
             String image = ContentUris.withAppendedId(ART_CONTENT_URI, id).toString();
-            Album album = new Album(id, albumName, artist, image);
+            Album album = new Album(id,albumName,artist, image);
             albumList.add(album);
         }
         mCursor.close();

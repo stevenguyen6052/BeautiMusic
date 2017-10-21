@@ -1,34 +1,14 @@
 package com.example.windows10gamer.beautimusic.model;
 
 
-public class Artist {
-    private int id;
-    private String nameArtist;
+public class Artist extends BaseModel {
     private int sumSong;
     private int sumAlbum;
-    public Artist(){}
 
-    public Artist(int id,String na, int ss, int sa) {
-        this.id = id;
-        this.nameArtist = na;
-        this.sumSong = ss;
-        this.sumAlbum = sa;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNameArtist() {
-        return nameArtist;
-    }
-
-    public void setNameArtist(String nameArtist) {
-        this.nameArtist = nameArtist;
+    public Artist(int id, String nameArtist, int sumSong, int sumAlbum) {
+        super(id, nameArtist);
+        this.sumSong = sumSong;
+        this.sumAlbum = sumAlbum;
     }
 
     public int getSumSong() {
