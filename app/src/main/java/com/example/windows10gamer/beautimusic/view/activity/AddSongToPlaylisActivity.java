@@ -4,16 +4,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
-
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.utilities.LoadData;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
@@ -26,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.windows10gamer.beautimusic.utilities.Utils.ADD_TO_PLAYLIST;
-import static com.example.windows10gamer.beautimusic.utilities.Utils.EMPTY;
 
 
 public class AddSongToPlaylisActivity extends BaseActivity implements PlaylistAddSongAdapter.GetList {

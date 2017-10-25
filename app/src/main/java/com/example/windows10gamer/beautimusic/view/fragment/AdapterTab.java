@@ -40,8 +40,7 @@ public class AdapterTab extends FragmentStatePagerAdapter {
 
             return mPlayListFragment;
         }
-        else {
-        }
+
         return null;
     }
 

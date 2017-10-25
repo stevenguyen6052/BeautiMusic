@@ -149,7 +149,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvNamePlaylist, tvSumSong;
         ImageView imgArt;
         NonScrollImageView imgMoreVert;

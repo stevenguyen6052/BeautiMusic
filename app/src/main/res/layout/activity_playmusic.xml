@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:windowSoftInputMode="stateVisible|adjustPan"
-    >
+    android:windowSoftInputMode="stateVisible|adjustPan">
 
     <LinearLayout
         android:id="@+id/abc"
@@ -97,7 +96,6 @@
                 android:id="@+id/itmNameSingle"
                 android:layout_width="@dimen/with_text_nameartist"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/itmNameSong"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:paddingLeft="5dp"
@@ -175,24 +173,15 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     </android.support.v7.widget.Toolbar>
-
-    <LinearLayout
-
+    <ListView
+        android:id="@+id/plistView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/abc"
-        android:layout_gravity="bottom"
-        android:layout_weight="4"
-        android:background="@color/colorWhite">
+        android:layout_below="@id/abc"
+        android:divider="@null">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/plistView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@null">
+    </ListView>
 
-        </android.support.v7.widget.RecyclerView>
-    </LinearLayout>
 
 </RelativeLayout>
 

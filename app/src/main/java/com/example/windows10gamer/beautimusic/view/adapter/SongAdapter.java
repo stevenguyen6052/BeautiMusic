@@ -3,7 +3,6 @@ package com.example.windows10gamer.beautimusic.view.adapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -17,13 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-//import com.example.windows10gamer.beautimusic.view.activity.PlayMusic;
 import com.bumptech.glide.Glide;
-import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.utilities.NonScrollImageView;
-import com.example.windows10gamer.beautimusic.utilities.dragandswipe.ItemTouchHelperViewHolder;
-import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Playlist;
 import com.example.windows10gamer.beautimusic.model.Song;
@@ -34,7 +28,7 @@ import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.squareup.picasso.Picasso;
+
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -251,7 +245,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         NonScrollImageView mImgMoreVert;
         TextView mTvNameSong, mTvNameArtist;
         ImageView mImgView;

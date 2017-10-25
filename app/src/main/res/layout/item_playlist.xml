@@ -20,7 +20,7 @@
             android:layout_height="@dimen/artItem"
             android:layout_gravity="center"
             android:padding="1dp"
-            android:src="@drawable/ic_splash" />
+            android:src="@drawable/ic_splas" />
 
         <LinearLayout
             android:layout_width="match_parent"

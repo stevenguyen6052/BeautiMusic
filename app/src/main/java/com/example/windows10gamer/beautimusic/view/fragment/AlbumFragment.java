@@ -14,14 +14,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.windows10gamer.beautimusic.utilities.LoadData;
 import com.example.windows10gamer.beautimusic.view.adapter.AlbumAdapter;
-import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
 

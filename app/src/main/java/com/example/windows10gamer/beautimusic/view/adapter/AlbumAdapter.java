@@ -1,26 +1,19 @@
 package com.example.windows10gamer.beautimusic.view.adapter;
-
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.windows10gamer.beautimusic.utilities.Utils.NAME_ALBUM;
 
 
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
@@ -28,7 +21,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     private List<Album> mAlbumList;
     private static final int LIST_ITEM = 0;
     private static final int GRID_ITEM = 1;
-    boolean isSwitchView = true;
+    private boolean isSwitchView = true;
 
     public AlbumAdapter(Context mContext, List<Album> albumList) {
         this.mContext = mContext;
@@ -43,15 +36,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
         if (viewType == LIST_ITEM) {
-            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_list, null);
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_artist_list, null);
         } else {
-            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_grid, null);
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_artist_grid, null);
         }
         return new ViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int i) {
+    public void onBindViewHolder(final ViewHolder holder, int i) {
 
         holder.nameAlbum.setText(mAlbumList.get(i).getNameAlbum());
         holder.nameArtist.setText(mAlbumList.get(i).getNameArtist());
@@ -62,8 +55,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
             public void onClick(View v) {
                 mContext.startActivity(new Intent(mContext, DetailAlbumArtist.class)
                         .putExtra(Utils.TAG, Utils.TAG_ALBUM)
-                        .putExtra(Utils.NAME_ALBUM, mAlbumList.get(i).getNameAlbum())
-                        .putExtra(Utils.ALBUM_ID, mAlbumList.get(i).getId())
+                        .putExtra(Utils.NAME_ALBUM, mAlbumList.get(holder.getAdapterPosition()).getNameAlbum())
+                        .putExtra(Utils.ALBUM_ID, mAlbumList.get(holder.getAdapterPosition()).getId())
                 );
             }
         });
@@ -90,15 +83,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         return (null != mAlbumList ? mAlbumList.size() : 0);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView nameAlbum, nameArtist;
-        ImageView imageView;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView nameAlbum, nameArtist;
+        private ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            nameAlbum = (TextView) itemView.findViewById(R.id.alTvNameAlbum);
-            nameArtist = (TextView) itemView.findViewById(R.id.alTvNameArtist);
-            imageView = (ImageView) itemView.findViewById(R.id.alImgViewAlbum);
+            nameAlbum = (TextView) itemView.findViewById(R.id.tvNameAlbumArtist);
+            nameArtist = (TextView) itemView.findViewById(R.id.tvNameArtist);
+            imageView = (ImageView) itemView.findViewById(R.id.ivAlbumArtist);
         }
     }
 }

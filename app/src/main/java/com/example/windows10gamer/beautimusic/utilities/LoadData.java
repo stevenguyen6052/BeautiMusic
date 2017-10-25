@@ -6,15 +6,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
-
 import com.example.windows10gamer.beautimusic.model.Album;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.model.Song;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class LoadData {
+    public static final String AND = " AND ";
+
     public static List<Album> getAlbumFromDevice(Context context) {
         List<Album> albumList = new ArrayList<>();
         Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
@@ -26,15 +26,15 @@ public class LoadData {
 
                 }, null, null, android.provider.MediaStore.Audio.Albums.DEFAULT_SORT_ORDER);
 
-        if (mCursor!=null && mCursor.moveToNext()){
+        if (mCursor != null && mCursor.moveToNext()) {
             do {
                 int id = mCursor.getInt(0);
                 String albumName = mCursor.getString(1);
                 String artist = mCursor.getString(2);
                 String image = ContentUris.withAppendedId(ART_CONTENT_URI, id).toString();
-                Album album = new Album(id,albumName,artist, image);
+                Album album = new Album(id, albumName, artist, image);
                 albumList.add(album);
-            }while (mCursor.moveToNext());
+            } while (mCursor.moveToNext());
         }
         mCursor.close();
         return albumList;
@@ -82,12 +82,12 @@ public class LoadData {
 
     public static ArrayList<Song> getAlbumSongs(int albumId, Context context) {
         Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
-        ArrayList<Song> mSongList = new ArrayList<Song>();
+        ArrayList<Song> mSongList = new ArrayList<>();
         final StringBuilder selection = new StringBuilder();
         Cursor mCursor;
         selection.append(MediaStore.Audio.AudioColumns.IS_MUSIC + "=1");
-        selection.append(" AND " + MediaStore.Audio.AudioColumns.TITLE + " != ''");
-        selection.append(" AND " + MediaStore.Audio.AudioColumns.ALBUM_ID + "=" + albumId);
+        selection.append(AND + MediaStore.Audio.AudioColumns.TITLE + " != ''");
+        selection.append(AND + MediaStore.Audio.AudioColumns.ALBUM_ID + "=" + albumId);
         mCursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 new String[]{MediaStore.Audio.Media._ID,
                         MediaStore.Audio.Media.TITLE,
@@ -118,13 +118,14 @@ public class LoadData {
                 mSongList.add(song);
             } while (mCursor.moveToNext());
         }
+        mCursor.close();
 
         return mSongList;
     }
 
     public static List<Song> getArtistSong(int artistId, Context context) {
         Uri ART_CONTENT_URI = Uri.parse("content://media/external/audio/albumart");
-        ArrayList<Song> mSongList = new ArrayList<Song>();
+        ArrayList<Song> mSongList = new ArrayList<>();
         Cursor mCursor;
         final StringBuilder selection = new StringBuilder();
         selection.append(android.provider.MediaStore.Audio.AudioColumns.IS_MUSIC + "=1");
@@ -161,7 +162,7 @@ public class LoadData {
                 mSongList.add(song);
             } while (mCursor.moveToNext());
         }
-
+        mCursor.close();
         return mSongList;
 
     }
@@ -180,6 +181,7 @@ public class LoadData {
             Artist atrist = new Artist(cursor.getInt(0), cursor.getString(1), cursor.getInt(3), cursor.getInt(2));
             atristList.add(atrist);
         }
+        cursor.close();
         return atristList;
     }
 }

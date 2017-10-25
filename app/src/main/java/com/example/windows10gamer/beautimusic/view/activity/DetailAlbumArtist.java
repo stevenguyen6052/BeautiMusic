@@ -7,34 +7,24 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.R;
-import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.utilities.LoadData;
-import com.example.windows10gamer.beautimusic.utilities.singleton.SharedPrefs;
-import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
-import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 import com.example.windows10gamer.beautimusic.view.adapter.SongAdapter;
 import com.example.windows10gamer.beautimusic.view.fragment.FragmentMiniControl;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.windows10gamer.beautimusic.utilities.Utils.ALBUM_ID;
 import static com.example.windows10gamer.beautimusic.utilities.Utils.ARTIST_ID;
-import static com.example.windows10gamer.beautimusic.utilities.Utils.CHECKED_PLAY;
-import static com.example.windows10gamer.beautimusic.utilities.Utils.EMPTY;
 import static com.example.windows10gamer.beautimusic.utilities.Utils.LIST_SONG;
 import static com.example.windows10gamer.beautimusic.utilities.Utils.NAME_ALBUM;
 import static com.example.windows10gamer.beautimusic.utilities.Utils.NAME_ARTIST;
@@ -48,7 +38,7 @@ public class DetailAlbumArtist extends BaseActivity {
     private ImageView mImgAlbum;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private View mLayoutControl;
-    private List<Song> mSongList;
+    private List<Song> mSongList,songs;
     private String mTitle;
     private int mId;
     private RecyclerView mLvSong;
@@ -103,25 +93,32 @@ public class DetailAlbumArtist extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         tag = bundle.getString(Utils.TAG);
 
-        if (tag.equals(TAG_ALBUM)) {
-            mId = bundle.getInt(ALBUM_ID);
-            mTitle = bundle.getString(NAME_ALBUM);
-            loadAlbumSong(mId);
+        switch (tag) {
+            case TAG_ALBUM:
+                mId = bundle.getInt(ALBUM_ID);
+                mTitle = bundle.getString(NAME_ALBUM);
+                loadAlbumSong(mId);
+                break;
 
-        } else if (tag.equals(TAG_ARTIST)) {
-            mId = bundle.getInt(ARTIST_ID);
-            mTitle = bundle.getString(NAME_ARTIST);
-            loadArtistSong(mId);
+            case TAG_ARTIST:
+                mId = bundle.getInt(ARTIST_ID);
+                mTitle = bundle.getString(NAME_ARTIST);
+                loadArtistSong(mId);
+                break;
 
-        } else if (tag.equals(PLAYLIST)) {
-            List<Song> songs ;
-            songs = bundle.getParcelableArrayList(LIST_SONG);
-            mTitle = bundle.getString(NAME_PLAYLIST);
-            mSongList.clear();
-            mSongList.addAll(songs);
-            mAdapter.notifyDataSetChanged();
-            Glide.with(DetailAlbumArtist.this).load(mSongList.get(0).getImageSong())
-                    .placeholder(R.drawable.ic_empty_music).into(mImgAlbum);
+            case PLAYLIST:
+                songs = bundle.getParcelableArrayList(LIST_SONG);
+                mTitle = bundle.getString(NAME_PLAYLIST);
+                mSongList.clear();
+                mSongList.addAll(songs);
+                mAdapter.notifyDataSetChanged();
+
+                Glide.with(DetailAlbumArtist.this).load(mSongList.get(0).getImageSong())
+                        .placeholder(R.drawable.ic_empty_music2).into(mImgAlbum);
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -166,7 +163,7 @@ public class DetailAlbumArtist extends BaseActivity {
                 super.onPostExecute(aVoid);
                 mAdapter.notifyDataSetChanged();
                 Glide.with(DetailAlbumArtist.this).load(mSongList.get(0).getImageSong())
-                        .placeholder(R.drawable.ic_empty_music).into(mImgAlbum);
+                        .placeholder(R.drawable.ic_empty_music2).into(mImgAlbum);
             }
         }.execute();
     }
@@ -185,7 +182,7 @@ public class DetailAlbumArtist extends BaseActivity {
                 super.onPostExecute(aVoid);
                 mAdapter.notifyDataSetChanged();
                 Glide.with(DetailAlbumArtist.this).load(mSongList.get(0).getImageSong())
-                        .placeholder(R.drawable.ic_empty_music).into(mImgAlbum);
+                        .placeholder(R.drawable.ic_empty_music2).into(mImgAlbum);
             }
         }.execute();
     }

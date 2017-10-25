@@ -6,10 +6,6 @@
     <color name="colorPink">#13cbf5</color>
     <color name="colorWhite">#ffff</color>
     <color name="colorBack">#000</color>
-    <color name="click_item">#ccffff</color>
-    <color name="background_itemalbum">#98f5f5f5</color>
-    <color name="background_playsong">#a2000000</color>
-    <color name="background_item">#23000000</color>
     <color name="pink">#ce4cc5d3</color>
     <color name="image_notifi">#0daebc</color>
 </resources>

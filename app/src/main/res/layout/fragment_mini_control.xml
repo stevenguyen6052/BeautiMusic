@@ -1,79 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="@dimen/mini_control"
+    android:background="@color/colorPink"
+    android:orientation="horizontal"
+    android:weightSum="10">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/mini_control"
-        android:layout_gravity="bottom"
-        android:background="@color/colorPink"
-        android:orientation="horizontal"
-        android:weightSum="10">
+        android:id="@+id/mainMiniControl"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="8.25"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/mainImgSong"
+            android:layout_width="@dimen/artItem"
+            android:layout_height="@dimen/artItem"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/dianhac" />
 
         <LinearLayout
-            android:id="@+id/mainMiniControl"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="8.25"
-            android:orientation="horizontal"
-            android:weightSum="1">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/mainImgSong"
-                android:layout_width="@dimen/artItem"
-                android:layout_height="@dimen/artItem"
-                android:layout_gravity="center"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/dianhac" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:weightSum="10">
-
-                <TextView
-                    android:id="@+id/mainNameSong"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:scrollHorizontally="true"
-                    android:text="@string/name_song"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/textH1" />
-
-                <TextView
-                    android:id="@+id/mainNameSingle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:maxLines="1"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:scrollHorizontally="true"
-                    android:text="@string/name_artist"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/textH2" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/mainControlPlay"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1.5" />
+            android:orientation="vertical"
+            android:weightSum="10">
+
+            <TextView
+                android:id="@+id/mainNameSong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:scrollHorizontally="true"
+                android:text="@string/name_song"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/textH1" />
+
+            <TextView
+                android:id="@+id/mainNameSingle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:scrollHorizontally="true"
+                android:text="@string/name_artist"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/textH2" />
+
+        </LinearLayout>
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/mainControlPlay"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1.5"
+        android:background="?attr/selectableItemBackground" />
 </LinearLayout>

@@ -3,20 +3,11 @@ package com.example.windows10gamer.beautimusic.utilities.notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.widget.Toast;
-
-
 import com.example.windows10gamer.beautimusic.utilities.Utils;
-import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SharedPrefs;
-import com.example.windows10gamer.beautimusic.view.activity.HomeActivity;
-
-import static android.content.Context.MODE_PRIVATE;
 import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_NEXT;
 import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_PLAY;
 import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_PREVIOUS;
-
 
 public class NotificationReceiver extends BroadcastReceiver {
 

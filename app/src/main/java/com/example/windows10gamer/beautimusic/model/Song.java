@@ -3,8 +3,6 @@ package com.example.windows10gamer.beautimusic.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 public class Song implements Parcelable {
     private String id;
     private String nameSong;

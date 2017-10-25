@@ -17,20 +17,17 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
-
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SharedPrefs;
 import com.example.windows10gamer.beautimusic.view.activity.HomeActivity;
-import com.example.windows10gamer.beautimusic.view.activity.PlayMusicActivity;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
-
 import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_NEXT;
 import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_PLAY;
 import static com.example.windows10gamer.beautimusic.utilities.Utils.NOTIFY_PREVIOUS;
@@ -74,11 +71,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case Utils.NOTIFI:
-                    try{
-                        updateRemoteview();
-                    }catch (Exception e){
-                        Toast.makeText(context, "SD Card Permission!", Toast.LENGTH_SHORT).show();
-                    }
+                    updateRemoteview();
                     break;
                 case Utils.NEXT_PLAY:
                     playNext();
@@ -129,13 +122,13 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        try {
+        try{
             mPlayer.start();
+            initNotification();
         }catch (Exception e){
-            Toast.makeText(this, "Please turn on SD card!", Toast.LENGTH_SHORT).show();
+
         }
 
-        initNotification();
 
     }
 
@@ -303,15 +296,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         try {
             mPlayer.setDataSource(getApplicationContext(), Uri.parse(mSongList.get(mPosition).getFileSong()));
-        } catch (Exception e) {
-
-        }
-        try{
             mPlayer.prepareAsync();
-        }catch (Exception e){
-
+        } catch (IOException e) {
+            Toast.makeText(this, "Please kill app and play again!", Toast.LENGTH_SHORT).show();
         }
-
 
     }
 

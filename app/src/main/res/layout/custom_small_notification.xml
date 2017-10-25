@@ -19,13 +19,12 @@
         android:layout_marginLeft="5dp"
         android:layout_weight="5"
         android:orientation="vertical"
-        android:weightSum="10">
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/notifiNameSong"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:text="@string/name_song"
@@ -36,9 +35,8 @@
         <TextView
             android:id="@+id/notifiNameArtist"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="5"
             android:maxLines="1"
             android:text="@string/name_artist"
             android:textColor="@color/colorWhite"

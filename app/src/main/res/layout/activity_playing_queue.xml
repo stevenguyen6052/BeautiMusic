@@ -12,8 +12,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/colorAccent"
         app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
@@ -23,8 +22,7 @@
         android:id="@+id/recycleQueue"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@+id/toolbar"
-        android:layout_weight="9">
+        android:layout_weight="10">
 
     </android.support.v7.widget.RecyclerView>
 
@@ -32,11 +30,8 @@
         android:id="@+id/queueLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/mini_control"
-        android:layout_alignParentBottom="true"
         android:background="@color/colorPink"
         android:orientation="horizontal"
-        android:weightSum="10"/>
-
-
+        />
 
 </LinearLayout>

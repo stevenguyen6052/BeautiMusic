@@ -4,28 +4,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SharedPrefs;
-import com.example.windows10gamer.beautimusic.view.activity.HomeActivity;
 import com.squareup.picasso.Picasso;
-
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentMiniControl extends android.support.v4.app.Fragment implements View.OnClickListener {
     private View mRootView;

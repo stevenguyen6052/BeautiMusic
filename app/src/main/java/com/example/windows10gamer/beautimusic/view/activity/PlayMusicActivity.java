@@ -1,40 +1,32 @@
 package com.example.windows10gamer.beautimusic.view.activity;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.application.App;
 import com.example.windows10gamer.beautimusic.model.Song;
 import com.example.windows10gamer.beautimusic.utilities.service.MusicService;
-import com.example.windows10gamer.beautimusic.utilities.RecyclerItemClickListener;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.utilities.singleton.SharedPrefs;
-import com.example.windows10gamer.beautimusic.view.adapter.SongAdapterPlaying;
+import com.example.windows10gamer.beautimusic.view.adapter.PlayingAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -51,15 +43,13 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
     private SeekBar mSeekbar;
     private int mPosition;
     private List<Song> mSongList;
-    private List<Song> songList, mSearchList;
+    public List<Song> songList, mSearchList;
     private SimpleDateFormat mSimPleDateFormat = new SimpleDateFormat("mm:ss");
     private Bundle bundle;
     private SearchView searchView;
-
-    private RecyclerView mLvSong;
-    private SongAdapterPlaying mAdapter;
-    private LinearLayoutManager mLinearLayout;
     private MusicService mService;
+    private ListView mListView;
+    private PlayingAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +58,6 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
         SharedPrefs.getInstance().put(Utils.STATUS_PLAY, true);
         sendBroadcast(new Intent().setAction(Utils.CHECKED_PLAY));
 
-        mLvSong.setHasFixedSize(true);
-        mLinearLayout = new LinearLayoutManager(this);
-        mLvSong.setLayoutManager(mLinearLayout);
-        mAdapter = new SongAdapterPlaying(mSongList, this);
-        mLvSong.setAdapter(mAdapter);
-
         IntentFilter it = new IntentFilter();
         it.addAction(Utils.PAUSE_KEY);
         it.addAction(Utils.PLAY_KEY);
@@ -81,7 +65,21 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
         it.addAction(Utils.NEXT_PLAY);
         registerReceiver(receiver, it);
 
-        addItemClick();
+        mAdapter = new PlayingAdapter(this, mSongList);
+        mListView.setAdapter(mAdapter);
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (mSearchList.size() != 0) {
+                    mService.setSongList(mSearchList);
+                }
+                mService.setIndexPlay(position);
+                playMusic();
+                mAdapter.notifyDataSetChanged();
+            }
+        });
         loadStatusShuffleRepeat();
     }
 
@@ -89,6 +87,7 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
     public void initView() {
         mService = ((App) getApplicationContext()).getService();
         mSongList = new ArrayList<>();
+        mSearchList = new ArrayList<>();
         mSeekbar = (SeekBar) findViewById(R.id.pItmSeekbar);
         mSeekbar.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
         mSeekbar.getThumb().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
@@ -102,7 +101,7 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
         mShffle = (ImageView) findViewById(R.id.pShuffle);
         mReppeat = (ImageView) findViewById(R.id.pRepeat);
         mImgSong = (ImageView) findViewById(R.id.imgSong);
-        mLvSong = (RecyclerView) findViewById(R.id.plistView);
+        mListView = (ListView) findViewById(R.id.plistView);
 
         mImgNext.setOnClickListener(this);
         mImgPrevious.setOnClickListener(this);
@@ -138,26 +137,6 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
         return EMPTY;
     }
 
-
-    private void addItemClick() {
-        mLvSong.addOnItemTouchListener(new RecyclerItemClickListener(this, mLvSong,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int i) {
-                        if (mSearchList != null && mSearchList.size() != 0) {
-                            mService.setSongList(mSearchList);
-                        }
-                        mService.setIndexPlay(i);
-                        playMusic();
-                    }
-
-                    @Override
-                    public void onItemLongClick(View view, final int i) {
-
-                    }
-                }));
-    }
-
     private void setDataForView() {
         setView();
         updateTimeSong();
@@ -167,7 +146,7 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
             mImgPlayPause.setImageResource(R.drawable.ic_play_arrow_white_48dp);
     }
 
-    private void playMusic() {
+    public void playMusic() {
         mService.playSong();
         mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
         setView();
@@ -223,7 +202,6 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
                 mSeekbar.setProgress(mService.getCurrentPosition());
                 mHandler.postDelayed(this, 500);
                 mService.setOnComplete();
-                mAdapter.notifyDataSetChanged();
                 setView();
             }
         }, 100);
@@ -231,7 +209,7 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
 
     private void doShuffle() {
         if (mService.isShuffle())
-            mShffle.setImageResource(R.drawable.ic_shuffle_black_48dp);
+            mShffle.setImageResource(R.drawable.ic_shuffle_white_48dpnew1);
         else
             mShffle.setImageResource(R.drawable.ic_shuffle_white_48dp);
 
@@ -239,14 +217,14 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
 
     private void doRepeat() {
         if (mService.isRepeat())
-            mReppeat.setImageResource(R.drawable.ic_repeat_black_48dp);
+            mReppeat.setImageResource(R.drawable.ic_repeat_white_48dpnew1);
         else
             mReppeat.setImageResource(R.drawable.ic_repeat_white_48dp);
     }
 
     private void doQueue() {
         Intent intent = new Intent(this, PlayingQueueActivity.class);
-        if (mSearchList != null && mSearchList.size() != 0) {
+        if (mSearchList.size() != 0) {
             intent.putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) mSearchList);
         } else {
             intent.putParcelableArrayListExtra(Utils.LIST_SONG, (ArrayList<Song>) mSongList);
@@ -265,7 +243,6 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
         songList = intent.getExtras().getParcelableArrayList(Utils.LIST_SONG);
         mSongList.clear();
         mSongList.addAll(songList);
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -280,7 +257,7 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
                 isClick = intent.getExtras().getBoolean(Utils.CHECK); // th click vòa item trong list song
                 if (isQueue) {
                     if (isClick) {
-                        if (mSearchList != null && mSearchList.size() != 0) {//th sắp xếp list bài hát đang search
+                        if (mSearchList.size() != 0) {//th sắp xếp list bài hát đang search
                             int postion = intent.getIntExtra(Utils.POSITION, 0);
                             setSearchList(intent);
                             mService.setSongList(mSearchList);
@@ -293,7 +270,7 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
                             playMusic();
                         }
                     } else { // th click vào mini control bên dưới màn hình or ấn back
-                        if (mSearchList != null && mSearchList.size() != 0) {
+                        if (mSearchList.size() != 0) {
                             setSearchList(intent);
                             for (int i = 0; i < mSearchList.size(); i++) {
                                 if (nameSong.equals(mSearchList.get(i).getNameSong()))
@@ -314,6 +291,7 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
                         playMusic();
                     }
                 }
+                mAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -324,11 +302,11 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.pImgNext:
                 nextSong();
-                mAdapter.notifyItemChanged(mService.getIndexPlay());
+                mAdapter.notifyDataSetChanged();
                 break;
             case R.id.pImgPrevious:
                 previousSong();
-                mAdapter.notifyItemChanged(mService.getIndexPlay());
+                mAdapter.notifyDataSetChanged();
                 break;
             case R.id.pImgPlayPause:
                 doPlayPause();
@@ -396,12 +374,12 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
         repeat = SharedPrefs.getInstance().get(Utils.REPEAT, Boolean.class, false);
 
         if (shuffle) {
-            mShffle.setImageResource(R.drawable.ic_shuffle_black_48dp);
+            mShffle.setImageResource(R.drawable.ic_shuffle_white_48dpnew1);
             mService.setShuffle(shuffle);
         }
 
         if (repeat) {
-            mReppeat.setImageResource(R.drawable.ic_repeat_black_48dp);
+            mReppeat.setImageResource(R.drawable.ic_repeat_white_48dpnew1);
             mService.setRepeat(repeat);
         }
 
@@ -432,13 +410,15 @@ public class PlayMusicActivity extends BaseActivity implements View.OnClickListe
                 case Utils.PLAY_KEY:
                     mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
                     break;
+
                 case Utils.NEXT_PLAY:
                     mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    mAdapter.notifyItemChanged(mService.getIndexPlay());
+                    mAdapter.notifyDataSetChanged();
                     break;
+
                 case Utils.PREVIOUS_PLAY:
                     mImgPlayPause.setImageResource(R.drawable.ic_pause_white_48dp);
-                    mAdapter.notifyItemChanged(mService.getIndexPlay());
+                    mAdapter.notifyDataSetChanged();
                     break;
             }
         }

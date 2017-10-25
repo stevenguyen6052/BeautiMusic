@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 
 import com.example.windows10gamer.beautimusic.utilities.LoadData;
 import com.example.windows10gamer.beautimusic.view.adapter.ArtistAdapter;
-import com.example.windows10gamer.beautimusic.utilities.singleton.SongDatabase;
 import com.example.windows10gamer.beautimusic.model.Artist;
 import com.example.windows10gamer.beautimusic.R;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
@@ -113,8 +112,4 @@ public class ArtistFragment extends android.support.v4.app.Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
 }

@@ -2,13 +2,11 @@ package com.example.windows10gamer.beautimusic.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.example.windows10gamer.beautimusic.view.activity.DetailAlbumArtist;
 import com.example.windows10gamer.beautimusic.utilities.Utils;
 import com.example.windows10gamer.beautimusic.model.Artist;
@@ -21,7 +19,7 @@ import java.util.List;
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
     private static final int LIST_ITEM = 0;
     private static final int GRID_ITEM = 1;
-    boolean isSwitchView = true;
+    private boolean isSwitchView = true;
 
     private List<Artist> mArtistList;
     private Context mContext;
@@ -40,9 +38,9 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
         if (viewType == LIST_ITEM) {
-            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_artist_list, null);
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_artist_list, null);
         } else {
-            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_artist_grid, null);
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_artist_grid, null);
         }
         return new ViewHolder(itemView);
     }
@@ -89,13 +87,13 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         }
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mTvNameArtist, mTvSumAlbum;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mTvNameArtist = (TextView) itemView.findViewById(R.id.item_nameartist);
-            mTvSumAlbum = (TextView) itemView.findViewById(R.id.item_sumg_album);
+            mTvNameArtist = (TextView) itemView.findViewById(R.id.tvNameAlbumArtist);
+            mTvSumAlbum = (TextView) itemView.findViewById(R.id.tvNameArtist);
         }
     }
 }
